@@ -12,7 +12,6 @@ import {
   Blocks,
   BookOpen,
   Home,
-  Flame,
   Gamepad2
 } from 'lucide-react';
 

@@ -44,8 +44,6 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
   const answerLang = direction === 'pt-en' ? 'Inglês' : 'Português';
   const questionFlag = direction === 'pt-en' ? '🇧🇷' : '🇺🇸';
   const answerFlag = direction === 'pt-en' ? '🇺🇸' : '🇧🇷';
-  const audioPhrase = direction === 'pt-en' ? card.englishPhrase : card.portuguesePhrase;
-  const audioLang = direction === 'pt-en' ? 'en-US' : 'pt-BR';
   
   const [userAnswer, setUserAnswer] = useState('');
   const [showAnswer, setShowAnswer] = useState(false);

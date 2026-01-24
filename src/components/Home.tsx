@@ -4,9 +4,7 @@ import { ImportExport } from './ImportExport';
 import { 
   BookOpen, 
   Clock, 
-  Flame, 
   Trophy,
-  ArrowRight,
   Folder,
   Plus,
   Download,
@@ -24,7 +22,6 @@ export function Home() {
     cards,
     getGroupsWithReviewCount, 
     getTotalCardsForReview,
-    startReviewSession,
     startPlayMode,
     addGroup,
     selectGroup
