@@ -1,0 +1,12 @@
+[build]
+  # Comando de build
+  command = "npm run build"
+  # Pasta onde o Vite gera os arquivos de produção
+  publish = "dist"
+
+# Configuração para SPA (Single Page Application)
+# Redireciona todas as rotas para index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
