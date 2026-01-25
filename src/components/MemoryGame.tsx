@@ -711,7 +711,6 @@ export function MemoryGame() {
   // TELA 4: Resultados
   // =============================================
   if (memoryGame.phase === 'results') {
-    const totalPairs = memoryGame.cards.length / 2;
     const mistakes = memoryGame.attempts - memoryGame.matches;
     const accuracy = Math.round((memoryGame.matches / memoryGame.attempts) * 100);
     const duration = memoryGame.endTime && memoryGame.startTime

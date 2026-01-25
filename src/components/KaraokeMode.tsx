@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useStore } from '../store/useStore';
 import { defaultKaraokeSongs } from '../data/karaokeSongs';
 import { useSpeechRecognition, compareTexts } from '../hooks/useSpeechRecognition';
@@ -7,7 +7,6 @@ import type { Song, SongDifficulty, LineResult, WordResult } from '../types';
 import {
   Mic,
   MicOff,
-  Play,
   Pause,
   SkipForward,
   ArrowLeft,
@@ -19,8 +18,7 @@ import {
   AlertCircle,
   Volume2,
   Trophy,
-  Target,
-  Clock
+  Target
 } from 'lucide-react';
 
 export function KaraokeMode() {
@@ -32,7 +30,6 @@ export function KaraokeMode() {
     selectKaraokeSong,
     nextKaraokeLine,
     addKaraokeResult,
-    finishKaraoke,
     resetKaraoke,
     goToHome,
   } = useStore();

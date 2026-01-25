@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { useSpeech } from '../hooks/useSpeech';
 import { fuzzyCompare } from '../utils/fuzzyMatch';
