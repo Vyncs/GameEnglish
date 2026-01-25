@@ -14,9 +14,14 @@ export function CardList() {
   const [newDirection, setNewDirection] = useState<TranslationDirection>('pt-en');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [directionFilter, setDirectionFilter] = useState<'all' | 'pt-en' | 'en-pt'>('all');
 
   const selectedGroup = groups.find((g) => g.id === selectedGroupId);
   const groupCards = cards.filter((c) => c.groupId === selectedGroupId);
+
+  // Contar cards por direção
+  const ptEnCount = groupCards.filter(c => (c.direction || 'pt-en') === 'pt-en').length;
+  const enPtCount = groupCards.filter(c => c.direction === 'en-pt').length;
 
   // Filtrar e ordenar cards
   const filteredCards = groupCards
@@ -25,6 +30,11 @@ export function CardList() {
         card.portuguesePhrase.toLowerCase().includes(searchTerm.toLowerCase()) ||
         card.englishPhrase.toLowerCase().includes(searchTerm.toLowerCase())
     )
+    .filter((card) => {
+      if (directionFilter === 'all') return true;
+      const cardDirection = card.direction || 'pt-en';
+      return cardDirection === directionFilter;
+    })
     .sort((a, b) => {
       if (sortOrder === 'asc') {
         return a.createdAt - b.createdAt;
@@ -86,6 +96,42 @@ export function CardList() {
             placeholder="Buscar cards..."
             className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
           />
+        </div>
+
+        {/* Filtro de direção */}
+        <div className="flex rounded-xl border border-slate-200 bg-white overflow-hidden">
+          <button
+            onClick={() => setDirectionFilter('all')}
+            className={`px-4 py-3 text-sm font-medium transition-colors ${
+              directionFilter === 'all'
+                ? 'bg-slate-800 text-white'
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            Todos ({groupCards.length})
+          </button>
+          <button
+            onClick={() => setDirectionFilter('pt-en')}
+            className={`px-4 py-3 text-sm font-medium transition-colors border-l border-slate-200 flex items-center gap-1.5 ${
+              directionFilter === 'pt-en'
+                ? 'bg-green-500 text-white'
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <span>🇧🇷→🇺🇸</span>
+            <span className="hidden sm:inline">({ptEnCount})</span>
+          </button>
+          <button
+            onClick={() => setDirectionFilter('en-pt')}
+            className={`px-4 py-3 text-sm font-medium transition-colors border-l border-slate-200 flex items-center gap-1.5 ${
+              directionFilter === 'en-pt'
+                ? 'bg-blue-500 text-white'
+                : 'text-slate-600 hover:bg-slate-50'
+            }`}
+          >
+            <span>🇺🇸→🇧🇷</span>
+            <span className="hidden sm:inline">({enPtCount})</span>
+          </button>
         </div>
 
         {/* Ordenação */}
