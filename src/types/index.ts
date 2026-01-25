@@ -80,10 +80,71 @@ export const BRICK_TYPES: { type: BrickType; label: string }[] = [
   { type: 'have_you', label: 'Have you' },
 ];
 
-export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge';
+export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory';
 
 // Modo de jogo (direção das perguntas)
 export type PlayModeDirection = 'pt-en' | 'en-pt' | 'mixed';
+
+// ==========================================
+// MEMORY GAME (Pairs Challenge)
+// ==========================================
+
+// Dificuldade do jogo
+export type MemoryDifficulty = 'easy' | 'medium' | 'hard';
+
+// Configuração de dificuldade
+export const MEMORY_DIFFICULTY_CONFIG: Record<MemoryDifficulty, { pairs: number; label: string; emoji: string }> = {
+  easy: { pairs: 6, label: 'Easy', emoji: '🟢' },
+  medium: { pairs: 10, label: 'Medium', emoji: '🟡' },
+  hard: { pairs: 15, label: 'Hard', emoji: '🔴' },
+};
+
+// Deck de memória
+export interface MemoryDeck {
+  id: string;
+  title: string;
+  category: string;
+  emoji: string;
+  description: string;
+  pairs: MemoryPair[];
+}
+
+// Par (gera 2 cartas: imagem + palavra)
+export interface MemoryPair {
+  pairId: string;
+  word: string;
+  imageUrl: string;
+}
+
+// Carta no jogo (gerada a partir do par)
+export interface MemoryGameCard {
+  id: string;
+  pairId: string;
+  type: 'image' | 'word';
+  content: string;  // URL da imagem ou palavra
+  isFlipped: boolean;
+  isMatched: boolean;
+}
+
+// Resultado de uma tentativa (para revisão)
+export interface MemoryAttempt {
+  pair: MemoryPair;
+  wasCorrect: boolean;
+}
+
+// Estado do jogo
+export interface MemoryGameState {
+  phase: 'deck-selection' | 'difficulty-selection' | 'playing' | 'results';
+  selectedDeck: MemoryDeck | null;
+  difficulty: MemoryDifficulty;
+  cards: MemoryGameCard[];
+  selectedCardIds: string[];
+  attempts: number;
+  matches: number;
+  mistakes: MemoryPair[];
+  startTime: number | null;
+  endTime: number | null;
+}
 
 // Tipos para exportação/importação
 export interface ExportData {

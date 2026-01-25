@@ -5,6 +5,7 @@ import { CardList } from './components/CardList';
 import { ReviewSession } from './components/ReviewSession';
 import { PlayMode } from './components/PlayMode';
 import { BricksChallenge } from './components/BricksChallenge';
+import { MemoryGame } from './components/MemoryGame';
 
 function App() {
   const { viewMode, sidebarOpen } = useStore();
@@ -33,6 +34,7 @@ function App() {
           {viewMode === 'review' && <ReviewSession />}
           {viewMode === 'play' && <PlayMode />}
           {(viewMode === 'bricks' || viewMode === 'bricks-challenge') && <BricksChallenge />}
+          {viewMode === 'memory' && <MemoryGame />}
         </div>
       </main>
     </div>

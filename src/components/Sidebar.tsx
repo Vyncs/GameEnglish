@@ -12,7 +12,8 @@ import {
   Blocks,
   BookOpen,
   Home,
-  Gamepad2
+  Gamepad2,
+  Puzzle
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -29,6 +30,7 @@ export function Sidebar() {
     setViewMode,
     goToHome,
     startPlayMode,
+    startMemoryGame,
     getCardsForReviewCount,
     getTotalCardsForReview
   } = useStore();
@@ -152,6 +154,19 @@ export function Sidebar() {
             >
               <Blocks className="w-5 h-5" />
               <span className="font-medium">Bricks Challenge</span>
+            </button>
+
+            {/* Pairs Challenge (Memory Game) */}
+            <button
+              onClick={startMemoryGame}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                viewMode === 'memory'
+                  ? 'bg-gradient-to-r from-pink-500/20 to-rose-500/20 text-pink-400 border border-pink-500/30'
+                  : 'hover:bg-white/5 text-slate-300'
+              }`}
+            >
+              <Puzzle className="w-5 h-5" />
+              <span className="font-medium">Pairs Challenge</span>
             </button>
           </nav>
 

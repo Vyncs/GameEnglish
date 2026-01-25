@@ -1,7 +1,19 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { FlashCard, Group, BricksChallenge, ViewMode, ExportData, TranslationDirection } from '../types';
-import { LEITNER_INTERVALS } from '../types';
+import type { 
+  FlashCard, 
+  Group, 
+  BricksChallenge, 
+  ViewMode, 
+  ExportData, 
+  TranslationDirection,
+  MemoryDeck,
+  MemoryDifficulty,
+  MemoryGameCard,
+  MemoryGameState,
+  MemoryPair
+} from '../types';
+import { LEITNER_INTERVALS, MEMORY_DIFFICULTY_CONFIG } from '../types';
 import { generateBricksPhrases } from '../utils/bricksGenerator';
 
 // Função para gerar IDs únicos
@@ -32,6 +44,11 @@ interface AppState {
   
   // Bricks Challenge
   bricksChallenge: BricksChallenge | null;
+  
+  // Memory Game
+  memoryGame: MemoryGameState;
+  memoryDecks: MemoryDeck[];
+  hiddenDefaultDeckIds: string[];
   
   // UI
   viewMode: ViewMode;
@@ -67,6 +84,24 @@ interface AppState {
   nextBrickPhrase: () => void;
   resetBricksChallenge: () => void;
   
+  // Ações - Memory Game
+  startMemoryGame: () => void;
+  selectMemoryDeck: (deck: MemoryDeck) => void;
+  selectMemoryDifficulty: (difficulty: MemoryDifficulty) => void;
+  startMemoryPlaying: () => void;
+  flipMemoryCard: (cardId: string) => void;
+  resetMemoryGame: () => void;
+  addMemoryDeck: (deck: MemoryDeck) => void;
+  updateMemoryDeck: (deckId: string, updates: Partial<Omit<MemoryDeck, 'id'>>) => void;
+  deleteMemoryDeck: (deckId: string) => void;
+  hideDefaultDeck: (deckId: string) => void;
+  restoreDefaultDecks: () => void;
+  exportMemoryDecks: () => { version: string; decks: MemoryDeck[] };
+  importMemoryDecks: (data: unknown) => { success: boolean; message: string };
+  updateMemoryPair: (deckId: string, pairId: string, updates: Partial<MemoryPair>) => void;
+  deleteMemoryPair: (deckId: string, pairId: string) => void;
+  addMemoryPair: (deckId: string, pair: MemoryPair) => void;
+  
   // Ações - UI
   setViewMode: (mode: ViewMode) => void;
   toggleSidebar: () => void;
@@ -74,6 +109,53 @@ interface AppState {
   startReviewSession: (groupId?: string) => void;
   startPlayMode: (groupId?: string) => void;
 }
+
+// Estado inicial do Memory Game
+const initialMemoryGameState: MemoryGameState = {
+  phase: 'deck-selection',
+  selectedDeck: null,
+  difficulty: 'easy',
+  cards: [],
+  selectedCardIds: [],
+  attempts: 0,
+  matches: 0,
+  mistakes: [],
+  startTime: null,
+  endTime: null,
+};
+
+// Função para criar cartas do jogo a partir dos pares
+const createMemoryCards = (pairs: MemoryPair[], difficulty: MemoryDifficulty): MemoryGameCard[] => {
+  // Embaralhar os pares primeiro para ter aleatoriedade a cada jogo
+  const shuffledPairs = [...pairs].sort(() => Math.random() - 0.5);
+  // Selecionar a quantidade de pares baseada na dificuldade
+  const pairsToUse = shuffledPairs.slice(0, MEMORY_DIFFICULTY_CONFIG[difficulty].pairs);
+  const cards: MemoryGameCard[] = [];
+  
+  pairsToUse.forEach((pair) => {
+    // Carta com imagem
+    cards.push({
+      id: `${pair.pairId}-image`,
+      pairId: pair.pairId,
+      type: 'image',
+      content: pair.imageUrl,
+      isFlipped: false,
+      isMatched: false,
+    });
+    // Carta com palavra
+    cards.push({
+      id: `${pair.pairId}-word`,
+      pairId: pair.pairId,
+      type: 'word',
+      content: pair.word,
+      isFlipped: false,
+      isMatched: false,
+    });
+  });
+  
+  // Embaralhar as cartas
+  return cards.sort(() => Math.random() - 0.5);
+};
 
 export const useStore = create<AppState>()(
   persist(
@@ -83,6 +165,9 @@ export const useStore = create<AppState>()(
       selectedGroupId: null,
       cards: [],
       bricksChallenge: null,
+      memoryGame: initialMemoryGameState,
+      memoryDecks: [],
+      hiddenDefaultDeckIds: [],
       viewMode: 'home',
       sidebarOpen: true,
       
@@ -405,6 +490,250 @@ export const useStore = create<AppState>()(
         });
       },
       
+      // Implementação - Memory Game
+      startMemoryGame: () => {
+        set({
+          memoryGame: initialMemoryGameState,
+          viewMode: 'memory',
+        });
+      },
+      
+      selectMemoryDeck: (deck) => {
+        set((state) => ({
+          memoryGame: {
+            ...state.memoryGame,
+            selectedDeck: deck,
+            phase: 'difficulty-selection',
+          },
+        }));
+      },
+      
+      selectMemoryDifficulty: (difficulty) => {
+        set((state) => ({
+          memoryGame: {
+            ...state.memoryGame,
+            difficulty,
+          },
+        }));
+      },
+      
+      startMemoryPlaying: () => {
+        const { memoryGame } = get();
+        if (!memoryGame.selectedDeck) return;
+        
+        const cards = createMemoryCards(memoryGame.selectedDeck.pairs, memoryGame.difficulty);
+        
+        set((state) => ({
+          memoryGame: {
+            ...state.memoryGame,
+            phase: 'playing',
+            cards,
+            selectedCardIds: [],
+            attempts: 0,
+            matches: 0,
+            mistakes: [],
+            startTime: Date.now(),
+            endTime: null,
+          },
+        }));
+      },
+      
+      flipMemoryCard: (cardId) => {
+        const { memoryGame } = get();
+        
+        // Não permitir mais de 2 cartas selecionadas
+        if (memoryGame.selectedCardIds.length >= 2) return;
+        
+        // Não permitir clicar na mesma carta ou em carta já combinada
+        const card = memoryGame.cards.find((c) => c.id === cardId);
+        if (!card || card.isFlipped || card.isMatched) return;
+        
+        // Virar a carta
+        const newSelectedIds = [...memoryGame.selectedCardIds, cardId];
+        const newCards = memoryGame.cards.map((c) =>
+          c.id === cardId ? { ...c, isFlipped: true } : c
+        );
+        
+        set((state) => ({
+          memoryGame: {
+            ...state.memoryGame,
+            cards: newCards,
+            selectedCardIds: newSelectedIds,
+          },
+        }));
+        
+        // Se 2 cartas foram selecionadas, verificar match
+        if (newSelectedIds.length === 2) {
+          const [firstId, secondId] = newSelectedIds;
+          const firstCard = newCards.find((c) => c.id === firstId)!;
+          const secondCard = newCards.find((c) => c.id === secondId)!;
+          
+          const isMatch = firstCard.pairId === secondCard.pairId;
+          
+          setTimeout(() => {
+            set((state) => {
+              const updatedCards = state.memoryGame.cards.map((c) => {
+                if (c.id === firstId || c.id === secondId) {
+                  return isMatch
+                    ? { ...c, isMatched: true }
+                    : { ...c, isFlipped: false };
+                }
+                return c;
+              });
+              
+              const newMatches = isMatch ? state.memoryGame.matches + 1 : state.memoryGame.matches;
+              const totalPairs = state.memoryGame.cards.length / 2;
+              const isComplete = newMatches === totalPairs;
+              
+              // Registrar erro se não foi match
+              let newMistakes = state.memoryGame.mistakes;
+              if (!isMatch && state.memoryGame.selectedDeck) {
+                const mistakePair = state.memoryGame.selectedDeck.pairs.find(
+                  (p) => p.pairId === firstCard.pairId
+                );
+                if (mistakePair && !newMistakes.some((m) => m.pairId === mistakePair.pairId)) {
+                  newMistakes = [...newMistakes, mistakePair];
+                }
+              }
+              
+              return {
+                memoryGame: {
+                  ...state.memoryGame,
+                  cards: updatedCards,
+                  selectedCardIds: [],
+                  attempts: state.memoryGame.attempts + 1,
+                  matches: newMatches,
+                  mistakes: newMistakes,
+                  phase: isComplete ? 'results' : 'playing',
+                  endTime: isComplete ? Date.now() : null,
+                },
+              };
+            });
+          }, 800); // Delay para mostrar as cartas antes de virar
+        }
+      },
+      
+      resetMemoryGame: () => {
+        set({
+          memoryGame: initialMemoryGameState,
+        });
+      },
+      
+      addMemoryDeck: (deck) => {
+        set((state) => ({
+          memoryDecks: [...state.memoryDecks, deck],
+        }));
+      },
+      
+      updateMemoryDeck: (deckId, updates) => {
+        set((state) => ({
+          memoryDecks: state.memoryDecks.map((deck) =>
+            deck.id === deckId ? { ...deck, ...updates } : deck
+          ),
+        }));
+      },
+      
+      deleteMemoryDeck: (deckId) => {
+        set((state) => ({
+          memoryDecks: state.memoryDecks.filter((deck) => deck.id !== deckId),
+        }));
+      },
+      
+      hideDefaultDeck: (deckId) => {
+        set((state) => ({
+          hiddenDefaultDeckIds: [...state.hiddenDefaultDeckIds, deckId],
+        }));
+      },
+      
+      restoreDefaultDecks: () => {
+        set({ hiddenDefaultDeckIds: [] });
+      },
+      
+      exportMemoryDecks: () => {
+        const { memoryDecks } = get();
+        return {
+          version: '1.0',
+          decks: memoryDecks,
+        };
+      },
+      
+      importMemoryDecks: (data) => {
+        try {
+          const parsed = data as { version?: string; decks?: MemoryDeck[] };
+          
+          if (!parsed.version) {
+            return { success: false, message: 'Arquivo inválido: versão não encontrada' };
+          }
+          
+          if (!Array.isArray(parsed.decks)) {
+            return { success: false, message: 'Arquivo inválido: decks não encontrados' };
+          }
+          
+          // Validar estrutura dos decks
+          for (const deck of parsed.decks) {
+            if (!deck.id || !deck.title || !Array.isArray(deck.pairs)) {
+              return { success: false, message: 'Arquivo inválido: estrutura de deck incorreta' };
+            }
+            for (const pair of deck.pairs) {
+              if (!pair.pairId || !pair.word || !pair.imageUrl) {
+                return { success: false, message: 'Arquivo inválido: estrutura de par incorreta' };
+              }
+            }
+          }
+          
+          // Adicionar decks (mesclando com existentes)
+          set((state) => {
+            const existingIds = new Set(state.memoryDecks.map((d) => d.id));
+            const newDecks = parsed.decks!.filter((d) => !existingIds.has(d.id));
+            return {
+              memoryDecks: [...state.memoryDecks, ...newDecks],
+            };
+          });
+          
+          return { 
+            success: true, 
+            message: `${parsed.decks.length} deck(s) importado(s) com sucesso!` 
+          };
+        } catch {
+          return { success: false, message: 'Erro ao processar arquivo' };
+        }
+      },
+      
+      updateMemoryPair: (deckId, pairId, updates) => {
+        set((state) => ({
+          memoryDecks: state.memoryDecks.map((deck) =>
+            deck.id === deckId
+              ? {
+                  ...deck,
+                  pairs: deck.pairs.map((pair) =>
+                    pair.pairId === pairId ? { ...pair, ...updates } : pair
+                  ),
+                }
+              : deck
+          ),
+        }));
+      },
+      
+      deleteMemoryPair: (deckId, pairId) => {
+        set((state) => ({
+          memoryDecks: state.memoryDecks.map((deck) =>
+            deck.id === deckId
+              ? { ...deck, pairs: deck.pairs.filter((p) => p.pairId !== pairId) }
+              : deck
+          ),
+        }));
+      },
+      
+      addMemoryPair: (deckId, pair) => {
+        set((state) => ({
+          memoryDecks: state.memoryDecks.map((deck) =>
+            deck.id === deckId
+              ? { ...deck, pairs: [...deck.pairs, pair] }
+              : deck
+          ),
+        }));
+      },
+      
       // Implementação - UI
       setViewMode: (mode) => {
         set({ viewMode: mode });
@@ -438,6 +767,8 @@ export const useStore = create<AppState>()(
         groups: state.groups,
         cards: state.cards,
         selectedGroupId: state.selectedGroupId,
+        memoryDecks: state.memoryDecks,
+        hiddenDefaultDeckIds: state.hiddenDefaultDeckIds,
       }),
     }
   )
