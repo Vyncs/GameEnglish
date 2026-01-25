@@ -11,7 +11,9 @@ import type {
   MemoryDifficulty,
   MemoryGameCard,
   MemoryGameState,
-  MemoryPair
+  MemoryPair,
+  Song,
+  LineResult
 } from '../types';
 import { LEITNER_INTERVALS, MEMORY_DIFFICULTY_CONFIG } from '../types';
 import { generateBricksPhrases } from '../utils/bricksGenerator';
@@ -49,6 +51,12 @@ interface AppState {
   memoryGame: MemoryGameState;
   memoryDecks: MemoryDeck[];
   hiddenDefaultDeckIds: string[];
+  
+  // Karaoke
+  karaokePhase: 'song-selection' | 'playing' | 'results';
+  karaokeSong: Song | null;
+  karaokeLineIndex: number;
+  karaokeResults: LineResult[];
   
   // UI
   viewMode: ViewMode;
@@ -101,6 +109,14 @@ interface AppState {
   updateMemoryPair: (deckId: string, pairId: string, updates: Partial<MemoryPair>) => void;
   deleteMemoryPair: (deckId: string, pairId: string) => void;
   addMemoryPair: (deckId: string, pair: MemoryPair) => void;
+  
+  // Ações - Karaoke
+  startKaraoke: () => void;
+  selectKaraokeSong: (song: Song) => void;
+  nextKaraokeLine: () => void;
+  addKaraokeResult: (result: LineResult) => void;
+  finishKaraoke: () => void;
+  resetKaraoke: () => void;
   
   // Ações - UI
   setViewMode: (mode: ViewMode) => void;
@@ -168,6 +184,10 @@ export const useStore = create<AppState>()(
       memoryGame: initialMemoryGameState,
       memoryDecks: [],
       hiddenDefaultDeckIds: [],
+      karaokePhase: 'song-selection',
+      karaokeSong: null,
+      karaokeLineIndex: 0,
+      karaokeResults: [],
       viewMode: 'home',
       sidebarOpen: true,
       
@@ -732,6 +752,57 @@ export const useStore = create<AppState>()(
               : deck
           ),
         }));
+      },
+      
+      // Implementação - Karaoke
+      startKaraoke: () => {
+        set({
+          karaokePhase: 'song-selection',
+          karaokeSong: null,
+          karaokeLineIndex: 0,
+          karaokeResults: [],
+          viewMode: 'karaoke',
+        });
+      },
+      
+      selectKaraokeSong: (song) => {
+        set({
+          karaokeSong: song,
+          karaokePhase: 'playing',
+          karaokeLineIndex: 0,
+          karaokeResults: [],
+        });
+      },
+      
+      nextKaraokeLine: () => {
+        const { karaokeSong, karaokeLineIndex } = get();
+        if (!karaokeSong) return;
+        
+        const nextIndex = karaokeLineIndex + 1;
+        if (nextIndex >= karaokeSong.lyrics.length) {
+          set({ karaokePhase: 'results' });
+        } else {
+          set({ karaokeLineIndex: nextIndex });
+        }
+      },
+      
+      addKaraokeResult: (result) => {
+        set((state) => ({
+          karaokeResults: [...state.karaokeResults, result],
+        }));
+      },
+      
+      finishKaraoke: () => {
+        set({ karaokePhase: 'results' });
+      },
+      
+      resetKaraoke: () => {
+        set({
+          karaokePhase: 'song-selection',
+          karaokeSong: null,
+          karaokeLineIndex: 0,
+          karaokeResults: [],
+        });
       },
       
       // Implementação - UI

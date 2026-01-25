@@ -13,7 +13,8 @@ import {
   BookOpen,
   Home,
   Gamepad2,
-  Puzzle
+  Puzzle,
+  Mic
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -31,6 +32,7 @@ export function Sidebar() {
     goToHome,
     startPlayMode,
     startMemoryGame,
+    startKaraoke,
     getCardsForReviewCount,
     getTotalCardsForReview
   } = useStore();
@@ -167,6 +169,19 @@ export function Sidebar() {
             >
               <Puzzle className="w-5 h-5" />
               <span className="font-medium">Pairs Challenge</span>
+            </button>
+
+            {/* Karaoke Mode */}
+            <button
+              onClick={startKaraoke}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                viewMode === 'karaoke'
+                  ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-400 border border-violet-500/30'
+                  : 'hover:bg-white/5 text-slate-300'
+              }`}
+            >
+              <Mic className="w-5 h-5" />
+              <span className="font-medium">Karaoke Mode</span>
             </button>
           </nav>
 

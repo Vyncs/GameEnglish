@@ -80,7 +80,7 @@ export const BRICK_TYPES: { type: BrickType; label: string }[] = [
   { type: 'have_you', label: 'Have you' },
 ];
 
-export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory';
+export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory' | 'karaoke';
 
 // Modo de jogo (direção das perguntas)
 export type PlayModeDirection = 'pt-en' | 'en-pt' | 'mixed';
@@ -153,3 +153,63 @@ export interface ExportData {
   groups: Group[];
   cards: FlashCard[];
 }
+
+// ==========================================
+// KARAOKE MODE
+// ==========================================
+
+// Dificuldade da música
+export type SongDifficulty = 'easy' | 'medium' | 'hard';
+
+// Linha da letra com timing
+export interface LyricLine {
+  id: string;
+  startTime: number;  // em segundos
+  endTime: number;    // em segundos
+  textEN: string;     // texto em inglês
+  textPT: string;     // tradução em português
+}
+
+// Música completa
+export interface Song {
+  id: string;
+  title: string;
+  artist: string;
+  difficulty: SongDifficulty;
+  coverUrl?: string;  // capa do álbum (opcional)
+  audioUrl: string;   // URL do áudio
+  lyrics: LyricLine[];
+}
+
+// Resultado de pronúncia de uma palavra
+export interface WordResult {
+  word: string;
+  status: 'correct' | 'approximate' | 'missing';
+}
+
+// Resultado de um trecho
+export interface LineResult {
+  lineId: string;
+  expectedText: string;
+  spokenText: string;
+  words: WordResult[];
+  accuracy: number;  // 0-100
+}
+
+// Estado do Karaoke
+export interface KaraokeState {
+  phase: 'song-selection' | 'playing' | 'results';
+  selectedSong: Song | null;
+  currentLineIndex: number;
+  isPlaying: boolean;
+  isListening: boolean;
+  lineResults: LineResult[];
+  overallAccuracy: number;
+}
+
+// Configurações de dificuldade do Karaoke
+export const KARAOKE_DIFFICULTY_CONFIG: Record<SongDifficulty, { label: string; emoji: string; description: string }> = {
+  easy: { label: 'Easy', emoji: '🟢', description: 'Slow songs, clear pronunciation' },
+  medium: { label: 'Medium', emoji: '🟡', description: 'Moderate tempo' },
+  hard: { label: 'Hard', emoji: '🔴', description: 'Fast rhythm, complex words' },
+};
