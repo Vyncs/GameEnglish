@@ -82,6 +82,9 @@ export const BRICK_TYPES: { type: BrickType; label: string }[] = [
 
 export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge';
 
+// Modo de jogo (direção das perguntas)
+export type PlayModeDirection = 'pt-en' | 'en-pt' | 'mixed';
+
 // Tipos para exportação/importação
 export interface ExportData {
   version: string;

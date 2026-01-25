@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { useSpeech } from '../hooks/useSpeech';
+import { fuzzyCompare } from '../utils/fuzzyMatch';
 import type { FlashCard as FlashCardType, TranslationDirection } from '../types';
 import { LEITNER_INTERVALS } from '../types';
+
+// Threshold de similaridade para fuzzy matching (85%)
+const FUZZY_THRESHOLD = 85;
 import { 
   Volume2, 
   VolumeX, 
@@ -72,9 +76,9 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
   };
 
   const handleSubmitAnswer = () => {
-    const normalizedUser = userAnswer.trim().toLowerCase();
-    const normalizedCorrect = answerPhrase.trim().toLowerCase();
-    const correct = normalizedUser === normalizedCorrect;
+    // Usar fuzzy matching para comparar respostas
+    const result = fuzzyCompare(userAnswer, answerPhrase, FUZZY_THRESHOLD);
+    const correct = result.isAcceptable;
     
     setIsCorrect(correct);
     setHasSubmitted(true);

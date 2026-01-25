@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 import { useSpeech } from '../hooks/useSpeech';
-import type { FlashCard } from '../types';
+import { fuzzyCompare } from '../utils/fuzzyMatch';
+import type { FlashCard, PlayModeDirection } from '../types';
 import { LEITNER_INTERVALS } from '../types';
 import { 
   Volume2, 
@@ -18,8 +19,14 @@ import {
   Zap,
   Star,
   ChevronRight,
-  X
+  X,
+  Play,
+  Shuffle,
+  Settings
 } from 'lucide-react';
+
+// Threshold de similaridade para fuzzy matching (85%)
+const FUZZY_THRESHOLD = 85;
 
 export function PlayMode() {
   const { 
@@ -31,46 +38,72 @@ export function PlayMode() {
   } = useStore();
   const { speak, isSpeaking, isSupported } = useSpeech();
 
+  // Estado de seleção de modo (tela inicial)
+  const [gameStarted, setGameStarted] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<PlayModeDirection>('pt-en');
+  
+  // Estado do jogo
   const [cardsToPlay, setCardsToPlay] = useState<FlashCard[]>([]);
+  const [cardDirections, setCardDirections] = useState<Map<string, 'pt-en' | 'en-pt'>>(new Map());
   const [currentIndex, setCurrentIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [fuzzyResult, setFuzzyResult] = useState<{ isExact: boolean; similarity: number } | null>(null);
   const [sessionStats, setSessionStats] = useState({ correct: 0, incorrect: 0, streak: 0, maxStreak: 0 });
   const [isComplete, setIsComplete] = useState(false);
   const [showStreakAnimation, setShowStreakAnimation] = useState(false);
 
   const selectedGroup = groups.find(g => g.id === selectedGroupId);
 
-  // Carregar cards para jogar
-  useEffect(() => {
-    const cards = getCardsForReview(selectedGroupId || undefined);
-    // Embaralhar os cards para variar a ordem
-    const shuffled = [...cards].sort(() => Math.random() - 0.5);
-    setCardsToPlay(shuffled);
-    setCurrentIndex(0);
-    setIsComplete(shuffled.length === 0);
+  // Carregar cards disponíveis para revisão
+  const availableCards = useMemo(() => {
+    return getCardsForReview(selectedGroupId || undefined);
   }, [selectedGroupId, getCardsForReview]);
+
+  // Iniciar o jogo com o modo selecionado
+  const startGame = useCallback(() => {
+    const cards = [...availableCards].sort(() => Math.random() - 0.5);
+    
+    // Definir direções para cada card baseado no modo
+    const directions = new Map<string, 'pt-en' | 'en-pt'>();
+    cards.forEach(card => {
+      if (selectedMode === 'mixed') {
+        // Modo misto: direção aleatória para cada card
+        directions.set(card.id, Math.random() > 0.5 ? 'pt-en' : 'en-pt');
+      } else {
+        // Modo fixo: usa a direção selecionada
+        directions.set(card.id, selectedMode);
+      }
+    });
+    
+    setCardDirections(directions);
+    setCardsToPlay(cards);
+    setCurrentIndex(0);
+    setIsComplete(cards.length === 0);
+    setGameStarted(true);
+  }, [availableCards, selectedMode]);
 
   const currentCard = cardsToPlay[currentIndex];
   
-  // Determina a direção do card atual
-  const direction = currentCard?.direction || 'pt-en';
-  const questionPhrase = direction === 'pt-en' ? currentCard?.portuguesePhrase : currentCard?.englishPhrase;
-  const answerPhrase = direction === 'pt-en' ? currentCard?.englishPhrase : currentCard?.portuguesePhrase;
-  const questionLang = direction === 'pt-en' ? 'Português' : 'Inglês';
-  const answerLang = direction === 'pt-en' ? 'Inglês' : 'Português';
-  const questionFlag = direction === 'pt-en' ? '🇧🇷' : '🇺🇸';
-  const answerFlag = direction === 'pt-en' ? '🇺🇸' : '🇧🇷';
+  // Determina a direção do card atual (baseado no modo selecionado)
+  const currentDirection = currentCard ? (cardDirections.get(currentCard.id) || 'pt-en') : 'pt-en';
+  const questionPhrase = currentDirection === 'pt-en' ? currentCard?.portuguesePhrase : currentCard?.englishPhrase;
+  const answerPhrase = currentDirection === 'pt-en' ? currentCard?.englishPhrase : currentCard?.portuguesePhrase;
+  const questionLang = currentDirection === 'pt-en' ? 'Português' : 'Inglês';
+  const answerLang = currentDirection === 'pt-en' ? 'Inglês' : 'Português';
+  const questionFlag = currentDirection === 'pt-en' ? '🇧🇷' : '🇺🇸';
+  const answerFlag = currentDirection === 'pt-en' ? '🇺🇸' : '🇧🇷';
 
   const handleSubmit = useCallback(() => {
     if (!currentCard || !answerPhrase) return;
 
-    const normalizedUser = userAnswer.trim().toLowerCase();
-    const normalizedCorrect = answerPhrase.trim().toLowerCase();
-    const correct = normalizedUser === normalizedCorrect;
+    // Usar fuzzy matching para comparar respostas
+    const result = fuzzyCompare(userAnswer, answerPhrase, FUZZY_THRESHOLD);
+    const correct = result.isAcceptable;
 
     setIsCorrect(correct);
+    setFuzzyResult({ isExact: result.isExactMatch, similarity: result.similarity });
     setShowResult(true);
     
     // Atualizar estatísticas da sessão
@@ -107,25 +140,133 @@ export function PlayMode() {
       setUserAnswer('');
       setShowResult(false);
       setIsCorrect(null);
+      setFuzzyResult(null);
     } else {
       setIsComplete(true);
     }
   };
 
   const handleRestart = () => {
-    const cards = getCardsForReview(selectedGroupId || undefined);
-    const shuffled = [...cards].sort(() => Math.random() - 0.5);
-    setCardsToPlay(shuffled);
+    setGameStarted(false);
+    setCardsToPlay([]);
+    setCardDirections(new Map());
     setCurrentIndex(0);
     setUserAnswer('');
     setShowResult(false);
     setIsCorrect(null);
+    setFuzzyResult(null);
     setSessionStats({ correct: 0, incorrect: 0, streak: 0, maxStreak: 0 });
-    setIsComplete(shuffled.length === 0);
+    setIsComplete(false);
   };
 
+  // Tela de seleção de modo (antes de começar o jogo)
+  if (!gameStarted) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-8 min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="max-w-md w-full animate-fade-in">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg shadow-cyan-500/30">
+              <Settings className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2">Modo de Jogo</h1>
+            <p className="text-slate-400">
+              {selectedGroup ? selectedGroup.name : 'Todos os grupos'} • {availableCards.length} cards
+            </p>
+          </div>
+
+          {/* Opções de modo */}
+          <div className="space-y-3 mb-8">
+            <button
+              onClick={() => setSelectedMode('pt-en')}
+              className={`w-full p-4 rounded-2xl border-2 transition-all flex items-center gap-4 ${
+                selectedMode === 'pt-en'
+                  ? 'border-cyan-500 bg-cyan-500/20 text-white'
+                  : 'border-white/20 bg-white/5 text-slate-300 hover:border-white/40'
+              }`}
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center text-2xl">
+                🇧🇷
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-semibold">Português → Inglês</p>
+                <p className="text-sm text-slate-400">Ver em PT, responder em EN</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-slate-400" />
+              <span className="text-2xl">🇺🇸</span>
+            </button>
+
+            <button
+              onClick={() => setSelectedMode('en-pt')}
+              className={`w-full p-4 rounded-2xl border-2 transition-all flex items-center gap-4 ${
+                selectedMode === 'en-pt'
+                  ? 'border-cyan-500 bg-cyan-500/20 text-white'
+                  : 'border-white/20 bg-white/5 text-slate-300 hover:border-white/40'
+              }`}
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-2xl">
+                🇺🇸
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-semibold">Inglês → Português</p>
+                <p className="text-sm text-slate-400">Ver em EN, responder em PT</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-slate-400" />
+              <span className="text-2xl">🇧🇷</span>
+            </button>
+
+            <button
+              onClick={() => setSelectedMode('mixed')}
+              className={`w-full p-4 rounded-2xl border-2 transition-all flex items-center gap-4 ${
+                selectedMode === 'mixed'
+                  ? 'border-cyan-500 bg-cyan-500/20 text-white'
+                  : 'border-white/20 bg-white/5 text-slate-300 hover:border-white/40'
+              }`}
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center">
+                <Shuffle className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="font-semibold">Modo Misto</p>
+                <p className="text-sm text-slate-400">Direção aleatória para cada card</p>
+              </div>
+              <span className="text-2xl">🎲</span>
+            </button>
+          </div>
+
+          {/* Info sobre fuzzy matching */}
+          <div className="p-4 bg-white/5 rounded-xl border border-white/10 mb-6">
+            <p className="text-sm text-slate-400 text-center">
+              💡 <span className="text-slate-300">Respostas aproximadas são aceitas!</span><br />
+              Pequenos erros de digitação não contam como erro.
+            </p>
+          </div>
+
+          {/* Botões de ação */}
+          <div className="flex gap-3">
+            <button
+              onClick={goToHome}
+              className="flex-1 py-4 bg-white/10 text-white font-semibold rounded-xl hover:bg-white/20 transition-all flex items-center justify-center gap-2"
+            >
+              <X className="w-5 h-5" />
+              Cancelar
+            </button>
+            <button
+              onClick={startGame}
+              disabled={availableCards.length === 0}
+              className="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Play className="w-5 h-5" />
+              Começar!
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Tela quando não há cards para jogar
-  if (cardsToPlay.length === 0 && !isComplete) {
+  if (cardsToPlay.length === 0 && isComplete) {
     return (
       <div className="flex-1 flex items-center justify-center p-8 min-h-screen">
         <div className="text-center max-w-md animate-fade-in">
@@ -408,9 +549,14 @@ export function PlayMode() {
                         <>
                           <CheckCircle className="w-12 h-12 text-emerald-500" />
                           <div>
-                            <p className="text-2xl font-bold text-emerald-700">Correto! 🎉</p>
+                            <p className="text-2xl font-bold text-emerald-700">
+                              {fuzzyResult?.isExact ? 'Perfeito! 🎉' : 'Quase perfeito! ✨'}
+                            </p>
                             <p className="text-emerald-600">
-                              +1 nível → Nível {Math.min(currentCard.level + 1, 5)}
+                              {fuzzyResult?.isExact 
+                                ? `+1 nível → Nível ${Math.min(currentCard.level + 1, 5)}`
+                                : `${fuzzyResult?.similarity}% similar • +1 nível → Nível ${Math.min(currentCard.level + 1, 5)}`
+                              }
                             </p>
                           </div>
                         </>
@@ -419,17 +565,29 @@ export function PlayMode() {
                           <XCircle className="w-12 h-12 text-red-500" />
                           <div>
                             <p className="text-2xl font-bold text-red-700">Ops! Quase lá</p>
-                            <p className="text-red-600">Voltou para o nível 1</p>
+                            <p className="text-red-600">
+                              {fuzzyResult?.similarity}% similar • Voltou para o nível 1
+                            </p>
                           </div>
                         </>
                       )}
                     </div>
 
                     {/* Comparação de respostas */}
-                    {!isCorrect && (
-                      <div className="p-4 bg-red-50 rounded-xl border border-red-200">
-                        <p className="text-sm font-medium text-red-600 mb-1">Sua resposta:</p>
-                        <p className="text-lg text-red-700">{userAnswer || '(vazio)'}</p>
+                    {(!isCorrect || (isCorrect && !fuzzyResult?.isExact)) && (
+                      <div className={`p-4 rounded-xl border ${
+                        isCorrect 
+                          ? 'bg-amber-50 border-amber-200' 
+                          : 'bg-red-50 border-red-200'
+                      }`}>
+                        <p className={`text-sm font-medium mb-1 ${
+                          isCorrect ? 'text-amber-600' : 'text-red-600'
+                        }`}>
+                          Sua resposta:
+                        </p>
+                        <p className={`text-lg ${isCorrect ? 'text-amber-700' : 'text-red-700'}`}>
+                          {userAnswer || '(vazio)'}
+                        </p>
                       </div>
                     )}
 
