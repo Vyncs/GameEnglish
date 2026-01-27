@@ -27,6 +27,8 @@ export interface FlashCard {
   errorCount: number;      // contador de erros
   // Imagem associada
   imageUrl?: string;       // URL da imagem (opcional)
+  // Dicas (opcional)
+  tips?: string;           // Dicas para ajudar na resposta
 }
 
 export interface Group {

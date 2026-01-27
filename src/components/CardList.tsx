@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { FlashCard } from './FlashCard';
 import type { TranslationDirection } from '../types';
-import { Plus, Search, SortAsc, SortDesc, Inbox, Image as ImageIcon, Link, ArrowRight, Languages, Gamepad2 } from 'lucide-react';
+import { Plus, Search, SortAsc, SortDesc, Inbox, Image as ImageIcon, Link, ArrowRight, Languages, Gamepad2, Lightbulb } from 'lucide-react';
 
 export function CardList() {
   const { cards, selectedGroupId, groups, addCard, getCardsForReviewCount, startPlayMode } = useStore();
@@ -11,6 +11,7 @@ export function CardList() {
   const [newPortuguese, setNewPortuguese] = useState('');
   const [newEnglish, setNewEnglish] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [newTips, setNewTips] = useState('');
   const [newDirection, setNewDirection] = useState<TranslationDirection>('pt-en');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -44,10 +45,11 @@ export function CardList() {
 
   const handleAddCard = () => {
     if (newPortuguese.trim() && newEnglish.trim() && selectedGroupId) {
-      addCard(newPortuguese.trim(), newEnglish.trim(), selectedGroupId, newDirection, newImageUrl.trim() || undefined);
+      addCard(newPortuguese.trim(), newEnglish.trim(), selectedGroupId, newDirection, newImageUrl.trim() || undefined, newTips.trim() || undefined);
       setNewPortuguese('');
       setNewEnglish('');
       setNewImageUrl('');
+      setNewTips('');
       setNewDirection('pt-en');
       setIsAdding(false);
     }
@@ -316,6 +318,23 @@ export function CardList() {
                 Cole a URL de uma imagem que represente a palavra/frase em inglês
               </p>
             </div>
+            {/* Campo de Dicas */}
+            <div>
+              <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+                <Lightbulb className="w-4 h-4 text-amber-500" />
+                Dicas (opcional)
+              </label>
+              <textarea
+                value={newTips}
+                onChange={(e) => setNewTips(e.target.value)}
+                placeholder="Ex: Verbo irregular - Past: went, Past Participle: gone"
+                className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+                rows={2}
+              />
+              <p className="mt-1 text-xs text-slate-400">
+                Adicione dicas, regras gramaticais ou informações úteis sobre esta palavra/frase
+              </p>
+            </div>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => {
@@ -323,6 +342,7 @@ export function CardList() {
                   setNewPortuguese('');
                   setNewEnglish('');
                   setNewImageUrl('');
+                  setNewTips('');
                   setNewDirection('pt-en');
                 }}
                 className="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors"

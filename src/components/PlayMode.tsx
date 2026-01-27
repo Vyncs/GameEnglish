@@ -22,7 +22,8 @@ import {
   X,
   Play,
   Shuffle,
-  Settings
+  Settings,
+  Lightbulb
 } from 'lucide-react';
 
 // Threshold de similaridade para fuzzy matching (85%)
@@ -628,6 +629,17 @@ export function PlayMode() {
                             (e.target as HTMLImageElement).style.display = 'none';
                           }}
                         />
+                      </div>
+                    )}
+
+                    {/* Dicas */}
+                    {currentCard.tips && (
+                      <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Lightbulb className="w-5 h-5 text-amber-500" />
+                          <p className="text-sm font-medium text-amber-700">Dica</p>
+                        </div>
+                        <p className="text-amber-800">{currentCard.tips}</p>
                       </div>
                     )}
 

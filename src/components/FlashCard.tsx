@@ -21,7 +21,8 @@ import {
   Link,
   Target,
   ArrowRight,
-  Languages
+  Languages,
+  Lightbulb
 } from 'lucide-react';
 
 interface FlashCardProps {
@@ -38,6 +39,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
   const [editPortuguese, setEditPortuguese] = useState(card.portuguesePhrase);
   const [editEnglish, setEditEnglish] = useState(card.englishPhrase);
   const [editImageUrl, setEditImageUrl] = useState(card.imageUrl || '');
+  const [editTips, setEditTips] = useState(card.tips || '');
   const [editDirection, setEditDirection] = useState<TranslationDirection>(card.direction || 'pt-en');
   
   // Determina qual frase é a pergunta e qual é a resposta baseado na direção
@@ -56,7 +58,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
 
   const handleSave = () => {
     if (editPortuguese.trim() && editEnglish.trim()) {
-      updateCard(card.id, editPortuguese.trim(), editEnglish.trim(), editDirection, editImageUrl.trim() || undefined);
+      updateCard(card.id, editPortuguese.trim(), editEnglish.trim(), editDirection, editImageUrl.trim() || undefined, editTips.trim() || undefined);
       setIsEditing(false);
     }
   };
@@ -65,6 +67,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
     setEditPortuguese(card.portuguesePhrase);
     setEditEnglish(card.englishPhrase);
     setEditImageUrl(card.imageUrl || '');
+    setEditTips(card.tips || '');
     setEditDirection(card.direction || 'pt-en');
     setIsEditing(false);
   };
@@ -154,6 +157,17 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
                 (e.target as HTMLImageElement).style.display = 'none';
               }}
             />
+          </div>
+        )}
+
+        {/* Dicas */}
+        {card.tips && (
+          <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
+            <div className="flex items-center gap-2 mb-1">
+              <Lightbulb className="w-4 h-4 text-amber-500" />
+              <p className="text-xs font-medium text-amber-700">Dica</p>
+            </div>
+            <p className="text-sm text-amber-800">{card.tips}</p>
           </div>
         )}
       </div>
@@ -286,6 +300,20 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
                 />
               </div>
             )}
+          </div>
+          {/* Campo de Dicas */}
+          <div>
+            <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+              <Lightbulb className="w-4 h-4 text-amber-500" />
+              Dicas (opcional)
+            </label>
+            <textarea
+              value={editTips}
+              onChange={(e) => setEditTips(e.target.value)}
+              placeholder="Ex: Verbo irregular - Past: went, Past Participle: gone"
+              className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+              rows={2}
+            />
           </div>
           <div className="flex gap-3 justify-end">
             <button
@@ -491,6 +519,17 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
+              </div>
+            )}
+
+            {/* Dicas quando visualiza resposta */}
+            {card.tips && (
+              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
+                <div className="flex items-center gap-2 mb-1">
+                  <Lightbulb className="w-4 h-4 text-amber-500" />
+                  <p className="text-xs font-medium text-amber-700">Dica</p>
+                </div>
+                <p className="text-sm text-amber-800">{card.tips}</p>
               </div>
             )}
           </div>

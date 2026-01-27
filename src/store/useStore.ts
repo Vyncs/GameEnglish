@@ -69,8 +69,8 @@ interface AppState {
   selectGroup: (id: string | null) => void;
   
   // Ações - Cards
-  addCard: (portuguesePhrase: string, englishPhrase: string, groupId: string, direction?: TranslationDirection, imageUrl?: string) => void;
-  updateCard: (id: string, portuguesePhrase: string, englishPhrase: string, direction?: TranslationDirection, imageUrl?: string) => void;
+  addCard: (portuguesePhrase: string, englishPhrase: string, groupId: string, direction?: TranslationDirection, imageUrl?: string, tips?: string) => void;
+  updateCard: (id: string, portuguesePhrase: string, englishPhrase: string, direction?: TranslationDirection, imageUrl?: string, tips?: string) => void;
   deleteCard: (id: string) => void;
   getCardsByGroup: (groupId: string) => FlashCard[];
   
@@ -227,7 +227,7 @@ export const useStore = create<AppState>()(
       },
       
       // Implementação - Cards
-      addCard: (portuguesePhrase, englishPhrase, groupId, direction = 'pt-en', imageUrl) => {
+      addCard: (portuguesePhrase, englishPhrase, groupId, direction = 'pt-en', imageUrl, tips) => {
         const now = Date.now();
         const newCard: FlashCard = {
           id: generateId(),
@@ -244,13 +244,15 @@ export const useStore = create<AppState>()(
           errorCount: 0,
           // Imagem
           imageUrl: imageUrl || undefined,
+          // Dicas
+          tips: tips || undefined,
         };
         set((state) => ({
           cards: [...state.cards, newCard],
         }));
       },
       
-      updateCard: (id, portuguesePhrase, englishPhrase, direction, imageUrl) => {
+      updateCard: (id, portuguesePhrase, englishPhrase, direction, imageUrl, tips) => {
         set((state) => ({
           cards: state.cards.map((c) =>
             c.id === id 
@@ -260,6 +262,7 @@ export const useStore = create<AppState>()(
                   englishPhrase,
                   direction: direction || c.direction || 'pt-en',
                   imageUrl: imageUrl || undefined,
+                  tips: tips || undefined,
                 } 
               : c
           ),
@@ -409,6 +412,9 @@ export const useStore = create<AppState>()(
                   errorCount: card.errorCount || 0,
                   // Garantir direção padrão
                   direction: card.direction || 'pt-en',
+                  // Preservar campos opcionais
+                  imageUrl: card.imageUrl || undefined,
+                  tips: card.tips || undefined,
                 }));
               
               return {
@@ -430,6 +436,9 @@ export const useStore = create<AppState>()(
               nextReview: card.nextReview || calculateNextReview(1),
               errorCount: card.errorCount || 0,
               direction: card.direction || 'pt-en',
+              // Preservar campos opcionais
+              imageUrl: card.imageUrl || undefined,
+              tips: card.tips || undefined,
             }));
             
             set({
