@@ -10,7 +10,7 @@ export function useSpeech() {
     setIsSupported('speechSynthesis' in window);
   }, []);
 
-  const speak = useCallback((text: string, lang: string = 'en-US') => {
+  const speak = useCallback((text: string, lang: string = 'en-US', onEnd?: () => void) => {
     if (!isSupported) {
       console.warn('Web Speech API não é suportada neste navegador');
       return;
@@ -36,8 +36,14 @@ export function useSpeech() {
     }
 
     utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      onEnd?.();
+    };
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      onEnd?.();
+    };
 
     window.speechSynthesis.speak(utterance);
   }, [isSupported]);

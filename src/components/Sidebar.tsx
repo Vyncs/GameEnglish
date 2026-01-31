@@ -14,7 +14,8 @@ import {
   Home,
   Gamepad2,
   Puzzle,
-  Mic
+  Mic,
+  Library
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -33,6 +34,7 @@ export function Sidebar() {
     startPlayMode,
     startMemoryGame,
     startKaraoke,
+    startReaders,
     getCardsForReviewCount,
     getTotalCardsForReview
   } = useStore();
@@ -182,6 +184,19 @@ export function Sidebar() {
             >
               <Mic className="w-5 h-5" />
               <span className="font-medium">Karaoke Mode</span>
+            </button>
+
+            {/* Graded Readers */}
+            <button
+              onClick={startReaders}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                viewMode === 'readers'
+                  ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 border border-indigo-500/30'
+                  : 'hover:bg-white/5 text-slate-300'
+              }`}
+            >
+              <Library className="w-5 h-5" />
+              <span className="font-medium">Graded Readers</span>
             </button>
           </nav>
 

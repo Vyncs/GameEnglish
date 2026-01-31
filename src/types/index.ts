@@ -82,7 +82,7 @@ export const BRICK_TYPES: { type: BrickType; label: string }[] = [
   { type: 'have_you', label: 'Have you' },
 ];
 
-export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory' | 'karaoke';
+export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory' | 'karaoke' | 'readers';
 
 // Modo de jogo (direção das perguntas)
 export type PlayModeDirection = 'pt-en' | 'en-pt' | 'mixed';
@@ -215,3 +215,129 @@ export const KARAOKE_DIFFICULTY_CONFIG: Record<SongDifficulty, { label: string; 
   medium: { label: 'Medium', emoji: '🟡', description: 'Moderate tempo' },
   hard: { label: 'Hard', emoji: '🔴', description: 'Fast rhythm, complex words' },
 };
+
+// ==========================================
+// GRADED READERS (Mario Vergara Style)
+// ==========================================
+
+// Níveis CEFR
+export type ReaderLevel = 'A1' | 'A2' | 'B1' | 'B2';
+
+// Tema de leitura (visual)
+export type ReaderTheme = 'light' | 'dark' | 'sepia';
+
+// Sub-abas
+export type ReaderSubTab = 'library' | 'create' | 'plagiarism';
+
+// Tags/categorias dos livros
+export type BookTag = 'daily-life' | 'travel' | 'romance' | 'work' | 'adventure' | 'mystery' | 'fantasy' | 'science' | 'rpg-fantasy' | 'horror';
+
+// Chunk = palavra OU frase (phrasal verb, expressão, contexto)
+// Ex: "give" | "give up" | "take a shower" — cada um com sua tradução
+export interface ReaderWord {
+  word: string;         // texto exibido (pode ser "give up" = frase)
+  translation: string;  // tradução em português (do chunk inteiro)
+  isClickable: boolean;
+}
+
+// Parágrafo do livro (cada "word" pode ser uma palavra ou frase)
+export interface ReaderParagraph {
+  id: string;
+  words: ReaderWord[];
+}
+
+// Pergunta de compreensão
+export interface ComprehensionQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctIndex: number;
+}
+
+// Livro
+export interface GradedBook {
+  id: string;
+  title: string;
+  author: string;
+  level: ReaderLevel;
+  tags: BookTag[];
+  coverUrl?: string;
+  totalWords: number;
+  estimatedMinutes: number;
+  description: string;
+  paragraphs: ReaderParagraph[];
+  questions?: ComprehensionQuestion[];
+  progress: number;  // 0-100
+  createdAt: number;
+  isCustom: boolean; // criado pelo usuário ou padrão
+}
+
+// Configuração por nível
+export interface LevelConfig {
+  level: ReaderLevel;
+  label: string;
+  vocabularyRange: string;
+  sentenceLength: string;
+  grammarFocus: string;
+  color: string;
+}
+
+// Configurações dos níveis
+export const READER_LEVEL_CONFIG: Record<ReaderLevel, LevelConfig> = {
+  A1: {
+    level: 'A1',
+    label: 'Beginner',
+    vocabularyRange: '500-800 words',
+    sentenceLength: 'Short sentences',
+    grammarFocus: 'Present Simple, basic vocabulary',
+    color: 'emerald',
+  },
+  A2: {
+    level: 'A2',
+    label: 'Elementary',
+    vocabularyRange: '1000-1500 words',
+    sentenceLength: 'Medium sentences',
+    grammarFocus: 'Past Simple, common phrasal verbs',
+    color: 'blue',
+  },
+  B1: {
+    level: 'B1',
+    label: 'Intermediate',
+    vocabularyRange: '2000-2500 words',
+    sentenceLength: 'Longer sentences',
+    grammarFocus: 'Present Perfect, conditionals',
+    color: 'amber',
+  },
+  B2: {
+    level: 'B2',
+    label: 'Upper-Intermediate',
+    vocabularyRange: '3000+ words',
+    sentenceLength: 'Complex sentences',
+    grammarFocus: 'All tenses, passive voice, reported speech',
+    color: 'purple',
+  },
+};
+
+// Tags disponíveis
+export const BOOK_TAGS: { tag: BookTag; label: string; emoji: string }[] = [
+  { tag: 'daily-life', label: 'Daily Life', emoji: '🏠' },
+  { tag: 'travel', label: 'Travel', emoji: '✈️' },
+  { tag: 'romance', label: 'Romance', emoji: '💕' },
+  { tag: 'work', label: 'Work', emoji: '💼' },
+  { tag: 'adventure', label: 'Adventure', emoji: '🗺️' },
+  { tag: 'mystery', label: 'Mystery', emoji: '🔍' },
+  { tag: 'fantasy', label: 'Fantasy', emoji: '🧙' },
+  { tag: 'science', label: 'Science', emoji: '🔬' },
+  { tag: 'rpg-fantasy', label: 'RPG (Fantasy)', emoji: '⚔️' },
+  { tag: 'horror', label: 'Terror', emoji: '👻' },
+];
+
+// Estado do Graded Readers
+export interface GradedReadersState {
+  level: ReaderLevel;
+  theme: ReaderTheme;
+  subTab: ReaderSubTab;
+  selectedBook: GradedBook | null;
+  isReading: boolean;
+  currentParagraphIndex: number;
+}

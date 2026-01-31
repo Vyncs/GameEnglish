@@ -3,6 +3,7 @@
   command = "npm run build"
   # Pasta onde o Vite gera os arquivos de produção
   publish = "dist"
+  functions = "netlify/functions"
 
 # Configuração para SPA (Single Page Application)
 # Redireciona todas as rotas para index.html

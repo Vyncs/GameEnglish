@@ -13,7 +13,11 @@ import type {
   MemoryGameState,
   MemoryPair,
   Song,
-  LineResult
+  LineResult,
+  ReaderLevel,
+  ReaderTheme,
+  ReaderSubTab,
+  GradedBook
 } from '../types';
 import { LEITNER_INTERVALS, MEMORY_DIFFICULTY_CONFIG } from '../types';
 import { generateBricksPhrases } from '../utils/bricksGenerator';
@@ -57,6 +61,15 @@ interface AppState {
   karaokeSong: Song | null;
   karaokeLineIndex: number;
   karaokeResults: LineResult[];
+  
+  // Graded Readers
+  readerLevel: ReaderLevel;
+  readerTheme: ReaderTheme;
+  readerSubTab: ReaderSubTab;
+  selectedBook: GradedBook | null;
+  isReading: boolean;
+  currentParagraphIndex: number;
+  customBooks: GradedBook[];
   
   // UI
   viewMode: ViewMode;
@@ -117,6 +130,19 @@ interface AppState {
   addKaraokeResult: (result: LineResult) => void;
   finishKaraoke: () => void;
   resetKaraoke: () => void;
+  
+  // Ações - Graded Readers
+  startReaders: () => void;
+  setReaderLevel: (level: ReaderLevel) => void;
+  setReaderTheme: (theme: ReaderTheme) => void;
+  setReaderSubTab: (tab: ReaderSubTab) => void;
+  openBook: (book: GradedBook) => void;
+  closeBook: () => void;
+  updateBookProgress: (bookId: string, progress: number) => void;
+  nextParagraph: () => void;
+  prevParagraph: () => void;
+  addCustomBook: (book: GradedBook) => void;
+  deleteCustomBook: (bookId: string) => void;
   
   // Ações - UI
   setViewMode: (mode: ViewMode) => void;
@@ -188,6 +214,13 @@ export const useStore = create<AppState>()(
       karaokeSong: null,
       karaokeLineIndex: 0,
       karaokeResults: [],
+      readerLevel: 'A1',
+      readerTheme: 'light',
+      readerSubTab: 'library',
+      selectedBook: null,
+      isReading: false,
+      currentParagraphIndex: 0,
+      customBooks: [],
       viewMode: 'home',
       sidebarOpen: true,
       
@@ -814,6 +847,81 @@ export const useStore = create<AppState>()(
         });
       },
       
+      // Implementação - Graded Readers
+      startReaders: () => {
+        set({
+          viewMode: 'readers',
+          selectedBook: null,
+          isReading: false,
+          currentParagraphIndex: 0,
+        });
+      },
+      
+      setReaderLevel: (level) => {
+        set({ readerLevel: level });
+      },
+      
+      setReaderTheme: (theme) => {
+        set({ readerTheme: theme });
+      },
+      
+      setReaderSubTab: (tab) => {
+        set({ readerSubTab: tab });
+      },
+      
+      openBook: (book) => {
+        set({
+          selectedBook: book,
+          isReading: true,
+          currentParagraphIndex: 0,
+        });
+      },
+      
+      closeBook: () => {
+        set({
+          selectedBook: null,
+          isReading: false,
+          currentParagraphIndex: 0,
+        });
+      },
+      
+      updateBookProgress: (bookId, progress) => {
+        set((state) => ({
+          customBooks: state.customBooks.map((book) =>
+            book.id === bookId ? { ...book, progress } : book
+          ),
+        }));
+      },
+      
+      nextParagraph: () => {
+        const { selectedBook, currentParagraphIndex } = get();
+        if (!selectedBook) return;
+        
+        const nextIndex = currentParagraphIndex + 1;
+        if (nextIndex < selectedBook.paragraphs.length) {
+          set({ currentParagraphIndex: nextIndex });
+        }
+      },
+      
+      prevParagraph: () => {
+        const { currentParagraphIndex } = get();
+        if (currentParagraphIndex > 0) {
+          set({ currentParagraphIndex: currentParagraphIndex - 1 });
+        }
+      },
+      
+      addCustomBook: (book) => {
+        set((state) => ({
+          customBooks: [...state.customBooks, book],
+        }));
+      },
+      
+      deleteCustomBook: (bookId) => {
+        set((state) => ({
+          customBooks: state.customBooks.filter((book) => book.id !== bookId),
+        }));
+      },
+      
       // Implementação - UI
       setViewMode: (mode) => {
         set({ viewMode: mode });
@@ -849,6 +957,8 @@ export const useStore = create<AppState>()(
         selectedGroupId: state.selectedGroupId,
         memoryDecks: state.memoryDecks,
         hiddenDefaultDeckIds: state.hiddenDefaultDeckIds,
+        customBooks: state.customBooks,
+        readerTheme: state.readerTheme,
       }),
     }
   )

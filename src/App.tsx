@@ -7,6 +7,7 @@ import { PlayMode } from './components/PlayMode';
 import { BricksChallenge } from './components/BricksChallenge';
 import { MemoryGame } from './components/MemoryGame';
 import { KaraokeMode } from './components/KaraokeMode';
+import { GradedReaders } from './components/GradedReaders';
 
 function App() {
   const { viewMode, sidebarOpen } = useStore();
@@ -29,7 +30,7 @@ function App() {
           sidebarOpen ? 'ml-80' : 'ml-0'
         }`}
       >
-        <div className={viewMode === 'play' || viewMode === 'karaoke' ? '' : 'pt-16 lg:pt-4'}>
+        <div className={viewMode === 'play' || viewMode === 'karaoke' || viewMode === 'readers' ? '' : 'pt-16 lg:pt-4'}>
           {viewMode === 'home' && <Home />}
           {viewMode === 'cards' && <CardList />}
           {viewMode === 'review' && <ReviewSession />}
@@ -37,6 +38,7 @@ function App() {
           {(viewMode === 'bricks' || viewMode === 'bricks-challenge') && <BricksChallenge />}
           {viewMode === 'memory' && <MemoryGame />}
           {viewMode === 'karaoke' && <KaraokeMode />}
+          {viewMode === 'readers' && <GradedReaders />}
         </div>
       </main>
     </div>
