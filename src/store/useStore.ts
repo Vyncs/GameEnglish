@@ -21,6 +21,7 @@ import type {
 } from '../types';
 import { LEITNER_INTERVALS, MEMORY_DIFFICULTY_CONFIG } from '../types';
 import { generateBricksPhrases } from '../utils/bricksGenerator';
+import { api } from '../api/client';
 
 // Função para gerar IDs únicos
 const generateId = () => Math.random().toString(36).substring(2, 15);
@@ -150,6 +151,9 @@ interface AppState {
   goToHome: () => void;
   startReviewSession: (groupId?: string) => void;
   startPlayMode: (groupId?: string) => void;
+
+  // Sincronização com backend (quando logado)
+  hydrateFromSync: (data: import('../api/client').SyncData) => void;
 }
 
 // Estado inicial do Memory Game
@@ -224,8 +228,19 @@ export const useStore = create<AppState>()(
       viewMode: 'home',
       sidebarOpen: true,
       
-      // Implementação - Grupos
-      addGroup: (name) => {
+      // Implementação - Grupos (com sync para backend quando logado)
+      addGroup: async (name) => {
+        if (api.getToken()) {
+          try {
+            const g = await api.postGroup(name);
+            set((state) => ({
+              groups: [...state.groups, g as Group],
+              selectedGroupId: g.id,
+              viewMode: 'cards',
+            }));
+            return;
+          } catch (_) { /* fallback local */ }
+        }
         const newGroup: Group = {
           id: generateId(),
           name,
@@ -238,7 +253,12 @@ export const useStore = create<AppState>()(
         }));
       },
       
-      renameGroup: (id, newName) => {
+      renameGroup: async (id, newName) => {
+        if (api.getToken()) {
+          try {
+            await api.patchGroup(id, newName);
+          } catch (_) {}
+        }
         set((state) => ({
           groups: state.groups.map((g) =>
             g.id === id ? { ...g, name: newName } : g
@@ -246,7 +266,12 @@ export const useStore = create<AppState>()(
         }));
       },
       
-      deleteGroup: (id) => {
+      deleteGroup: async (id) => {
+        if (api.getToken()) {
+          try {
+            await api.deleteGroup(id);
+          } catch (_) {}
+        }
         set((state) => ({
           groups: state.groups.filter((g) => g.id !== id),
           cards: state.cards.filter((c) => c.groupId !== id),
@@ -259,8 +284,27 @@ export const useStore = create<AppState>()(
         set({ selectedGroupId: id, viewMode: 'cards' });
       },
       
-      // Implementação - Cards
-      addCard: (portuguesePhrase, englishPhrase, groupId, direction = 'pt-en', imageUrl, tips) => {
+      // Implementação - Cards (com sync para backend quando logado)
+      addCard: async (portuguesePhrase, englishPhrase, groupId, direction = 'pt-en', imageUrl, tips) => {
+        if (api.getToken()) {
+          try {
+            const c = await api.postCard({
+              groupId,
+              portuguesePhrase,
+              englishPhrase,
+              direction,
+              imageUrl,
+              tips,
+            });
+            const newCard: FlashCard = {
+              ...c,
+              lastReviewed: c.lastReviewed ?? null,
+              nextReview: c.nextReview,
+            };
+            set((state) => ({ cards: [...state.cards, newCard] }));
+            return;
+          } catch (_) {}
+        }
         const now = Date.now();
         const newCard: FlashCard = {
           id: generateId(),
@@ -268,41 +312,51 @@ export const useStore = create<AppState>()(
           englishPhrase,
           groupId,
           createdAt: now,
-          // Direção da tradução
           direction,
-          // Spaced Repetition - inicia no nível 1
           level: 1,
           lastReviewed: null,
-          nextReview: calculateNextReview(1), // Revisão imediata (mesmo dia)
+          nextReview: calculateNextReview(1),
           errorCount: 0,
-          // Imagem
           imageUrl: imageUrl || undefined,
-          // Dicas
           tips: tips || undefined,
         };
-        set((state) => ({
-          cards: [...state.cards, newCard],
-        }));
+        set((state) => ({ cards: [...state.cards, newCard] }));
       },
       
-      updateCard: (id, portuguesePhrase, englishPhrase, direction, imageUrl, tips) => {
+      updateCard: async (id, portuguesePhrase, englishPhrase, direction, imageUrl, tips) => {
+        if (api.getToken()) {
+          try {
+            await api.patchCard(id, {
+              portuguesePhrase,
+              englishPhrase,
+              direction: direction || undefined,
+              imageUrl,
+              tips,
+            });
+          } catch (_) {}
+        }
         set((state) => ({
           cards: state.cards.map((c) =>
-            c.id === id 
-              ? { 
-                  ...c, 
-                  portuguesePhrase, 
+            c.id === id
+              ? {
+                  ...c,
+                  portuguesePhrase,
                   englishPhrase,
                   direction: direction || c.direction || 'pt-en',
                   imageUrl: imageUrl || undefined,
                   tips: tips || undefined,
-                } 
+                }
               : c
           ),
         }));
       },
       
-      deleteCard: (id) => {
+      deleteCard: async (id) => {
+        if (api.getToken()) {
+          try {
+            await api.deleteCard(id);
+          } catch (_) {}
+        }
         set((state) => ({
           cards: state.cards.filter((c) => c.id !== id),
         }));
@@ -312,33 +366,36 @@ export const useStore = create<AppState>()(
         return get().cards.filter((c) => c.groupId === groupId);
       },
       
-      // Implementação - Spaced Repetition
-      reviewCard: (cardId, isCorrect) => {
-        set((state) => ({
-          cards: state.cards.map((card) => {
-            if (card.id !== cardId) return card;
-            
-            const now = Date.now();
-            let newLevel = card.level;
-            let newErrorCount = card.errorCount;
-            
-            if (isCorrect) {
-              // Acertou: sobe 1 nível (máximo 5)
-              newLevel = Math.min(card.level + 1, 5);
-            } else {
-              // Errou: volta para nível 1
-              newLevel = 1;
-              newErrorCount = card.errorCount + 1;
-            }
-            
-            return {
-              ...card,
+      // Implementação - Spaced Repetition (com sync quando logado)
+      reviewCard: async (cardId, isCorrect) => {
+        const card = get().cards.find((c) => c.id === cardId);
+        if (!card) return;
+        const now = Date.now();
+        const newLevel = isCorrect ? Math.min(card.level + 1, 5) : 1;
+        const newErrorCount = isCorrect ? card.errorCount : card.errorCount + 1;
+        const nextReview = calculateNextReview(newLevel);
+        if (api.getToken()) {
+          try {
+            await api.patchCard(cardId, {
               level: newLevel,
               lastReviewed: now,
-              nextReview: calculateNextReview(newLevel),
+              nextReview,
               errorCount: newErrorCount,
-            };
-          }),
+            });
+          } catch (_) {}
+        }
+        set((state) => ({
+          cards: state.cards.map((c) =>
+            c.id !== cardId
+              ? c
+              : {
+                  ...c,
+                  level: newLevel,
+                  lastReviewed: now,
+                  nextReview,
+                  errorCount: newErrorCount,
+                }
+          ),
         }));
       },
       
@@ -946,6 +1003,18 @@ export const useStore = create<AppState>()(
         set({ 
           viewMode: 'play',
           selectedGroupId: groupId || null,
+        });
+      },
+
+      hydrateFromSync: (data) => {
+        set({
+          groups: data.groups as Group[],
+          cards: data.cards as FlashCard[],
+          selectedGroupId: data.selectedGroupId,
+          memoryDecks: data.memoryDecks as MemoryDeck[],
+          hiddenDefaultDeckIds: data.hiddenDefaultDeckIds,
+          customBooks: data.customBooks as GradedBook[],
+          readerTheme: (data.readerTheme as ReaderTheme) || 'light',
         });
       },
     }),

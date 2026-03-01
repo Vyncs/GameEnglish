@@ -26,6 +26,41 @@ import {
   Save
 } from 'lucide-react';
 
+/** Verifica se é URL de PÁGINA do Unsplash (não é link direto da imagem). */
+function isUnsplashPageUrl(url: string): boolean {
+  const u = url.trim();
+  return (
+    u.includes('unsplash.com') &&
+    (u.includes('/photos/') || u.includes('/fotografias/')) &&
+    !u.includes('images.unsplash.com') &&
+    !u.includes('source.unsplash.com')
+  );
+}
+
+/** Extrai o ID da foto (ex: 3eUNMeIEoUg) de uma URL de página do Unsplash. */
+function getUnsplashPhotoId(pageUrl: string): string | null {
+  const trimmed = pageUrl.trim();
+  if (!isUnsplashPageUrl(trimmed)) return null;
+  const segments = trimmed.split('/').filter(Boolean);
+  const last = segments[segments.length - 1];
+  if (!last) return null;
+  const id = last.includes('-') ? last.split('-').pop() : last;
+  return id && id.length >= 10 ? id : last;
+}
+
+/**
+ * Só converte quando for link de PÁGINA do Unsplash. URLs diretas (images.unsplash.com, etc.) são devolvidas sem alteração.
+ */
+function normalizeImageUrl(url: string): string {
+  if (!url || !url.trim()) return url;
+  const trimmed = url.trim();
+  const id = getUnsplashPhotoId(trimmed);
+  if (id) {
+    return `https://source.unsplash.com/${id}/400x400`;
+  }
+  return trimmed;
+}
+
 export function MemoryGame() {
   const {
     memoryGame,
@@ -69,15 +104,26 @@ export function MemoryGame() {
     }
   }, [memoryDecks.length, addMemoryDeck]);
 
-  // Combinar decks padrão (exceto ocultos) com customizados
+  // Decks padrão visíveis (não ocultos)
   const visibleDefaultDecks = defaultMemoryDecks.filter(
     (d) => !hiddenDefaultDeckIds.includes(d.id)
   );
-  const allDecks = [...visibleDefaultDecks, ...memoryDecks.filter(
+  // Versões editadas pelo usuário para decks padrão (mesmo id que algum default)
+  const userOverrideDecksMap = new Map(
+    memoryDecks
+      .filter((d) => defaultMemoryDecks.some((dd) => dd.id === d.id))
+      .map((d) => [d.id, d])
+  );
+  // Lista final: padrão (ou versão editada do usuário) + decks só customizados
+  const mergedDefaultDecks = visibleDefaultDecks.map(
+    (d) => userOverrideDecksMap.get(d.id) ?? d
+  );
+  const customOnlyDecks = memoryDecks.filter(
     (d) => !defaultMemoryDecks.some((dd) => dd.id === d.id)
-  )];
+  );
+  const allDecks = [...mergedDefaultDecks, ...customOnlyDecks];
 
-  // Identificar decks customizados (que podem ser editados/deletados)
+  // Identificar decks customizados (que podem ser deletados; padrão só oculta)
   const isCustomDeck = (deckId: string) => !defaultMemoryDecks.some((d) => d.id === deckId);
 
   // Função para deletar deck (customizado ou ocultar padrão)
@@ -122,8 +168,16 @@ export function MemoryGame() {
     e.target.value = '';
   };
 
+  // Garantir que deck padrão tenha cópia em memoryDecks para edição ser salva
+  const ensureDeckInMemory = (deck: MemoryDeck) => {
+    if (!defaultMemoryDecks.some((d) => d.id === deck.id)) return;
+    if (memoryDecks.some((d) => d.id === deck.id)) return;
+    addMemoryDeck({ ...deck });
+  };
+
   // Iniciar edição de deck
   const startEditDeck = (deck: MemoryDeck) => {
+    ensureDeckInMemory(deck);
     setEditingDeck(deck);
     setDeckForm({
       title: deck.title,
@@ -145,18 +199,19 @@ export function MemoryGame() {
     setEditingDeck(null);
   };
 
-  // Iniciar edição de par
-  const startEditPair = (deckId: string, pair: MemoryPair) => {
-    setEditingPair({ deckId, pair });
+  // Iniciar edição de par (garante que deck padrão esteja em memoryDecks para salvar)
+  const startEditPair = (deck: MemoryDeck, pair: MemoryPair) => {
+    ensureDeckInMemory(deck);
+    setEditingPair({ deckId: deck.id, pair });
     setPairForm({ word: pair.word, imageUrl: pair.imageUrl });
   };
 
-  // Salvar edição de par
+  // Salvar edição de par (guardamos a URL exatamente como o usuário digitou)
   const savePairEdit = () => {
     if (!editingPair) return;
     updateMemoryPair(editingPair.deckId, editingPair.pair.pairId, {
       word: pairForm.word,
-      imageUrl: pairForm.imageUrl,
+      imageUrl: pairForm.imageUrl.trim(),
     });
     setEditingPair(null);
   };
@@ -167,7 +222,7 @@ export function MemoryGame() {
     const newPair: MemoryPair = {
       pairId: `pair-${Date.now()}`,
       word: pairForm.word,
-      imageUrl: pairForm.imageUrl,
+      imageUrl: pairForm.imageUrl.trim(),
     };
     addMemoryPair(deckId, newPair);
     setPairForm({ word: '', imageUrl: '' });
@@ -440,8 +495,11 @@ export function MemoryGame() {
                           value={pairForm.imageUrl}
                           onChange={(e) => setPairForm({ ...pairForm, imageUrl: e.target.value })}
                           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                          placeholder="https://..."
+                          placeholder="https://images.unsplash.com/... ou link da página Unsplash"
                         />
+                        <p className="text-xs text-slate-500 mt-1">
+                          Pode colar o link da página do Unsplash; convertemos automaticamente. Ou: na foto, botão direito → Copiar endereço da imagem.
+                        </p>
                       </div>
                     </div>
                     <div className="flex gap-2">
@@ -467,7 +525,7 @@ export function MemoryGame() {
                   {editingDeck.pairs.map((pair) => (
                     <div key={pair.pairId} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
                       <img
-                        src={pair.imageUrl}
+                        src={normalizeImageUrl(pair.imageUrl)}
                         alt={pair.word}
                         className="w-12 h-12 rounded-lg object-cover"
                         onError={(e) => {
@@ -476,7 +534,7 @@ export function MemoryGame() {
                       />
                       <span className="flex-1 font-medium text-slate-700">{pair.word}</span>
                       <button
-                        onClick={() => startEditPair(editingDeck.id, pair)}
+                        onClick={() => startEditPair(editingDeck, pair)}
                         className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         <Pencil className="w-4 h-4" />
@@ -522,12 +580,16 @@ export function MemoryGame() {
                     value={pairForm.imageUrl}
                     onChange={(e) => setPairForm({ ...pairForm, imageUrl: e.target.value })}
                     className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
+                    placeholder="https://images.unsplash.com/... ou link da página Unsplash"
                   />
+                  <p className="text-xs text-slate-500 mt-1">
+                    Pode colar o link da página do Unsplash; convertemos automaticamente. Ou: na foto, botão direito → Copiar endereço da imagem.
+                  </p>
                 </div>
                 {pairForm.imageUrl && (
                   <div className="flex justify-center">
                     <img
-                      src={pairForm.imageUrl}
+                      src={normalizeImageUrl(pairForm.imageUrl)}
                       alt="Preview"
                       className="w-24 h-24 rounded-xl object-cover border"
                       onError={(e) => {

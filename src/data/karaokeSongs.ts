@@ -22,7 +22,7 @@ export const defaultKaraokeSongs: Song[] = [
     artist: 'Educational',
     difficulty: 'easy',
     coverUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=200&h=200&fit=crop',
-    audioUrl: '', // Usuário deve fornecer
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', // Áudio de teste (instrumental, royalty-free)
     lyrics: [
       { id: 'eb1-1', startTime: 0, endTime: 4, textEN: 'Hello, how are you today?', textPT: 'Olá, como você está hoje?' },
       { id: 'eb1-2', startTime: 4, endTime: 8, textEN: 'I am fine, thank you very much', textPT: 'Estou bem, muito obrigado' },

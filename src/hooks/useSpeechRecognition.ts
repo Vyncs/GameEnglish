@@ -64,6 +64,8 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   const [isSupported, setIsSupported] = useState(false);
   
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  /** Acumula os segmentos finais entre eventos; interim é só do evento atual */
+  const accumulatedRef = useRef({ final: '', interim: '' });
 
   // Verificar suporte do navegador
   useEffect(() => {
@@ -72,24 +74,32 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
     
     if (SpeechRecognitionAPI) {
       const recognition = new SpeechRecognitionAPI();
-      recognition.continuous = false;
+      recognition.continuous = true;  // não para sozinho no silêncio; só para quando o usuário clicar em "finalizar"
       recognition.interimResults = true;
       recognition.lang = 'en-US';
       
       recognition.onresult = (event: SpeechRecognitionEvent) => {
-        let finalTranscript = '';
-        let interimTranscript = '';
+        let finalChunk = '';
+        let interimChunk = '';
         
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const result = event.results[i];
+          const text = result[0]?.transcript ?? '';
           if (result.isFinal) {
-            finalTranscript += result[0].transcript;
+            finalChunk += text;
           } else {
-            interimTranscript += result[0].transcript;
+            interimChunk += text;
           }
         }
         
-        setTranscript(finalTranscript || interimTranscript);
+        if (finalChunk) {
+          const sep = accumulatedRef.current.final ? ' ' : '';
+          accumulatedRef.current.final += sep + finalChunk;
+        }
+        accumulatedRef.current.interim = interimChunk;
+        
+        const full = accumulatedRef.current.final + (accumulatedRef.current.interim ? ' ' + accumulatedRef.current.interim : '');
+        setTranscript(full.trim());
       };
       
       recognition.onerror = (event: Event) => {
@@ -103,6 +113,7 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
       };
       
       recognition.onstart = () => {
+        accumulatedRef.current = { final: '', interim: '' };
         setIsListening(true);
         setError(null);
       };
@@ -290,26 +301,31 @@ export function wordSimilarity(word1: string, word2: string): number {
   return 1 - distance / maxLen;
 }
 
+export type WordCompareResult = {
+  word: string;
+  status: 'correct' | 'approximate' | 'missing';
+  /** O que foi ouvido (reconhecido) para esta palavra — útil para correção */
+  spokenWord?: string;
+};
+
 /**
- * Compara texto falado com texto esperado
- * Retorna array de resultados por palavra
+ * Compara texto falado com texto esperado (alinhamento tipo Levenshtein por palavra).
+ * Retorna resultado por palavra com opcional "o que você disse" para correção.
  */
 export function compareTexts(
   expected: string,
   spoken: string
-): { words: Array<{ word: string; status: 'correct' | 'approximate' | 'missing' }>; accuracy: number } {
-  // Normaliza ambos os textos
+): { words: WordCompareResult[]; accuracy: number } {
   const normalizedExpected = normalizeText(normalizeContractions(expected));
   const normalizedSpoken = normalizeText(normalizeContractions(spoken));
   
   const expectedWords = normalizedExpected.split(' ').filter(w => w.length > 0);
   const spokenWords = normalizedSpoken.split(' ').filter(w => w.length > 0);
   
-  const results: Array<{ word: string; status: 'correct' | 'approximate' | 'missing' }> = [];
+  const results: WordCompareResult[] = [];
   let correctCount = 0;
   
   for (const expectedWord of expectedWords) {
-    // Procura correspondência exata ou aproximada
     let bestMatch = { index: -1, similarity: 0 };
     
     for (let i = 0; i < spokenWords.length; i++) {
@@ -319,24 +335,18 @@ export function compareTexts(
       }
     }
     
+    const heard = bestMatch.index >= 0 ? spokenWords[bestMatch.index] : undefined;
+    
     if (bestMatch.similarity >= 0.9) {
-      // Match exato ou muito próximo
-      results.push({ word: expectedWord, status: 'correct' });
+      results.push({ word: expectedWord, status: 'correct', spokenWord: heard });
       correctCount += 1;
-      // Remove palavra usada
-      if (bestMatch.index >= 0) {
-        spokenWords.splice(bestMatch.index, 1);
-      }
+      if (bestMatch.index >= 0) spokenWords.splice(bestMatch.index, 1);
     } else if (bestMatch.similarity >= 0.6) {
-      // Match aproximado
-      results.push({ word: expectedWord, status: 'approximate' });
+      results.push({ word: expectedWord, status: 'approximate', spokenWord: heard });
       correctCount += 0.5;
-      if (bestMatch.index >= 0) {
-        spokenWords.splice(bestMatch.index, 1);
-      }
+      if (bestMatch.index >= 0) spokenWords.splice(bestMatch.index, 1);
     } else {
-      // Palavra não encontrada
-      results.push({ word: expectedWord, status: 'missing' });
+      results.push({ word: expectedWord, status: 'missing', spokenWord: heard });
     }
   }
   

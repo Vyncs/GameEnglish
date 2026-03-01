@@ -46,7 +46,7 @@ export function KaraokeMode() {
   const [filterDifficulty, setFilterDifficulty] = useState<SongDifficulty | 'all'>('all');
   const [isPlaying, setIsPlaying] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [currentResult, setCurrentResult] = useState<{ words: WordResult[]; accuracy: number } | null>(null);
+  const [currentResult, setCurrentResult] = useState<{ words: WordResult[]; accuracy: number; spokenText: string } | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   // Filtrar músicas
@@ -75,20 +75,21 @@ export function KaraokeMode() {
     }, duration);
   };
 
-  // Processar resposta do usuário
+  // Processar resposta do usuário (guardar transcript no resultado para não perder ao parar o reconhecimento)
   const handleSubmit = () => {
     if (!currentLine) return;
     
+    const spoken = transcript.trim();
     stopListening();
     
-    const result = compareTexts(currentLine.textEN, transcript);
-    setCurrentResult(result);
+    const result = compareTexts(currentLine.textEN, spoken);
+    setCurrentResult({ ...result, spokenText: spoken });
     setShowResult(true);
     
     const lineResult: LineResult = {
       lineId: currentLine.id,
       expectedText: currentLine.textEN,
-      spokenText: transcript,
+      spokenText: spoken,
       words: result.words,
       accuracy: result.accuracy,
     };
@@ -244,43 +245,61 @@ export function KaraokeMode() {
             {currentLine.textPT}
           </p>
 
-          {/* Resultado da fala */}
+          {/* Resultado da fala: frase esperada, o que você disse e correção por palavra */}
           {showResult && currentResult && (
-            <div className="mb-8 p-4 bg-white/10 backdrop-blur rounded-2xl animate-fade-in">
-              <div className="flex items-center justify-center gap-2 mb-3">
+            <div className="mb-8 p-5 bg-white/10 backdrop-blur rounded-2xl animate-fade-in text-left">
+              <div className="flex items-center justify-center gap-2 mb-4">
                 {currentResult.accuracy >= 80 ? (
-                  <CheckCircle className="w-6 h-6 text-emerald-400" />
+                  <CheckCircle className="w-6 h-6 text-emerald-400 shrink-0" />
                 ) : currentResult.accuracy >= 50 ? (
-                  <AlertCircle className="w-6 h-6 text-amber-400" />
+                  <AlertCircle className="w-6 h-6 text-amber-400 shrink-0" />
                 ) : (
-                  <XCircle className="w-6 h-6 text-red-400" />
+                  <XCircle className="w-6 h-6 text-red-400 shrink-0" />
                 )}
                 <span className="text-2xl font-bold text-white">{currentResult.accuracy}%</span>
               </div>
-              
-              {/* Palavras */}
-              <div className="flex flex-wrap justify-center gap-2">
-                {currentResult.words.map((word, i) => (
-                  <span
-                    key={i}
-                    className={`px-3 py-1 rounded-lg text-sm font-medium ${
-                      word.status === 'correct'
-                        ? 'bg-emerald-500/30 text-emerald-300'
-                        : word.status === 'approximate'
-                        ? 'bg-amber-500/30 text-amber-300'
-                        : 'bg-red-500/30 text-red-300'
-                    }`}
-                  >
-                    {word.word}
-                  </span>
-                ))}
+
+              {/* Frase esperada (correta) */}
+              <div className="mb-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/50 mb-1">Frase correta</p>
+                <p className="text-lg font-medium text-white">{currentLine?.textEN}</p>
               </div>
 
-              {transcript && (
-                <p className="mt-3 text-white/60 text-sm">
-                  You said: "{transcript}"
+              {/* O que você disse (usa o texto guardado no resultado para não sumir após parar o mic) */}
+              <div className="mb-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/50 mb-1">Você disse</p>
+                <p className="text-lg text-white/80 italic">
+                  {currentResult.spokenText ? `"${currentResult.spokenText}"` : '(nada reconhecido)'}
                 </p>
-              )}
+              </div>
+
+              {/* Correção palavra a palavra */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-white/50 mb-2">Correção por palavra</p>
+                <div className="flex flex-wrap gap-2">
+                  {currentResult.words.map((w, i) => (
+                    <div key={i} className="flex flex-col items-start">
+                      <span
+                        className={`inline-block px-3 py-1.5 rounded-lg text-sm font-medium ${
+                          w.status === 'correct'
+                            ? 'bg-emerald-500/30 text-emerald-300'
+                            : w.status === 'approximate'
+                            ? 'bg-amber-500/30 text-amber-300'
+                            : 'bg-red-500/30 text-red-300'
+                        }`}
+                      >
+                        {w.word}
+                      </span>
+                      {(w.status === 'approximate' || w.status === 'missing') && w.spokenWord && (
+                        <span className="mt-0.5 text-xs text-white/60">→ ouviu: "{w.spokenWord}"</span>
+                      )}
+                      {w.status === 'missing' && !w.spokenWord && (
+                        <span className="mt-0.5 text-xs text-white/50">→ não ouvido</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
 

@@ -1,48 +1,76 @@
-import { useStore } from './store/useStore';
-import { Sidebar } from './components/Sidebar';
-import { Home } from './components/Home';
-import { CardList } from './components/CardList';
-import { ReviewSession } from './components/ReviewSession';
-import { PlayMode } from './components/PlayMode';
-import { BricksChallenge } from './components/BricksChallenge';
-import { MemoryGame } from './components/MemoryGame';
-import { KaraokeMode } from './components/KaraokeMode';
-import { GradedReaders } from './components/GradedReaders';
+import { useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuthStore } from './store/useAuthStore';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AppLayout } from './AppLayout';
+import { Login } from './pages/Login';
+import { Cadastro } from './pages/Cadastro';
+import { setToken } from './api/client';
 
-function App() {
-  const { viewMode, sidebarOpen } = useStore();
+function AuthInit() {
+  const initAuth = useAuthStore((s) => s.initAuth);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+      setToken(token);
+      window.history.replaceState({}, '', window.location.pathname || '/');
+    }
+    initAuth();
+    // Retorno do Mercado Pago: refresh do usuário após 2s para pegar subscriptionStatus atualizado (notificação pode atrasar)
+    const fromPayment = params.get('success') === 'true' || params.get('pending') === 'true';
+    if (fromPayment) {
+      const t = setTimeout(() => initAuth(), 2000);
+      return () => clearTimeout(t);
+    }
+  }, [initAuth]);
+  return null;
+}
+
+export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-blue-50/50">
-      {/* Elementos decorativos de fundo */}
+    <>
+      <AuthInit />
+      <Routes>
+        <Route path="/login" element={<LoginOrRedirect />} />
+        <Route path="/cadastro" element={<CadastroOrRedirect />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
+  );
+}
+
+function AuthLoadingScreen() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-blue-50/50 flex items-center justify-center">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-200/30 rounded-full blur-3xl" />
         <div className="absolute top-1/2 -left-40 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 right-1/4 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl" />
       </div>
-
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Conteúdo principal */}
-      <main
-        className={`min-h-screen transition-all duration-300 ${
-          sidebarOpen ? 'ml-80' : 'ml-0'
-        }`}
-      >
-        <div className={viewMode === 'play' || viewMode === 'karaoke' || viewMode === 'readers' ? '' : 'pt-16 lg:pt-4'}>
-          {viewMode === 'home' && <Home />}
-          {viewMode === 'cards' && <CardList />}
-          {viewMode === 'review' && <ReviewSession />}
-          {viewMode === 'play' && <PlayMode />}
-          {(viewMode === 'bricks' || viewMode === 'bricks-challenge') && <BricksChallenge />}
-          {viewMode === 'memory' && <MemoryGame />}
-          {viewMode === 'karaoke' && <KaraokeMode />}
-          {viewMode === 'readers' && <GradedReaders />}
-        </div>
-      </main>
+      <div className="w-12 h-12 border-4 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin relative z-10" />
     </div>
   );
 }
 
-export default App;
+function LoginOrRedirect() {
+  const { user, authLoading } = useAuthStore();
+  if (authLoading) return <AuthLoadingScreen />;
+  if (user) return <Navigate to="/" replace />;
+  return <Login />;
+}
+
+function CadastroOrRedirect() {
+  const { user, authLoading } = useAuthStore();
+  if (authLoading) return <AuthLoadingScreen />;
+  if (user) return <Navigate to="/" replace />;
+  return <Cadastro />;
+}

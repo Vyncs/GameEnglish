@@ -82,7 +82,7 @@ export const BRICK_TYPES: { type: BrickType; label: string }[] = [
   { type: 'have_you', label: 'Have you' },
 ];
 
-export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory' | 'karaoke' | 'readers';
+export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory' | 'karaoke' | 'readers' | 'account';
 
 // Modo de jogo (direção das perguntas)
 export type PlayModeDirection = 'pt-en' | 'en-pt' | 'mixed';
@@ -187,6 +187,8 @@ export interface Song {
 export interface WordResult {
   word: string;
   status: 'correct' | 'approximate' | 'missing';
+  /** O que o reconhecimento de voz ouviu para esta palavra (para correção) */
+  spokenWord?: string;
 }
 
 // Resultado de um trecho

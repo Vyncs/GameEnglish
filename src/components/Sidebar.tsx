@@ -15,10 +15,15 @@ import {
   Gamepad2,
   Puzzle,
   Mic,
-  Library
+  Library,
+  User,
+  Lock
 } from 'lucide-react';
+import { useAuthStore } from '../store/useAuthStore';
 
 export function Sidebar() {
+  const { user } = useAuthStore();
+  const isSubscribed = user?.subscriptionStatus === 'active';
   const { 
     groups, 
     selectedGroupId, 
@@ -147,56 +152,85 @@ export function Sidebar() {
               </button>
             )}
 
-            {/* Bricks Challenge */}
+            {/* Bricks Challenge — exige assinatura; sem assinatura abre a aba com overlay desfocado */}
             <button
               onClick={() => setViewMode('bricks')}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                viewMode === 'bricks' || viewMode === 'bricks-challenge'
-                  ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30'
-                  : 'hover:bg-white/5 text-slate-300'
+                !isSubscribed
+                  ? 'opacity-75 text-slate-400 hover:bg-white/5 cursor-pointer'
+                  : viewMode === 'bricks' || viewMode === 'bricks-challenge'
+                    ? 'bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30'
+                    : 'hover:bg-white/5 text-slate-300'
               }`}
+              title={!isSubscribed ? 'Assine para desbloquear' : undefined}
             >
+              {!isSubscribed && <Lock className="w-4 h-4 flex-shrink-0 text-slate-500" />}
               <Blocks className="w-5 h-5" />
               <span className="font-medium">Bricks Challenge</span>
             </button>
 
-            {/* Pairs Challenge (Memory Game) */}
+            {/* Pairs Challenge (Memory Game) — exige assinatura */}
             <button
-              onClick={startMemoryGame}
+              onClick={() => startMemoryGame()}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                viewMode === 'memory'
-                  ? 'bg-gradient-to-r from-pink-500/20 to-rose-500/20 text-pink-400 border border-pink-500/30'
-                  : 'hover:bg-white/5 text-slate-300'
+                !isSubscribed
+                  ? 'opacity-75 text-slate-400 hover:bg-white/5 cursor-pointer'
+                  : viewMode === 'memory'
+                    ? 'bg-gradient-to-r from-pink-500/20 to-rose-500/20 text-pink-400 border border-pink-500/30'
+                    : 'hover:bg-white/5 text-slate-300'
               }`}
+              title={!isSubscribed ? 'Assine para desbloquear' : undefined}
             >
+              {!isSubscribed && <Lock className="w-4 h-4 flex-shrink-0 text-slate-500" />}
               <Puzzle className="w-5 h-5" />
               <span className="font-medium">Pairs Challenge</span>
             </button>
 
-            {/* Karaoke Mode */}
+            {/* Karaoke Mode — exige assinatura */}
             <button
-              onClick={startKaraoke}
+              onClick={() => startKaraoke()}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                viewMode === 'karaoke'
-                  ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-400 border border-violet-500/30'
-                  : 'hover:bg-white/5 text-slate-300'
+                !isSubscribed
+                  ? 'opacity-75 text-slate-400 hover:bg-white/5 cursor-pointer'
+                  : viewMode === 'karaoke'
+                    ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-400 border border-violet-500/30'
+                    : 'hover:bg-white/5 text-slate-300'
               }`}
+              title={!isSubscribed ? 'Assine para desbloquear' : undefined}
             >
+              {!isSubscribed && <Lock className="w-4 h-4 flex-shrink-0 text-slate-500" />}
               <Mic className="w-5 h-5" />
               <span className="font-medium">Karaoke Mode</span>
             </button>
 
-            {/* Graded Readers */}
+            {/* Graded Readers — exige assinatura */}
             <button
-              onClick={startReaders}
+              onClick={() => startReaders()}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                viewMode === 'readers'
-                  ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 border border-indigo-500/30'
+                !isSubscribed
+                  ? 'opacity-75 text-slate-400 hover:bg-white/5 cursor-pointer'
+                  : viewMode === 'readers'
+                    ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-indigo-400 border border-indigo-500/30'
+                    : 'hover:bg-white/5 text-slate-300'
+              }`}
+              title={!isSubscribed ? 'Assine para desbloquear' : undefined}
+            >
+              {!isSubscribed && <Lock className="w-4 h-4 flex-shrink-0 text-slate-500" />}
+              <Library className="w-5 h-5" />
+              <span className="font-medium">Graded Readers</span>
+            </button>
+
+            {/* Conta */}
+            <button
+              onClick={() => setViewMode('account')}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                viewMode === 'account'
+                  ? 'bg-gradient-to-r from-teal-500/20 to-cyan-500/20 text-teal-400 border border-teal-500/30'
                   : 'hover:bg-white/5 text-slate-300'
               }`}
             >
-              <Library className="w-5 h-5" />
-              <span className="font-medium">Graded Readers</span>
+              <User className="w-5 h-5" />
+              <span className="font-medium">Conta</span>
             </button>
           </nav>
 
@@ -355,7 +389,7 @@ export function Sidebar() {
           <div className="mt-4 pt-4 border-t border-slate-700">
             <p className="text-xs text-slate-500 text-center">
               {groups.length} grupo{groups.length !== 1 ? 's' : ''} · 
-              Dados salvos localmente
+              Faça login na Conta para sincronizar
             </p>
           </div>
         </div>
