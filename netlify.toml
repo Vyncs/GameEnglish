@@ -5,6 +5,9 @@
   publish = "dist"
   functions = "netlify/functions"
 
+# Em produção defina no Netlify: VITE_API_URL = https://englishgame-y5vg.onrender.com
+# (Site settings → Environment variables)
+
 # Configuração para SPA (Single Page Application)
 # Redireciona todas as rotas para index.html
 [[redirects]]

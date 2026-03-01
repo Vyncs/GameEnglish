@@ -298,6 +298,7 @@ export const useStore = create<AppState>()(
             });
             const newCard: FlashCard = {
               ...c,
+              direction: c.direction as TranslationDirection,
               lastReviewed: c.lastReviewed ?? null,
               nextReview: c.nextReview,
             };
