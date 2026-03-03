@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useStore } from '../store/useStore';
+import { api } from '../api/client';
 import type { ExportData } from '../types';
 import { 
   Download, 
@@ -17,7 +18,7 @@ interface ImportExportProps {
 }
 
 export function ImportExport({ onClose }: ImportExportProps) {
-  const { exportProgress, importProgress, validateImportData, groups, cards } = useStore();
+  const { exportProgress, importProgress, validateImportData, hydrateFromSync, groups, cards } = useStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
@@ -69,19 +70,72 @@ export function ImportExport({ onClose }: ImportExportProps) {
     }
   };
 
-  // Importar dados
-  const handleImport = () => {
+  // Importar dados (se logado, sincroniza com o backend)
+  const handleImport = async () => {
     if (!fileData) return;
-    
+
+    const mergeMode = importMode === 'merge';
+    const isLoggedIn = !!api.getToken();
+
+    if (isLoggedIn) {
+      setIsProcessing(true);
+      try {
+        let payload: { mode: 'replace' | 'merge'; groups: { name: string }[]; cards: { groupIndex: number; portuguesePhrase: string; englishPhrase: string; direction?: string; imageUrl?: string; tips?: string }[] };
+        if (mergeMode) {
+          const existingGroupIds = new Set(groups.map((g) => g.id));
+          const existingCardIds = new Set(cards.map((c) => c.id));
+          const newGroups = fileData.groups.filter((g) => !existingGroupIds.has(g.id));
+          const newCards = fileData.cards.filter((c) => !existingCardIds.has(c.id) && newGroups.some((g) => g.id === c.groupId));
+          payload = {
+            mode: 'merge',
+            groups: newGroups.map((g) => ({ name: g.name })),
+            cards: newCards.map((c) => ({
+              groupIndex: newGroups.findIndex((g) => g.id === c.groupId),
+              portuguesePhrase: c.portuguesePhrase,
+              englishPhrase: c.englishPhrase,
+              direction: c.direction || 'pt-en',
+              imageUrl: c.imageUrl,
+              tips: c.tips,
+            })),
+          };
+        } else {
+          payload = {
+            mode: 'replace',
+            groups: fileData.groups.map((g) => ({ name: g.name })),
+            cards: fileData.cards.map((c) => ({
+              groupIndex: fileData.groups.findIndex((g) => g.id === c.groupId),
+              portuguesePhrase: c.portuguesePhrase,
+              englishPhrase: c.englishPhrase,
+              direction: c.direction || 'pt-en',
+              imageUrl: c.imageUrl,
+              tips: c.tips,
+            })),
+          };
+        }
+        await api.importSync(payload);
+        const sync = await api.getSync();
+        hydrateFromSync(sync);
+        setImportResult({
+          success: true,
+          message: mergeMode
+            ? 'Importação concluída! Dados mesclados e sincronizados com sua conta.'
+            : `Importação concluída! ${fileData.groups.length} grupos e ${fileData.cards.length} cards sincronizados com sua conta.`,
+        });
+        setTimeout(() => onClose(), 2000);
+      } catch {
+        setImportResult({ success: false, message: 'Erro ao sincronizar com o servidor. Tente novamente.' });
+      } finally {
+        setIsProcessing(false);
+      }
+      return;
+    }
+
     setIsProcessing(true);
-    const result = importProgress(fileData, importMode === 'merge');
+    const result = importProgress(fileData, mergeMode);
     setImportResult(result);
     setIsProcessing(false);
-    
     if (result.success) {
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+      setTimeout(() => onClose(), 2000);
     }
   };
 

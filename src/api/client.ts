@@ -59,6 +59,15 @@ export const api = {
     return request<SyncData>('GET', '/api/sync');
   },
 
+  /** Importação em massa: envia grupos/cards para o backend e retorna os criados. Depois chame getSync() e hydrate. */
+  async importSync(payload: {
+    mode: 'replace' | 'merge';
+    groups: { name: string }[];
+    cards: { groupIndex: number; portuguesePhrase: string; englishPhrase: string; direction?: string; imageUrl?: string; tips?: string }[];
+  }) {
+    return request<{ groups: SyncData['groups']; cards: SyncData['cards'] }>('POST', '/api/sync/import', payload);
+  },
+
   async postGroup(name: string) {
     return request<{ id: string; name: string; createdAt: number }>('POST', '/api/groups', { name });
   },
