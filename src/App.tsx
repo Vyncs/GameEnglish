@@ -7,7 +7,11 @@ import { AppLayout } from './AppLayout';
 import { Login } from './pages/Login';
 import { Cadastro } from './pages/Cadastro';
 import { LandingPage } from './pages/LandingPage';
-import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminLayout } from './pages/admin/AdminLayout';
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { AdminUsersPage } from './pages/admin/AdminUsersPage';
+import { AdminFinancialPage } from './pages/admin/AdminFinancialPage';
+import { AdminTrafficPage } from './pages/admin/AdminTrafficPage';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { TermosDeUso } from './pages/TermosDeUso';
 import { PoliticaPrivacidade } from './pages/PoliticaPrivacidade';
@@ -56,10 +60,15 @@ export default function App() {
           path="/admin"
           element={
             <AdminRoute>
-              <AdminDashboard />
+              <AdminLayout />
             </AdminRoute>
           }
-        />
+        >
+          <Route index element={<AdminDashboardPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
+          <Route path="financial" element={<AdminFinancialPage />} />
+          <Route path="traffic" element={<AdminTrafficPage />} />
+        </Route>
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/termos" element={<TermosDeUso />} />
         <Route path="/privacidade" element={<PoliticaPrivacidade />} />

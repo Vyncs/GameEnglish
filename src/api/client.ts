@@ -157,6 +157,24 @@ export const api = {
   async getAdminCharts() {
     return request<AdminChartData[]>('GET', '/api/admin/charts');
   },
+
+  async getAdminUsers(params: { search?: string; status?: string; page?: number; limit?: number } = {}) {
+    const qs = new URLSearchParams();
+    if (params.search) qs.set('search', params.search);
+    if (params.status) qs.set('status', params.status);
+    if (params.page) qs.set('page', String(params.page));
+    if (params.limit) qs.set('limit', String(params.limit));
+    return request<AdminUsersResponse>('GET', `/api/admin/users?${qs.toString()}`);
+  },
+  async patchAdminUser(id: string, data: Partial<AdminUserUpdate>) {
+    return request<AdminUser>('PATCH', `/api/admin/users/${id}`, data);
+  },
+  async deleteAdminUser(id: string) {
+    return request<void>('DELETE', `/api/admin/users/${id}`);
+  },
+  async getAdminFinancial() {
+    return request<AdminFinancial>('GET', '/api/admin/financial');
+  },
 };
 
 export interface AdminMetrics {
@@ -195,4 +213,46 @@ export interface AdminChartData {
   totalUsers: number;
   newUsers: number;
   paidUsers: number;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string | null;
+  role: string;
+  subscriptionStatus: string | null;
+  subscriptionEndsAt: string | null;
+  emailVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  cardsCount: number;
+  groupsCount: number;
+}
+
+export interface AdminUsersResponse {
+  users: AdminUser[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface AdminUserUpdate {
+  name: string;
+  role: string;
+  subscriptionStatus: string;
+  emailVerified: boolean;
+}
+
+export interface AdminFinancial {
+  mrr: number;
+  arr: number;
+  activeSubscriptions: number;
+  canceledThisMonth: number;
+  newPaidThisMonth: number;
+  churnRate: number;
+  conversionRate: number;
+  revenueThisMonth: number;
+  revenueGrowth: number;
+  monthlyPrice: number;
+  revenueOverTime: { label: string; revenue: number; subscribers: number }[];
 }
