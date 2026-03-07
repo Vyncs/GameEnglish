@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Crown, Check, Loader2, ArrowRight, Lock, LayoutGrid, Mic, BookOpen, BarChart3, Shield } from 'lucide-react';
+import { X, Crown, Check, Loader2, ArrowRight, Lock, LayoutGrid, Mic, BookOpen, BarChart3, Shield, Construction } from 'lucide-react';
 import { api } from '../api/client';
 
 interface SubscriptionModalProps {
@@ -98,9 +98,13 @@ export function SubscriptionModal({ open, onClose, onSelectPlan }: SubscriptionM
                 <LayoutGrid className="w-4 h-4 text-cyan-400 shrink-0" />
                 Pairs Challenge
               </li>
-              <li className="flex items-center gap-2 text-slate-300 text-sm">
-                <Mic className="w-4 h-4 text-cyan-400 shrink-0" />
+              <li className="flex items-center gap-2 text-slate-500 text-sm">
+                <Mic className="w-4 h-4 text-slate-500 shrink-0" />
                 Karaoke Mode
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-amber-500/10 text-amber-400 text-[10px] font-bold uppercase rounded-full">
+                  <Construction className="w-2.5 h-2.5" />
+                  Em breve
+                </span>
               </li>
               <li className="flex items-center gap-2 text-slate-300 text-sm">
                 <BookOpen className="w-4 h-4 text-cyan-400 shrink-0" />

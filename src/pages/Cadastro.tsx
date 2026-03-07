@@ -1,14 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
-import { useStore } from '../store/useStore';
-import { api, setToken, getAuthSocialUrl } from '../api/client';
+import { api, getAuthSocialUrl } from '../api/client';
 import { Loader2 } from 'lucide-react';
 
 export function Cadastro() {
   const navigate = useNavigate();
-  const { setUser } = useAuthStore();
-  const { hydrateFromSync } = useStore();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,18 +16,19 @@ export function Cadastro() {
     setError('');
     setSubmitting(true);
     try {
-      const { user, token } = await api.register(
+      const { email: verifiedEmail } = await api.register(
         email.trim(),
         password,
         name.trim() || undefined
       );
-      setToken(token);
-      setUser(user);
-      const sync = await api.getSync();
-      hydrateFromSync(sync);
-      navigate('/', { replace: true });
+      navigate(`/verify-email?email=${encodeURIComponent(verifiedEmail)}`, { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao criar conta');
+      const msg = err instanceof Error ? err.message : 'Erro ao criar conta';
+      if (msg.includes('Conta criada') || msg.includes('não foi possível enviar')) {
+        navigate(`/verify-email?email=${encodeURIComponent(email.trim())}`, { replace: true });
+      } else {
+        setError(msg);
+      }
     } finally {
       setSubmitting(false);
     }
@@ -48,7 +45,7 @@ export function Cadastro() {
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-            🎓 English Cards
+            🎓 Play Flash Cards
           </h1>
           <p className="text-slate-500 mt-2">Crie sua conta</p>
         </div>

@@ -110,17 +110,27 @@ export const api = {
   },
 
   async login(email: string, password: string) {
-    return request<{ user: { id: string; email: string; name: string | null; subscriptionStatus: string | null }; token: string }>(
+    return request<{ user: { id: string; email: string; name: string | null; role: string; subscriptionStatus: string | null }; token: string }>(
       'POST', '/api/auth/login', { email, password }
     );
   },
   async register(email: string, password: string, name?: string) {
-    return request<{ user: { id: string; email: string; name: string | null; subscriptionStatus: string | null }; token: string }>(
+    return request<{ message: string; email: string }>(
       'POST', '/api/auth/register', { email, password, name }
     );
   },
+  async verifyEmail(email: string, code: string) {
+    return request<{ user: { id: string; email: string; name: string | null; role: string; subscriptionStatus: string | null }; token: string }>(
+      'POST', '/api/auth/verify-email', { email, code }
+    );
+  },
+  async resendVerification(email: string) {
+    return request<{ message: string }>(
+      'POST', '/api/auth/resend-verification', { email }
+    );
+  },
   async getMe() {
-    return request<{ user: { id: string; email: string; name: string | null; subscriptionStatus: string | null; subscriptionEndsAt?: string | null } }>(
+    return request<{ user: { id: string; email: string; name: string | null; role: string; subscriptionStatus: string | null; subscriptionEndsAt?: string | null } }>(
       'GET', '/api/auth/me'
     );
   },
@@ -140,4 +150,49 @@ export const api = {
   async simulateClearSubscription() {
     return request<{ ok: boolean; message?: string }>('POST', '/api/payments/mercadopago/simulate-clear-subscription');
   },
+
+  async getAdminMetrics() {
+    return request<AdminMetrics>('GET', '/api/admin/metrics');
+  },
+  async getAdminCharts() {
+    return request<AdminChartData[]>('GET', '/api/admin/charts');
+  },
 };
+
+export interface AdminMetrics {
+  overview: {
+    totalUsers: number;
+    newUsersThisMonth: number;
+    paidUsers: number;
+    freeUsers: number;
+    conversionRate: number;
+    growthRate: number;
+  };
+  churn: {
+    canceledThisMonth: number;
+    churnRate: number;
+    activeSubscriptions: number;
+  };
+  content: {
+    totalCards: number;
+    newCardsThisMonth: number;
+    totalGroups: number;
+    usersWithCards: number;
+    avgCardsPerUser: number;
+  };
+  recentUsers: {
+    id: string;
+    email: string;
+    name: string | null;
+    role: string;
+    subscriptionStatus: string | null;
+    createdAt: string;
+  }[];
+}
+
+export interface AdminChartData {
+  label: string;
+  totalUsers: number;
+  newUsers: number;
+  paidUsers: number;
+}

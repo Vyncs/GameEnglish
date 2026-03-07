@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { 
   FolderPlus, 
@@ -17,13 +18,17 @@ import {
   Mic,
   Library,
   User,
-  Lock
+  Lock,
+  LayoutDashboard,
+  Construction
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 
 export function Sidebar() {
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const isSubscribed = user?.subscriptionStatus === 'active';
+  const isAdmin = user?.role === 'ADMIN';
   const { 
     groups, 
     selectedGroupId, 
@@ -109,9 +114,9 @@ export function Sidebar() {
           {/* Logo / Título */}
           <div className="mb-8">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-              🎓 English Cards
+              🎓 Play Flash Cards
             </h1>
-            <p className="text-slate-400 text-sm mt-1">Seu estudo diário de inglês</p>
+            <p className="text-slate-400 text-sm mt-1">Seu aplicativo de estudo e revisão espaçada</p>
           </div>
 
           {/* Menu de Navegação */}
@@ -186,22 +191,18 @@ export function Sidebar() {
               <span className="font-medium">Pairs Challenge</span>
             </button>
 
-            {/* Karaoke Mode — exige assinatura */}
-            <button
-              onClick={() => startKaraoke()}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                !isSubscribed
-                  ? 'opacity-75 text-slate-400 hover:bg-white/5 cursor-pointer'
-                  : viewMode === 'karaoke'
-                    ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-400 border border-violet-500/30'
-                    : 'hover:bg-white/5 text-slate-300'
-              }`}
-              title={!isSubscribed ? 'Assine para desbloquear' : undefined}
+            {/* Karaoke Mode — em desenvolvimento */}
+            <div
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl opacity-50 text-slate-500 cursor-not-allowed"
+              title="Em desenvolvimento"
             >
-              {!isSubscribed && <Lock className="w-4 h-4 flex-shrink-0 text-slate-500" />}
+              <Construction className="w-4 h-4 flex-shrink-0 text-amber-500" />
               <Mic className="w-5 h-5" />
               <span className="font-medium">Karaoke Mode</span>
-            </button>
+              <span className="ml-auto px-1.5 py-0.5 bg-amber-500/20 text-amber-400 text-[9px] font-bold uppercase rounded-full">
+                Em breve
+              </span>
+            </div>
 
             {/* Graded Readers — exige assinatura */}
             <button
@@ -219,6 +220,17 @@ export function Sidebar() {
               <Library className="w-5 h-5" />
               <span className="font-medium">Graded Readers</span>
             </button>
+
+            {/* Admin Dashboard */}
+            {isAdmin && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/5 text-amber-400"
+              >
+                <LayoutDashboard className="w-5 h-5" />
+                <span className="font-medium">Admin</span>
+              </button>
+            )}
 
             {/* Conta */}
             <button

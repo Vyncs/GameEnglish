@@ -5,6 +5,7 @@ export interface AuthUser {
   id: string;
   email: string;
   name: string | null;
+  role: string;
   subscriptionStatus: string | null;
   subscriptionEndsAt?: string | null;
 }

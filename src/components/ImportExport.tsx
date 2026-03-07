@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useStore } from '../store/useStore';
 import { api } from '../api/client';
-import type { ExportData } from '../types';
+import type { NormalizedImportData } from '../types';
 import { 
   Download, 
   Upload, 
@@ -10,39 +10,73 @@ import {
   CheckCircle,
   X,
   Merge,
-  Replace
+  Replace,
+  FileDown
 } from 'lucide-react';
+
+const EXAMPLE_JSON = {
+  groups: [
+    {
+      name: "Verbos Comuns",
+      cards: [
+        { pt: "correr", en: "to run" },
+        { pt: "comer", en: "to eat", dica: "Irregular: eat / ate / eaten" },
+        { pt: "dormir", en: "to sleep" },
+        { pt: "falar", en: "to speak", dica: "Irregular: speak / spoke / spoken" }
+      ]
+    },
+    {
+      name: "Frases do Dia a Dia",
+      cards: [
+        { pt: "Bom dia!", en: "Good morning!" },
+        { pt: "Como você está?", en: "How are you?" },
+        { pt: "Eu não entendi", en: "I didn't understand", dica: "Também: I didn't get it" },
+        { pt: "Com licença", en: "Excuse me" }
+      ]
+    }
+  ]
+};
 
 interface ImportExportProps {
   onClose: () => void;
 }
 
 export function ImportExport({ onClose }: ImportExportProps) {
-  const { exportProgress, importProgress, validateImportData, hydrateFromSync, groups, cards } = useStore();
+  const { exportProgress, validateImportData, normalizeImportData, hydrateFromSync, groups, cards } = useStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [fileData, setFileData] = useState<ExportData | null>(null);
+  const [normalizedData, setNormalizedData] = useState<NormalizedImportData | null>(null);
   const [validationResult, setValidationResult] = useState<{ valid: boolean; message: string } | null>(null);
   const [importResult, setImportResult] = useState<{ success: boolean; message: string } | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Exportar dados
   const handleExport = () => {
     const data = exportProgress();
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `english-cards-backup-${new Date().toISOString().split('T')[0]}.json`;
+    link.download = `play-flash-cards-backup-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
 
-  // Selecionar arquivo
+  const handleDownloadExample = () => {
+    const blob = new Blob([JSON.stringify(EXAMPLE_JSON, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'exemplo-importacao.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -58,21 +92,21 @@ export function ImportExport({ onClose }: ImportExportProps) {
       
       setValidationResult(validation);
       if (validation.valid) {
-        setFileData(data as ExportData);
+        const normalized = normalizeImportData(data);
+        setNormalizedData(normalized);
       } else {
-        setFileData(null);
+        setNormalizedData(null);
       }
     } catch {
       setValidationResult({ valid: false, message: 'Erro ao ler arquivo: formato JSON inválido' });
-      setFileData(null);
+      setNormalizedData(null);
     } finally {
       setIsProcessing(false);
     }
   };
 
-  // Importar dados (se logado, sincroniza com o backend)
   const handleImport = async () => {
-    if (!fileData) return;
+    if (!normalizedData) return;
 
     const mergeMode = importMode === 'merge';
     const isLoggedIn = !!api.getToken();
@@ -80,38 +114,32 @@ export function ImportExport({ onClose }: ImportExportProps) {
     if (isLoggedIn) {
       setIsProcessing(true);
       try {
-        let payload: { mode: 'replace' | 'merge'; groups: { name: string }[]; cards: { groupIndex: number; portuguesePhrase: string; englishPhrase: string; direction?: string; imageUrl?: string; tips?: string }[] };
-        if (mergeMode) {
-          const existingGroupIds = new Set(groups.map((g) => g.id));
-          const existingCardIds = new Set(cards.map((c) => c.id));
-          const newGroups = fileData.groups.filter((g) => !existingGroupIds.has(g.id));
-          const newCards = fileData.cards.filter((c) => !existingCardIds.has(c.id) && newGroups.some((g) => g.id === c.groupId));
-          payload = {
-            mode: 'merge',
-            groups: newGroups.map((g) => ({ name: g.name })),
-            cards: newCards.map((c) => ({
-              groupIndex: newGroups.findIndex((g) => g.id === c.groupId),
-              portuguesePhrase: c.portuguesePhrase,
-              englishPhrase: c.englishPhrase,
-              direction: c.direction || 'pt-en',
-              imageUrl: c.imageUrl,
-              tips: c.tips,
-            })),
-          };
-        } else {
-          payload = {
-            mode: 'replace',
-            groups: fileData.groups.map((g) => ({ name: g.name })),
-            cards: fileData.cards.map((c) => ({
-              groupIndex: fileData.groups.findIndex((g) => g.id === c.groupId),
-              portuguesePhrase: c.portuguesePhrase,
-              englishPhrase: c.englishPhrase,
-              direction: c.direction || 'pt-en',
-              imageUrl: c.imageUrl,
-              tips: c.tips,
-            })),
-          };
-        }
+        const payload = {
+          mode: importMode as 'replace' | 'merge',
+          groups: mergeMode
+            ? normalizedData.groups
+                .filter((g) => !groups.some((eg) => eg.name.toLowerCase() === g.name.toLowerCase()))
+                .map((g) => ({ name: g.name }))
+            : normalizedData.groups.map((g) => ({ name: g.name })),
+          cards: [] as { groupIndex: number; portuguesePhrase: string; englishPhrase: string; direction?: string; imageUrl?: string; tips?: string }[],
+        };
+
+        const targetGroups = mergeMode
+          ? normalizedData.groups.filter((g) => !groups.some((eg) => eg.name.toLowerCase() === g.name.toLowerCase()))
+          : normalizedData.groups;
+
+        payload.cards = normalizedData.cards
+          .filter((c) => targetGroups.some((g) => g.id === c.groupId))
+          .map((c) => ({
+            groupIndex: payload.groups.findIndex((pg) => pg.name === targetGroups.find((g) => g.id === c.groupId)?.name),
+            portuguesePhrase: c.portuguesePhrase,
+            englishPhrase: c.englishPhrase,
+            direction: c.direction || 'pt-en',
+            imageUrl: c.imageUrl,
+            tips: c.tips,
+          }))
+          .filter((c) => c.groupIndex >= 0);
+
         await api.importSync(payload);
         const sync = await api.getSync();
         hydrateFromSync(sync);
@@ -119,7 +147,7 @@ export function ImportExport({ onClose }: ImportExportProps) {
           success: true,
           message: mergeMode
             ? 'Importação concluída! Dados mesclados e sincronizados com sua conta.'
-            : `Importação concluída! ${fileData.groups.length} grupos e ${fileData.cards.length} cards sincronizados com sua conta.`,
+            : `Importação concluída! ${normalizedData.groups.length} grupo(s) e ${normalizedData.cards.length} card(s) sincronizados.`,
         });
         setTimeout(() => onClose(), 2000);
       } catch {
@@ -131,7 +159,8 @@ export function ImportExport({ onClose }: ImportExportProps) {
     }
 
     setIsProcessing(true);
-    const result = importProgress(fileData, mergeMode);
+    const { importProgress } = useStore.getState();
+    const result = importProgress(normalizedData, mergeMode);
     setImportResult(result);
     setIsProcessing(false);
     if (result.success) {
@@ -139,10 +168,9 @@ export function ImportExport({ onClose }: ImportExportProps) {
     }
   };
 
-  // Resetar seleção
   const handleReset = () => {
     setSelectedFile(null);
-    setFileData(null);
+    setNormalizedData(null);
     setValidationResult(null);
     setImportResult(null);
     if (fileInputRef.current) {
@@ -181,7 +209,7 @@ export function ImportExport({ onClose }: ImportExportProps) {
             </p>
             <div className="flex items-center justify-between">
               <span className="text-xs text-emerald-700">
-                {groups.length} grupos • {cards.length} cards
+                {groups.length} grupo(s) · {cards.length} card(s)
               </span>
               <button
                 onClick={handleExport}
@@ -199,9 +227,18 @@ export function ImportExport({ onClose }: ImportExportProps) {
               <Upload className="w-5 h-5" />
               Importar Progresso
             </h3>
-            <p className="text-sm text-blue-600 mb-4">
+            <p className="text-sm text-blue-600 mb-3">
               Selecione um arquivo JSON para importar seus dados.
             </p>
+
+            {/* Botão baixar exemplo */}
+            <button
+              onClick={handleDownloadExample}
+              className="w-full mb-4 px-4 py-2.5 bg-white border border-blue-200 text-blue-700 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+            >
+              <FileDown className="w-4 h-4" />
+              Baixar JSON de exemplo
+            </button>
 
             {/* Input de arquivo */}
             <input
@@ -263,14 +300,7 @@ export function ImportExport({ onClose }: ImportExportProps) {
                     ) : (
                       <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     )}
-                    <div>
-                      <p className="text-sm font-medium">{validationResult.message}</p>
-                      {validationResult.valid && fileData && (
-                        <p className="text-xs mt-1 opacity-75">
-                          {fileData.groups.length} grupos • {fileData.cards.length} cards
-                        </p>
-                      )}
-                    </div>
+                    <p className="text-sm font-medium">{validationResult.message}</p>
                   </div>
                 )}
 
@@ -353,6 +383,24 @@ export function ImportExport({ onClose }: ImportExportProps) {
                 )}
               </div>
             )}
+          </div>
+
+          {/* Formato esperado */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <h4 className="text-sm font-semibold text-slate-700 mb-2">Formato do JSON</h4>
+            <pre className="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-100 overflow-x-auto">
+{`{
+  "groups": [
+    {
+      "name": "Nome do Grupo",
+      "cards": [
+        { "pt": "português", "en": "english" },
+        { "pt": "frase", "en": "phrase", "dica": "opcional" }
+      ]
+    }
+  ]
+}`}
+            </pre>
           </div>
         </div>
       </div>

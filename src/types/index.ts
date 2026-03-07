@@ -148,10 +148,33 @@ export interface MemoryGameState {
   endTime: number | null;
 }
 
-// Tipos para exportação/importação
+// Formato simples de import/export (user-friendly)
+export interface ExportCard {
+  pt: string;
+  en: string;
+  dica?: string;
+  direcao?: TranslationDirection;
+}
+
+export interface ExportGroup {
+  name: string;
+  cards: ExportCard[];
+}
+
 export interface ExportData {
+  groups: ExportGroup[];
+}
+
+// Formato legado (retrocompatibilidade com backups antigos)
+export interface LegacyExportData {
   version: string;
   exportedAt: number;
+  groups: Group[];
+  cards: FlashCard[];
+}
+
+// Dados normalizados para processamento interno
+export interface NormalizedImportData {
   groups: Group[];
   cards: FlashCard[];
 }

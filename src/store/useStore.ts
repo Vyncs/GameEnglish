@@ -6,6 +6,7 @@ import type {
   BricksChallenge, 
   ViewMode, 
   ExportData, 
+  NormalizedImportData,
   TranslationDirection,
   MemoryDeck,
   MemoryDifficulty,
@@ -97,8 +98,9 @@ interface AppState {
   
   // Ações - Import/Export
   exportProgress: () => ExportData;
-  importProgress: (data: ExportData, mergeMode: boolean) => { success: boolean; message: string };
+  importProgress: (data: NormalizedImportData, mergeMode: boolean) => { success: boolean; message: string };
   validateImportData: (data: unknown) => { valid: boolean; message: string };
+  normalizeImportData: (data: unknown) => NormalizedImportData;
   
   // Ações - Bricks Challenge
   startBricksChallenge: (verb: string) => void;
@@ -435,116 +437,146 @@ export const useStore = create<AppState>()(
       exportProgress: () => {
         const { groups, cards } = get();
         return {
-          version: '1.0',
-          exportedAt: Date.now(),
-          groups,
-          cards,
+          groups: groups.map((g) => ({
+            name: g.name,
+            cards: cards
+              .filter((c) => c.groupId === g.id)
+              .map((c) => ({
+                pt: c.portuguesePhrase,
+                en: c.englishPhrase,
+                ...(c.tips ? { dica: c.tips } : {}),
+                ...(c.direction !== 'pt-en' ? { direcao: c.direction as 'pt-en' | 'en-pt' } : {}),
+              })),
+          })),
         };
       },
-      
+
       validateImportData: (data: unknown) => {
         if (!data || typeof data !== 'object') {
           return { valid: false, message: 'Arquivo inválido: dados não encontrados' };
         }
-        
+
         const obj = data as Record<string, unknown>;
-        
-        if (!obj.version || typeof obj.version !== 'string') {
-          return { valid: false, message: 'Arquivo inválido: versão não encontrada' };
-        }
-        
-        if (!Array.isArray(obj.groups)) {
-          return { valid: false, message: 'Arquivo inválido: grupos não encontrados' };
-        }
-        
-        if (!Array.isArray(obj.cards)) {
-          return { valid: false, message: 'Arquivo inválido: cards não encontrados' };
-        }
-        
-        // Validar estrutura dos grupos
-        for (const group of obj.groups) {
-          if (!group.id || !group.name) {
-            return { valid: false, message: 'Arquivo inválido: grupo com estrutura incorreta' };
+
+        // Formato simples: { groups: [{ name, cards: [{ pt, en }] }] }
+        if (Array.isArray(obj.groups) && !Array.isArray(obj.cards)) {
+          for (const group of obj.groups as Record<string, unknown>[]) {
+            if (!group.name || typeof group.name !== 'string') {
+              return { valid: false, message: 'Arquivo inválido: grupo sem campo "name"' };
+            }
+            if (!Array.isArray(group.cards)) {
+              return { valid: false, message: `Arquivo inválido: grupo "${group.name}" sem campo "cards"` };
+            }
+            for (const card of group.cards as Record<string, unknown>[]) {
+              if (!card.pt || !card.en) {
+                return { valid: false, message: `Arquivo inválido: card sem campos "pt" e "en" no grupo "${group.name}"` };
+              }
+            }
           }
+          const totalCards = (obj.groups as { cards: unknown[] }[]).reduce((sum, g) => sum + g.cards.length, 0);
+          return { valid: true, message: `Arquivo válido — ${(obj.groups as unknown[]).length} grupo(s), ${totalCards} card(s)` };
         }
-        
-        // Validar estrutura dos cards
-        for (const card of obj.cards) {
-          if (!card.id || !card.portuguesePhrase || !card.englishPhrase || !card.groupId) {
-            return { valid: false, message: 'Arquivo inválido: card com estrutura incorreta' };
+
+        // Formato legado: { version, groups: [{ id, name }], cards: [{ id, portuguesePhrase, englishPhrase, groupId }] }
+        if (Array.isArray(obj.groups) && Array.isArray(obj.cards)) {
+          for (const group of obj.groups as Record<string, unknown>[]) {
+            if (!group.id || !group.name) {
+              return { valid: false, message: 'Arquivo inválido: grupo com estrutura incorreta' };
+            }
           }
+          for (const card of obj.cards as Record<string, unknown>[]) {
+            if (!card.id || !card.portuguesePhrase || !card.englishPhrase || !card.groupId) {
+              return { valid: false, message: 'Arquivo inválido: card com estrutura incorreta' };
+            }
+          }
+          return { valid: true, message: `Arquivo válido — ${(obj.groups as unknown[]).length} grupo(s), ${(obj.cards as unknown[]).length} card(s)` };
         }
-        
-        return { valid: true, message: 'Arquivo válido' };
+
+        return { valid: false, message: 'Arquivo inválido: estrutura não reconhecida' };
       },
-      
-      importProgress: (data: ExportData, mergeMode: boolean) => {
-        const validation = get().validateImportData(data);
-        if (!validation.valid) {
-          return { success: false, message: validation.message };
+
+      normalizeImportData: (data: unknown) => {
+        const obj = data as Record<string, unknown>;
+
+        // Formato simples → normalizar
+        if (Array.isArray(obj.groups) && !Array.isArray(obj.cards)) {
+          const groups: Group[] = [];
+          const cards: FlashCard[] = [];
+
+          for (const g of obj.groups as { name: string; cards: { pt: string; en: string; dica?: string; direcao?: string }[] }[]) {
+            const groupId = generateId();
+            groups.push({ id: groupId, name: g.name, createdAt: Date.now() });
+
+            for (const c of g.cards) {
+              cards.push({
+                id: generateId(),
+                groupId,
+                portuguesePhrase: c.pt,
+                englishPhrase: c.en,
+                direction: (c.direcao as TranslationDirection) || 'pt-en',
+                tips: c.dica,
+                level: 1,
+                lastReviewed: null,
+                nextReview: calculateNextReview(1),
+                errorCount: 0,
+                createdAt: Date.now(),
+              });
+            }
+          }
+
+          return { groups, cards };
         }
-        
+
+        // Formato legado → já está normalizado
+        const legacy = obj as { groups: Group[]; cards: FlashCard[] };
+        return {
+          groups: legacy.groups,
+          cards: legacy.cards.map((card) => ({
+            ...card,
+            level: card.level || 1,
+            lastReviewed: card.lastReviewed || null,
+            nextReview: card.nextReview || calculateNextReview(1),
+            errorCount: card.errorCount || 0,
+            direction: card.direction || 'pt-en',
+            imageUrl: card.imageUrl || undefined,
+            tips: card.tips || undefined,
+          })),
+        };
+      },
+
+      importProgress: (data: NormalizedImportData, mergeMode: boolean) => {
         try {
           if (mergeMode) {
-            // Modo mesclar: adiciona dados sem substituir existentes
             set((state) => {
-              const existingGroupIds = new Set(state.groups.map((g) => g.id));
-              const existingCardIds = new Set(state.cards.map((c) => c.id));
-              
-              const newGroups = data.groups.filter((g) => !existingGroupIds.has(g.id));
-              const newCards = data.cards
-                .filter((c) => !existingCardIds.has(c.id))
-                .map((card) => ({
-                  ...card,
-                  // Garantir campos de spaced repetition
-                  level: card.level || 1,
-                  lastReviewed: card.lastReviewed || null,
-                  nextReview: card.nextReview || calculateNextReview(1),
-                  errorCount: card.errorCount || 0,
-                  // Garantir direção padrão
-                  direction: card.direction || 'pt-en',
-                  // Preservar campos opcionais
-                  imageUrl: card.imageUrl || undefined,
-                  tips: card.tips || undefined,
-                }));
-              
+              const existingGroupNames = new Set(state.groups.map((g) => g.name.toLowerCase()));
+              const newGroups = data.groups.filter((g) => !existingGroupNames.has(g.name.toLowerCase()));
+              const newGroupIds = new Set(newGroups.map((g) => g.id));
+              const newCards = data.cards.filter((c) => newGroupIds.has(c.groupId));
+
               return {
                 groups: [...state.groups, ...newGroups],
                 cards: [...state.cards, ...newCards],
               };
             });
-            
-            return { 
-              success: true, 
-              message: `Importação concluída! Dados mesclados com sucesso.` 
+
+            return {
+              success: true,
+              message: 'Importação concluída! Dados mesclados com sucesso.',
             };
           } else {
-            // Modo substituir: substitui todos os dados
-            const processedCards = data.cards.map((card) => ({
-              ...card,
-              level: card.level || 1,
-              lastReviewed: card.lastReviewed || null,
-              nextReview: card.nextReview || calculateNextReview(1),
-              errorCount: card.errorCount || 0,
-              direction: card.direction || 'pt-en',
-              // Preservar campos opcionais
-              imageUrl: card.imageUrl || undefined,
-              tips: card.tips || undefined,
-            }));
-            
             set({
               groups: data.groups,
-              cards: processedCards,
+              cards: data.cards,
               selectedGroupId: null,
               viewMode: 'home',
             });
-            
-            return { 
-              success: true, 
-              message: `Importação concluída! ${data.groups.length} grupos e ${data.cards.length} cards importados.` 
+
+            return {
+              success: true,
+              message: `Importação concluída! ${data.groups.length} grupo(s) e ${data.cards.length} card(s) importados.`,
             };
           }
-        } catch (error) {
+        } catch {
           return { success: false, message: 'Erro ao importar dados' };
         }
       },

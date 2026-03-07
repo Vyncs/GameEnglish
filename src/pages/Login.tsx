@@ -40,7 +40,12 @@ export function Login() {
       hydrateFromSync(sync);
       navigate('/', { replace: true });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao entrar');
+      const msg = err instanceof Error ? err.message : 'Erro ao entrar';
+      if (msg.includes('não verificado')) {
+        navigate(`/verify-email?email=${encodeURIComponent(email.trim().toLowerCase())}`, { replace: true });
+        return;
+      }
+      setError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -58,9 +63,9 @@ export function Login() {
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-            🎓 English Cards
+            🎓 Play Flash Cards
           </h1>
-          <p className="text-slate-500 mt-2">Seu estudo diário de inglês</p>
+          <p className="text-slate-500 mt-2">Seu aplicativo de estudo e revisão espaçada</p>
         </div>
 
         <div className="bg-white/80 backdrop-blur rounded-2xl shadow-xl border border-slate-200/60 p-8">
