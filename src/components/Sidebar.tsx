@@ -43,7 +43,6 @@ export function Sidebar() {
     goToHome,
     startPlayMode,
     startMemoryGame,
-    startKaraoke,
     startReaders,
     getCardsForReviewCount,
     getTotalCardsForReview
