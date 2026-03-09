@@ -109,7 +109,7 @@ export function Home() {
         {/* Seção "Jogar" - Destaque principal */}
         {totalReviewCount > 0 && (
           <div className="mb-8 animate-fade-in">
-            <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 rounded-3xl p-8 text-white shadow-2xl shadow-purple-500/30 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-indigo-600 rounded-3xl p-8 text-white shadow-2xl shadow-violet-500/30 relative overflow-hidden">
               {/* Elementos decorativos */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
@@ -122,14 +122,14 @@ export function Home() {
                     </div>
                     <div>
                       <h2 className="text-3xl font-bold mb-1">Hora de Jogar! 🎮</h2>
-                      <p className="text-purple-100 text-lg">
+                      <p className="text-violet-100 text-lg">
                         <span className="font-bold text-white">{totalReviewCount} cards</span> aguardando sua revisão
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => startPlayMode()}
-                    className="px-8 py-4 bg-white text-purple-600 font-bold text-lg rounded-2xl hover:bg-purple-50 transition-all shadow-lg flex items-center gap-3 group"
+                    className="px-8 py-4 bg-white text-violet-600 font-bold text-lg rounded-2xl hover:bg-violet-50 transition-all shadow-lg flex items-center gap-3 group"
                   >
                     <Play className="w-6 h-6 group-hover:scale-110 transition-transform" />
                     Jogar Agora
@@ -139,7 +139,7 @@ export function Home() {
                 {/* Lista de grupos com revisões pendentes */}
                 {groupsWithPendingReview.length > 0 && (
                   <div className="mt-8 pt-6 border-t border-white/20">
-                    <p className="text-sm text-purple-200 mb-3">Ou escolha um grupo específico:</p>
+                    <p className="text-sm text-violet-200 mb-3">Ou escolha um grupo específico:</p>
                     <div className="flex flex-wrap gap-3">
                       {groupsWithPendingReview.map(({ group, reviewCount }) => (
                         <button
@@ -240,12 +240,12 @@ export function Home() {
                 <button
                   key={group.id}
                   onClick={() => selectGroup(group.id)}
-                  className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-md hover:border-cyan-200 transition-all text-left animate-fade-in group"
+                  className="bg-gradient-to-br from-cyan-50/80 to-white rounded-2xl p-5 shadow-sm border border-cyan-100/80 hover:shadow-md hover:border-cyan-200 hover:from-cyan-100/60 hover:to-white transition-all text-left animate-fade-in group"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   <div className="flex items-start justify-between mb-3">
-                    <div className="p-2 bg-slate-100 rounded-xl group-hover:bg-cyan-100 transition-colors">
-                      <Folder className="w-6 h-6 text-slate-500 group-hover:text-cyan-600 transition-colors" />
+                    <div className="p-2 bg-cyan-100/70 rounded-xl group-hover:bg-cyan-200/80 transition-colors">
+                      <Folder className="w-6 h-6 text-cyan-600 group-hover:text-cyan-700 transition-colors" />
                     </div>
                     {reviewCount > 0 && (
                       <span className="px-2.5 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full">
@@ -253,10 +253,10 @@ export function Home() {
                       </span>
                     )}
                   </div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-1 group-hover:text-cyan-700 transition-colors">
+                  <h3 className="text-lg font-semibold text-slate-800 mb-1 group-hover:text-cyan-800 transition-colors">
                     {group.name}
                   </h3>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-600">
                     {totalCards} card{totalCards !== 1 ? 's' : ''}
                   </p>
                 </button>

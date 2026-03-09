@@ -20,10 +20,18 @@ import {
 
 const WHATSAPP_URL = 'https://wa.me/5513988513127?text=Ol%C3%A1!%20Tenho%20interesse%20no%20Play%20Flash%20Cards';
 
+const VIDEOS = {
+  bricks: '/videos/BricksChallenge.mp4',
+  pairs: '/videos/PairsChallenge.mp4',
+  readers: '/videos/GradedReaders.mp4',
+  revisao: '/videos/SistemaRevisaoEspacada.mp4',
+};
+
 export function LandingPage() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [videoModal, setVideoModal] = useState<{ title: string; videoUrl: string } | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -199,24 +207,32 @@ export function LandingPage() {
               color="cyan"
               title="Repetição Espaçada"
               description="Sistema Leitner com 5 níveis que garante que você revise na hora certa — sem esquecer nunca mais."
+              videoUrl={VIDEOS.revisao}
+              onOpenVideo={(title, url) => setVideoModal({ title, videoUrl: url })}
             />
             <FeatureCard
               icon={<Gamepad2 className="w-6 h-6" />}
               color="violet"
               title="Bricks Challenge"
               description="Monte frases tijolo por tijolo. Pratique gramática de forma interativa e divertida."
+              videoUrl={VIDEOS.bricks}
+              onOpenVideo={(title, url) => setVideoModal({ title, videoUrl: url })}
             />
             <FeatureCard
               icon={<Puzzle className="w-6 h-6" />}
               color="pink"
               title="Pairs Challenge"
               description="Jogo da memória com palavras e imagens. Treine vocabulário enquanto se diverte."
+              videoUrl={VIDEOS.pairs}
+              onOpenVideo={(title, url) => setVideoModal({ title, videoUrl: url })}
             />
             <FeatureCard
               icon={<BookOpen className="w-6 h-6" />}
               color="indigo"
               title="Graded Readers"
               description="Leitura guiada por nível com tradução instantânea. Do A1 ao B2 no seu ritmo."
+              videoUrl={VIDEOS.readers}
+              onOpenVideo={(title, url) => setVideoModal({ title, videoUrl: url })}
             />
             <FeatureCard
               icon={<Layers className="w-6 h-6" />}
@@ -238,6 +254,74 @@ export function LandingPage() {
               description="Cante músicas em inglês e receba feedback de pronúncia em tempo real."
               comingSoon
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Seção destaque: Repetição Espaçada (gratuita) */}
+      <section className="py-20 lg:py-32 bg-gradient-to-b from-white to-cyan-50/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Texto */}
+            <div>
+              <span className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full mb-6">
+                <Sparkles className="w-3.5 h-3.5" />
+                100% Gratuito
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">
+                Revisão Espaçada com
+                <span className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent"> Sistema Leitner</span>
+              </h2>
+              <p className="text-slate-500 text-lg leading-relaxed mb-6">
+                Organize seus cards em grupos temáticos e deixe o algoritmo cuidar do resto. 
+                Cada card passa por 5 níveis de memorização — do iniciante ao dominado.
+              </p>
+              <ul className="space-y-3 mb-8">
+                {[
+                  'Crie grupos ilimitados e organize por tema',
+                  '5 níveis de revisão com intervalos crescentes',
+                  'O sistema avisa quando é hora de revisar',
+                  'Importe cards prontos ou crie os seus',
+                  'Sincronização na nuvem entre dispositivos',
+                ].map((text) => (
+                  <li key={text} className="flex items-center gap-3 text-slate-600">
+                    <div className="w-5 h-5 rounded-full bg-cyan-100 flex items-center justify-center shrink-0">
+                      <Check className="w-3 h-3 text-cyan-600" />
+                    </div>
+                    <span className="text-sm">{text}</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                onClick={() => navigate('/cadastro')}
+                className="px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all duration-300 inline-flex items-center gap-2"
+              >
+                Começar Grátis
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Vídeo */}
+            <div
+              className="relative group cursor-pointer"
+              onClick={() => setVideoModal({ title: 'Revisão Espaçada & Grupos', videoUrl: VIDEOS.revisao })}
+            >
+              <div className="rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10 border border-slate-200">
+                <video
+                  src={VIDEOS.revisao}
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                  className="w-full aspect-video object-cover"
+                />
+              </div>
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-2xl transition-colors flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-white/90 shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ChevronRight className="w-8 h-8 text-cyan-600 ml-1" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -407,6 +491,46 @@ export function LandingPage() {
         </div>
       </footer>
 
+      {/* Modal de vídeo (hover no desktop / clique no mobile) */}
+      {videoModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={() => setVideoModal(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Assistir demonstração"
+        >
+          <div
+            className="relative w-full max-w-3xl bg-slate-900 rounded-2xl overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 bg-slate-800 border-b border-slate-700">
+              <h3 className="text-lg font-semibold text-white truncate pr-2">{videoModal.title}</h3>
+              <button
+                type="button"
+                onClick={() => setVideoModal(null)}
+                className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+                aria-label="Fechar"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="aspect-video bg-black">
+              <video
+                src={videoModal.videoUrl}
+                controls
+                autoPlay
+                className="w-full h-full"
+                onEnded={() => {}}
+              />
+            </div>
+            <p className="px-4 py-2 text-sm text-slate-400 text-center">
+              Veja como funciona na prática
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* WhatsApp FAB */}
       <a
         href={WHATSAPP_URL}
@@ -467,13 +591,19 @@ function FeatureCard({
   title,
   description,
   comingSoon = false,
+  videoUrl,
+  onOpenVideo,
 }: {
   icon: React.ReactNode;
   color: string;
   title: string;
   description: string;
   comingSoon?: boolean;
+  videoUrl?: string;
+  onOpenVideo?: (title: string, videoUrl: string) => void;
 }) {
+  const [hoverTimer, setHoverTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+
   const bgColors: Record<string, string> = {
     cyan: 'bg-cyan-50 text-cyan-600',
     violet: 'bg-violet-50 text-violet-600',
@@ -483,15 +613,47 @@ function FeatureCard({
     emerald: 'bg-emerald-50 text-emerald-600',
   };
 
+  const canShowVideo = !comingSoon && videoUrl && onOpenVideo;
+
+  const handleOpenVideo = () => {
+    if (canShowVideo) onOpenVideo!(title, videoUrl!);
+  };
+
+  const handleMouseEnter = () => {
+    if (!canShowVideo) return;
+    const t = setTimeout(handleOpenVideo, 400);
+    setHoverTimer(t);
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      setHoverTimer(null);
+    }
+  };
+
   return (
-    <div className={`group relative bg-white rounded-2xl p-6 border hover:shadow-lg transition-all duration-300 ${
-      comingSoon ? 'border-dashed border-slate-200' : 'border-slate-100 hover:border-slate-200'
-    }`}>
+    <div
+      role={canShowVideo ? 'button' : undefined}
+      tabIndex={canShowVideo ? 0 : undefined}
+      onClick={canShowVideo ? handleOpenVideo : undefined}
+      onKeyDown={canShowVideo ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOpenVideo(); } } : undefined}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`group relative bg-white rounded-2xl p-6 border transition-all duration-300 ${
+        comingSoon ? 'border-dashed border-slate-200' : 'border-slate-100 hover:border-slate-200 hover:shadow-lg'
+      } ${canShowVideo ? 'cursor-pointer' : ''}`}
+    >
       {comingSoon && (
         <div className="absolute -top-2.5 right-4 inline-flex items-center gap-1 px-2.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold uppercase tracking-wider rounded-full border border-amber-200">
           <Construction className="w-3 h-3" />
           Em desenvolvimento
         </div>
+      )}
+      {canShowVideo && (
+        <p className="absolute top-3 right-3 text-[10px] font-medium text-slate-400 group-hover:text-cyan-600 transition-colors">
+          Ver vídeo
+        </p>
       )}
       <div className={`w-12 h-12 rounded-xl ${bgColors[color]} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform ${comingSoon ? 'opacity-60' : ''}`}>
         {icon}

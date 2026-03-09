@@ -320,6 +320,7 @@ export function BricksChallenge() {
             {/* Input de resposta */}
             {!showingResult && (
               <div className="mb-6">
+                <p className="text-sm text-slate-500 mb-2">Respostas aproximadas são aceitas.</p>
                 <div className="relative">
                   <input
                     type="text"
@@ -359,7 +360,9 @@ export function BricksChallenge() {
                       <CheckCircle className="w-8 h-8 text-emerald-500 flex-shrink-0" />
                       <div>
                         <p className="font-semibold text-emerald-700">Correto! 🎉</p>
-                        <p className="text-sm text-emerald-600">Muito bem!</p>
+                        <p className="text-sm text-emerald-600">
+                          {lastResult.isExactMatch === false ? 'Resposta aproximada aceita.' : 'Muito bem!'}
+                        </p>
                       </div>
                     </>
                   ) : (

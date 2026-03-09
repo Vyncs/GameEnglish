@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { 
@@ -52,8 +52,30 @@ export function Sidebar() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const totalReviewCount = getTotalCardsForReview();
+
+  useEffect(() => () => {
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
+  }, []);
+
+  const SIDEBAR_CLOSE_DELAY_MS = 300;
+
+  const handleSidebarMouseLeave = () => {
+    if (!sidebarOpen) return;
+    closeTimeoutRef.current = setTimeout(() => {
+      closeTimeoutRef.current = null;
+      toggleSidebar();
+    }, SIDEBAR_CLOSE_DELAY_MS);
+  };
+
+  const handleSidebarMouseEnter = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
 
   const handleAddGroup = () => {
     if (newGroupName.trim()) {
@@ -103,11 +125,13 @@ export function Sidebar() {
         )}
       </button>
 
-      {/* Sidebar */}
+      {/* Sidebar — fecha ao tirar o mouse após leve delay (desktop) */}
       <aside
-        className={`fixed left-0 top-0 h-full bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white transition-all duration-300 z-40 shadow-2xl ${
+        className={`fixed left-0 top-0 h-full bg-[#1E293B] text-white transition-all duration-300 z-40 shadow-2xl ${
           sidebarOpen ? 'w-80' : 'w-0 overflow-hidden'
         }`}
+        onMouseLeave={handleSidebarMouseLeave}
+        onMouseEnter={handleSidebarMouseEnter}
       >
         <div className="p-4 h-full flex flex-col">
           {/* Logo / Título */}

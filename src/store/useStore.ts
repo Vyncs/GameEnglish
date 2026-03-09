@@ -22,7 +22,11 @@ import type {
 } from '../types';
 import { LEITNER_INTERVALS, MEMORY_DIFFICULTY_CONFIG } from '../types';
 import { generateBricksPhrases } from '../utils/bricksGenerator';
+import { fuzzyCompare } from '../utils/fuzzyMatch';
 import { api } from '../api/client';
+
+/** Mesmo critério do PlayMode e FlashCard para respostas aproximadas */
+const FUZZY_THRESHOLD = 85;
 
 // Função para gerar IDs únicos
 const generateId = () => Math.random().toString(36).substring(2, 15);
@@ -601,14 +605,15 @@ export const useStore = create<AppState>()(
         if (!challenge) return;
         
         const currentPhrase = challenge.phrases[challenge.currentIndex];
-        const normalizedAnswer = answer.trim().toLowerCase();
-        const normalizedCorrect = currentPhrase.english.trim().toLowerCase();
-        const isCorrect = normalizedAnswer === normalizedCorrect;
+        const result = fuzzyCompare(answer, currentPhrase.english, FUZZY_THRESHOLD);
+        const isCorrect = result.isAcceptable;
+        const isExactMatch = result.isExactMatch;
         
         const newResult = {
           phrase: currentPhrase,
           userAnswer: answer,
           isCorrect,
+          isExactMatch,
         };
         
         set((state) => ({

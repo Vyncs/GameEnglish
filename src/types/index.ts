@@ -59,6 +59,8 @@ export interface BrickResult {
   phrase: BrickPhrase;
   userAnswer: string;
   isCorrect: boolean;
+  /** true quando a resposta foi exatamente igual; false quando aceita por similaridade */
+  isExactMatch?: boolean;
 }
 
 export interface BricksChallenge {
