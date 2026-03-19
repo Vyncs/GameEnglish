@@ -79,7 +79,6 @@ interface AppState {
   
   // UI
   viewMode: ViewMode;
-  sidebarOpen: boolean;
   
   // Ações - Grupos
   addGroup: (name: string) => void;
@@ -153,7 +152,6 @@ interface AppState {
   
   // Ações - UI
   setViewMode: (mode: ViewMode) => void;
-  toggleSidebar: () => void;
   goToHome: () => void;
   startReviewSession: (groupId?: string) => void;
   startPlayMode: (groupId?: string) => void;
@@ -232,7 +230,6 @@ export const useStore = create<AppState>()(
       currentParagraphIndex: 0,
       customBooks: [],
       viewMode: 'home',
-      sidebarOpen: true,
       
       // Implementação - Grupos (com sync para backend quando logado)
       addGroup: async (name) => {
@@ -1020,10 +1017,6 @@ export const useStore = create<AppState>()(
       // Implementação - UI
       setViewMode: (mode) => {
         set({ viewMode: mode });
-      },
-      
-      toggleSidebar: () => {
-        set((state) => ({ sidebarOpen: !state.sidebarOpen }));
       },
       
       goToHome: () => {

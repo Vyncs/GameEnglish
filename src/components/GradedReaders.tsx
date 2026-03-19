@@ -516,6 +516,17 @@ export function GradedReaders() {
   // =============================================
   return (
     <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
+      {/* Back to Home */}
+      <div className="max-w-4xl mx-auto mb-4">
+        <button
+          onClick={goToHome}
+          className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Home
+        </button>
+      </div>
+
       {/* Header */}
       <div className="text-center mb-8">
         <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
@@ -665,16 +676,6 @@ export function GradedReaders() {
         )}
       </div>
 
-      {/* Back button */}
-      <div className="max-w-4xl mx-auto mt-8">
-        <button
-          onClick={goToHome}
-          className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </button>
-      </div>
     </div>
   );
 }

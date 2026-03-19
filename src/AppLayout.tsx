@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useStore } from './store/useStore';
 import { useAuthStore } from './store/useAuthStore';
-import { Sidebar } from './components/Sidebar';
+import { AppHeader } from './components/AppHeader';
+import { MobileBottomBar } from './components/MobileBottomBar';
 import { Home } from './components/Home';
 import { CardList } from './components/CardList';
 import { ReviewSession } from './components/ReviewSession';
@@ -25,10 +26,13 @@ const SUBSCRIPTION_VIEWS: Record<string, string> = {
 
 const MEMORY_SYNC_DEBOUNCE_MS = 1500;
 
+const FULLSCREEN_VIEWS = new Set(['play', 'karaoke', 'readers']);
+
 export function AppLayout() {
-  const { viewMode, sidebarOpen, hydrateFromSync, memoryDecks, hiddenDefaultDeckIds } = useStore();
+  const { viewMode, hydrateFromSync, memoryDecks, hiddenDefaultDeckIds } = useStore();
   const { user } = useAuthStore();
   const isSubscribed = user?.subscriptionStatus === 'active';
+  const isFullscreen = FULLSCREEN_VIEWS.has(viewMode);
 
   useEffect(() => {
     const token = api.getToken();
@@ -36,7 +40,6 @@ export function AppLayout() {
     api.getSync().then(hydrateFromSync).catch(() => {});
   }, [hydrateFromSync]);
 
-  // Persistir decks do Pairs Challenge no backend quando o usuário editar (debounce)
   useEffect(() => {
     if (!api.getToken()) return;
     const t = setTimeout(() => {
@@ -53,14 +56,11 @@ export function AppLayout() {
         <div className="absolute -bottom-40 right-1/4 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl" />
       </div>
 
-      <Sidebar />
+      {!isFullscreen && <AppHeader />}
+      {!isFullscreen && <MobileBottomBar />}
 
-      <main
-        className={`min-h-screen transition-all duration-300 ${
-          sidebarOpen ? 'ml-80' : 'ml-0'
-        }`}
-      >
-        <div className={`relative ${viewMode === 'play' || viewMode === 'karaoke' || viewMode === 'readers' ? '' : 'pt-16 lg:pt-4'}`}>
+      <main className="min-h-screen">
+        <div className={`relative ${isFullscreen ? '' : 'pt-16 lg:pt-16 pb-20 lg:pb-4'}`}>
           {viewMode === 'home' && <Home />}
           {viewMode === 'cards' && <CardList />}
           {viewMode === 'review' && <ReviewSession />}
