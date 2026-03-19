@@ -13,7 +13,7 @@ export function Cadastro() {
   const [couponTeacher, setCouponTeacher] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const couponTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const couponTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     if (!couponCode.trim()) {
