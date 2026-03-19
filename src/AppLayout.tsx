@@ -11,6 +11,7 @@ import { MemoryGame } from './components/MemoryGame';
 import { KaraokeMode } from './components/KaraokeMode';
 import { GradedReaders } from './components/GradedReaders';
 import { Account } from './components/Account';
+import { StudentMaterials } from './components/StudentMaterials';
 import { PaywallOverlay } from './components/PaywallOverlay';
 import { api } from './api/client';
 
@@ -88,6 +89,7 @@ export function AppLayout() {
               {!isSubscribed && <PaywallOverlay featureName="Graded Readers" />}
             </>
           )}
+          {viewMode === 'teacher-materials' && <StudentMaterials />}
           {viewMode === 'account' && <Account />}
         </div>
       </main>

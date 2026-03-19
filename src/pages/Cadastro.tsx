@@ -1,25 +1,54 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, getAuthSocialUrl } from '../api/client';
-import { Loader2 } from 'lucide-react';
+import { Loader2, CheckCircle2, XCircle } from 'lucide-react';
 
 export function Cadastro() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [couponCode, setCouponCode] = useState('');
+  const [couponStatus, setCouponStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
+  const [couponTeacher, setCouponTeacher] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const couponTimeout = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (!couponCode.trim()) {
+      setCouponStatus('idle');
+      setCouponTeacher(null);
+      return;
+    }
+    setCouponStatus('checking');
+    if (couponTimeout.current) clearTimeout(couponTimeout.current);
+    couponTimeout.current = setTimeout(async () => {
+      try {
+        const res = await api.validateCoupon(couponCode.trim());
+        setCouponStatus(res.valid ? 'valid' : 'invalid');
+        setCouponTeacher(res.teacherName);
+      } catch {
+        setCouponStatus('invalid');
+      }
+    }, 500);
+    return () => { if (couponTimeout.current) clearTimeout(couponTimeout.current); };
+  }, [couponCode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    if (couponCode.trim() && couponStatus !== 'valid') {
+      setError('Cupom de professor invalido');
+      return;
+    }
     setSubmitting(true);
     try {
       const { email: verifiedEmail } = await api.register(
         email.trim(),
         password,
-        name.trim() || undefined
+        name.trim() || undefined,
+        couponCode.trim() || undefined,
       );
       navigate(`/verify-email?email=${encodeURIComponent(verifiedEmail)}`, { replace: true });
     } catch (err) {
@@ -93,6 +122,41 @@ export function Cadastro() {
                 className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-shadow"
                 placeholder="Mínimo 6 caracteres"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Cupom do professor (opcional)</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  autoComplete="off"
+                  maxLength={10}
+                  className={`w-full px-4 py-2.5 bg-white border rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 transition-shadow uppercase tracking-wider ${
+                    couponStatus === 'valid'
+                      ? 'border-emerald-300 focus:ring-emerald-500/50 focus:border-emerald-500'
+                      : couponStatus === 'invalid'
+                        ? 'border-red-300 focus:ring-red-500/50 focus:border-red-500'
+                        : 'border-slate-200 focus:ring-cyan-500/50 focus:border-cyan-500'
+                  }`}
+                  placeholder="Ex: ABC1234"
+                />
+                {couponStatus === 'checking' && (
+                  <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 animate-spin" />
+                )}
+                {couponStatus === 'valid' && (
+                  <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500" />
+                )}
+                {couponStatus === 'invalid' && (
+                  <XCircle className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-red-500" />
+                )}
+              </div>
+              {couponStatus === 'valid' && couponTeacher && (
+                <p className="text-xs text-emerald-600 mt-1">Professor: {couponTeacher}</p>
+              )}
+              {couponStatus === 'invalid' && couponCode.trim() && (
+                <p className="text-xs text-red-500 mt-1">Cupom nao encontrado</p>
+              )}
             </div>
             <button
               type="submit"

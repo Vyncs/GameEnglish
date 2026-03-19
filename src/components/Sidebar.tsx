@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
+import { api } from '../api/client';
 import { 
   FolderPlus, 
   Pencil, 
@@ -20,7 +21,8 @@ import {
   User,
   Lock,
   LayoutDashboard,
-  Construction
+  Construction,
+  GraduationCap
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -29,6 +31,15 @@ export function Sidebar() {
   const { user } = useAuthStore();
   const isSubscribed = user?.subscriptionStatus === 'active';
   const isAdmin = user?.role === 'ADMIN';
+  const isTeacher = user?.role === 'TEACHER' || user?.role === 'ADMIN';
+  const [hasTeacher, setHasTeacher] = useState(false);
+
+  const checkTeacher = useCallback(() => {
+    if (!user || user.role !== 'USER') return;
+    api.getStudentHasTeacher().then((r) => setHasTeacher(r.hasTeacher)).catch(() => {});
+  }, [user]);
+
+  useEffect(() => { checkTeacher(); }, [checkTeacher]);
   const { 
     groups, 
     selectedGroupId, 
@@ -243,6 +254,32 @@ export function Sidebar() {
               <Library className="w-5 h-5" />
               <span className="font-medium">Graded Readers</span>
             </button>
+
+            {/* Student - Teacher Materials */}
+            {hasTeacher && (
+              <button
+                onClick={() => setViewMode('teacher-materials')}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                  viewMode === 'teacher-materials'
+                    ? 'bg-gradient-to-r from-violet-500/20 to-purple-500/20 text-violet-400 border border-violet-500/30'
+                    : 'hover:bg-white/5 text-slate-300'
+                }`}
+              >
+                <GraduationCap className="w-5 h-5" />
+                <span className="font-medium">Materiais do Professor</span>
+              </button>
+            )}
+
+            {/* Teacher Panel */}
+            {isTeacher && (
+              <button
+                onClick={() => navigate('/teacher')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 hover:bg-white/5 text-violet-400"
+              >
+                <GraduationCap className="w-5 h-5" />
+                <span className="font-medium">Painel Professor</span>
+              </button>
+            )}
 
             {/* Admin Dashboard */}
             {isAdmin && (

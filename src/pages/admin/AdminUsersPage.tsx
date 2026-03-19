@@ -7,6 +7,7 @@ import {
   Trash2,
   Crown,
   Shield,
+  GraduationCap,
   Pencil,
   X,
   Check,
@@ -146,6 +147,15 @@ export function AdminUsersPage() {
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-50 text-amber-700 text-xs font-medium rounded-full">
                           <Crown className="w-3 h-3" /> Admin
                         </span>
+                      ) : u.role === 'TEACHER' ? (
+                        <div>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-violet-50 text-violet-700 text-xs font-medium rounded-full">
+                            <GraduationCap className="w-3 h-3" /> Professor
+                          </span>
+                          {u.couponCode && (
+                            <p className="text-[10px] text-violet-500 font-mono mt-0.5">Cupom: {u.couponCode}</p>
+                          )}
+                        </div>
                       ) : (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-50 text-slate-500 text-xs font-medium rounded-full">
                           <Shield className="w-3 h-3" /> User
@@ -290,7 +300,7 @@ function EditUserModal({ user, onClose, onSaved }: { user: AdminUser; onClose: (
           <X className="w-5 h-5 text-slate-400" />
         </button>
 
-        <h3 className="text-lg font-semibold text-slate-800 mb-1">Editar Usuário</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-1">Editar Usuario</h3>
         <p className="text-xs text-slate-400 mb-5">{user.email}</p>
 
         {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-xl mb-4">{error}</p>}
@@ -313,8 +323,17 @@ function EditUserModal({ user, onClose, onSaved }: { user: AdminUser; onClose: (
               className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
             >
               <option value="USER">User</option>
+              <option value="TEACHER">Professor</option>
               <option value="ADMIN">Admin</option>
             </select>
+            {role === 'TEACHER' && user.couponCode && (
+              <p className="text-xs text-violet-600 mt-1">
+                Cupom atual: <code className="px-1.5 py-0.5 bg-violet-50 rounded font-mono">{user.couponCode}</code>
+              </p>
+            )}
+            {role === 'TEACHER' && !user.couponCode && user.role !== 'TEACHER' && (
+              <p className="text-xs text-slate-400 mt-1">Um cupom sera gerado automaticamente ao salvar</p>
+            )}
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Plano</label>

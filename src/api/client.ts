@@ -114,9 +114,9 @@ export const api = {
       'POST', '/api/auth/login', { email, password }
     );
   },
-  async register(email: string, password: string, name?: string) {
+  async register(email: string, password: string, name?: string, couponCode?: string) {
     return request<{ message: string; email: string }>(
-      'POST', '/api/auth/register', { email, password, name }
+      'POST', '/api/auth/register', { email, password, name, couponCode }
     );
   },
   async verifyEmail(email: string, code: string) {
@@ -151,6 +151,52 @@ export const api = {
     return request<{ ok: boolean; message?: string }>('POST', '/api/payments/mercadopago/simulate-clear-subscription');
   },
 
+  // Teacher endpoints
+  async getTeacherDashboard() {
+    return request<TeacherDashboard>('GET', '/api/teacher/dashboard');
+  },
+  async getTeacherStudents(params: { search?: string; page?: number; limit?: number } = {}) {
+    const qs = new URLSearchParams();
+    if (params.search) qs.set('search', params.search);
+    if (params.page) qs.set('page', String(params.page));
+    if (params.limit) qs.set('limit', String(params.limit));
+    return request<TeacherStudentsResponse>('GET', `/api/teacher/students?${qs.toString()}`);
+  },
+  async getTeacherMaterials() {
+    return request<TeacherMaterialItem[]>('GET', '/api/teacher/materials');
+  },
+  async createTeacherMaterial(data: { title: string; description?: string; type: string; url?: string; content?: string }) {
+    return request<TeacherMaterialItem>('POST', '/api/teacher/materials', data);
+  },
+  async updateTeacherMaterial(id: string, data: Partial<{ title: string; description: string; type: string; url: string; content: string }>) {
+    return request<TeacherMaterialItem>('PATCH', `/api/teacher/materials/${id}`, data);
+  },
+  async deleteTeacherMaterial(id: string) {
+    return request<void>('DELETE', `/api/teacher/materials/${id}`);
+  },
+  async assignTeacherMaterial(materialId: string, studentIds: string[]) {
+    return request<{ assigned: number }>('POST', `/api/teacher/materials/${materialId}/assign`, { studentIds });
+  },
+  async unassignTeacherMaterial(materialId: string, studentId: string) {
+    return request<void>('DELETE', `/api/teacher/materials/${materialId}/assign/${studentId}`);
+  },
+
+  // Student endpoints
+  async getStudentTeachers() {
+    return request<StudentTeacher[]>('GET', '/api/student/teachers');
+  },
+  async getStudentMaterials() {
+    return request<StudentMaterial[]>('GET', '/api/student/materials');
+  },
+  async getStudentHasTeacher() {
+    return request<{ hasTeacher: boolean }>('GET', '/api/student/has-teacher');
+  },
+
+  // Coupon validation (public)
+  async validateCoupon(code: string) {
+    return request<{ valid: boolean; teacherName: string | null }>('GET', `/api/auth/validate-coupon?code=${encodeURIComponent(code)}`);
+  },
+
   async getAdminMetrics() {
     return request<AdminMetrics>('GET', '/api/admin/metrics');
   },
@@ -176,6 +222,64 @@ export const api = {
     return request<AdminFinancial>('GET', '/api/admin/financial');
   },
 };
+
+// Teacher types
+export interface TeacherDashboard {
+  totalStudents: number;
+  totalMaterials: number;
+  totalAssignments: number;
+  couponCode: string | null;
+  recentStudents: { id: string; email: string; name: string | null; createdAt: string; joinedAt: string }[];
+}
+
+export interface TeacherStudent {
+  id: string;
+  email: string;
+  name: string | null;
+  createdAt: string;
+  joinedAt: string;
+  cardsCount: number;
+  groupsCount: number;
+}
+
+export interface TeacherStudentsResponse {
+  students: TeacherStudent[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface TeacherMaterialItem {
+  id: string;
+  title: string;
+  description: string | null;
+  type: string;
+  url: string | null;
+  content: string | null;
+  createdAt: string;
+  updatedAt: string;
+  assignedStudents: { id: string; email: string; name: string | null; assignedAt: string }[];
+}
+
+// Student types
+export interface StudentTeacher {
+  id: string;
+  email: string;
+  name: string | null;
+  joinedAt: string;
+}
+
+export interface StudentMaterial {
+  id: string;
+  title: string;
+  description: string | null;
+  type: string;
+  url: string | null;
+  content: string | null;
+  createdAt: string;
+  assignedAt: string;
+  teacher: { id: string; name: string | null; email: string };
+}
 
 export interface AdminMetrics {
   overview: {
@@ -220,6 +324,7 @@ export interface AdminUser {
   email: string;
   name: string | null;
   role: string;
+  couponCode: string | null;
   subscriptionStatus: string | null;
   subscriptionEndsAt: string | null;
   emailVerified: boolean;

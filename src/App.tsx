@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AdminRoute } from './components/AdminRoute';
+import { TeacherRoute } from './components/TeacherRoute';
 import { AppLayout } from './AppLayout';
 import { Login } from './pages/Login';
 import { Cadastro } from './pages/Cadastro';
@@ -12,6 +13,10 @@ import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { AdminFinancialPage } from './pages/admin/AdminFinancialPage';
 import { AdminTrafficPage } from './pages/admin/AdminTrafficPage';
+import { TeacherLayout } from './pages/teacher/TeacherLayout';
+import { TeacherDashboardPage } from './pages/teacher/TeacherDashboardPage';
+import { TeacherStudentsPage } from './pages/teacher/TeacherStudentsPage';
+import { TeacherMaterialsPage } from './pages/teacher/TeacherMaterialsPage';
 import { VerifyEmail } from './pages/VerifyEmail';
 import { TermosDeUso } from './pages/TermosDeUso';
 import { PoliticaPrivacidade } from './pages/PoliticaPrivacidade';
@@ -68,6 +73,18 @@ export default function App() {
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="financial" element={<AdminFinancialPage />} />
           <Route path="traffic" element={<AdminTrafficPage />} />
+        </Route>
+        <Route
+          path="/teacher"
+          element={
+            <TeacherRoute>
+              <TeacherLayout />
+            </TeacherRoute>
+          }
+        >
+          <Route index element={<TeacherDashboardPage />} />
+          <Route path="students" element={<TeacherStudentsPage />} />
+          <Route path="materials" element={<TeacherMaterialsPage />} />
         </Route>
         <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/termos" element={<TermosDeUso />} />
