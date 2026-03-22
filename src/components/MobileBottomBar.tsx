@@ -70,24 +70,27 @@ export function MobileBottomBar() {
                 className="relative -mt-5 flex flex-col items-center"
                 title={hasReviews ? 'Cards para revisar!' : undefined}
               >
-                <div
-                  className={`relative w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-200 overflow-hidden ${
-                    isActive
-                      ? `bg-gradient-to-br ${item.gradient} shadow-violet-500/40 scale-105`
-                      : hasReviews
-                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-500 shadow-lg shadow-fuchsia-500/30 ' +
-                          'ring-2 ring-violet-400/35 ring-offset-2 ring-offset-white/80 ' +
-                          'shadow-[inset_0_2px_0_0_rgba(255,255,255,0.35)] ' +
-                          'before:pointer-events-none before:absolute before:inset-x-1 before:top-1 before:h-[45%] before:rounded-t-xl before:bg-gradient-to-b before:from-white/30 before:to-transparent'
-                        : `bg-gradient-to-br ${item.gradient} shadow-violet-500/20`
-                  }`}
-                >
-                  {isActive && (
-                    <div className="absolute inset-0 rounded-2xl ring-4 ring-violet-400/30 animate-pulse" />
-                  )}
-                  <Icon className="w-6 h-6 text-white" />
+                {/* Badge fica fora da camada com overflow-hidden para não ser recortado */}
+                <div className="relative h-14 w-14 shrink-0">
+                  <div
+                    className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl shadow-xl transition-all duration-200 ${
+                      isActive
+                        ? `bg-gradient-to-br ${item.gradient} shadow-violet-500/40 scale-105`
+                        : hasReviews
+                          ? 'bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-500 shadow-lg shadow-fuchsia-500/30 ' +
+                            'ring-2 ring-violet-400/35 ring-offset-2 ring-offset-white/80 ' +
+                            'shadow-[inset_0_2px_0_0_rgba(255,255,255,0.35)] ' +
+                            'before:pointer-events-none before:absolute before:inset-x-1 before:top-1 before:h-[45%] before:rounded-t-xl before:bg-gradient-to-b before:from-white/30 before:to-transparent'
+                          : `bg-gradient-to-br ${item.gradient} shadow-violet-500/20`
+                    }`}
+                  >
+                    {isActive && (
+                      <div className="absolute inset-0 rounded-2xl ring-4 ring-violet-400/30 animate-pulse" />
+                    )}
+                    <Icon className="relative z-[1] h-6 w-6 text-white" />
+                  </div>
                   {item.badge && (
-                    <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-5 flex items-center justify-center px-1 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[10px] font-bold rounded-full shadow-lg ring-2 ring-white/90 animate-pulse">
+                    <span className="absolute -right-1 -top-1 z-20 flex min-h-[22px] min-w-[1.75rem] items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-white shadow-lg ring-2 ring-white/90 tabular-nums [font-feature-settings:'tnum'] animate-pulse sm:min-w-8 sm:px-2 sm:text-[11px]">
                       {item.badge}
                     </span>
                   )}

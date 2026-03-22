@@ -74,7 +74,7 @@ export function Cadastro() {
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-            🎓 Play Flash Cards
+            🎓
           </h1>
           <p className="text-slate-500 mt-2">Crie sua conta</p>
         </div>

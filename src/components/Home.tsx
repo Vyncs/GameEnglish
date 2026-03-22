@@ -50,57 +50,112 @@ export function Home() {
     : '0';
   const masteredCards = cards.filter(c => c.level === 5).length;
 
+  /** Mesmo gradiente “com revisões” do FAB do menu inferior (mobile). */
+  const playFabGradient =
+    'bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-500 shadow-lg shadow-fuchsia-500/30 ring-2 ring-violet-400/35 ring-offset-2 ring-offset-white/80 shadow-[inset_0_2px_0_0_rgba(255,255,255,0.35)]';
+
   return (
     <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
-      <div className="max-w-5xl mx-auto">
-        {/* Seção "Jogar" - Destaque principal (primeiro) */}
+      <div className="max-w-5xl mx-auto flex flex-col">
+        {/* Seção "Jogar" — no mobile fica no topo; resumo abaixo */}
         {totalReviewCount > 0 && (
-          <div className="mb-8 animate-fade-in">
-            <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-indigo-600 rounded-3xl p-8 text-white shadow-2xl shadow-violet-500/30 relative overflow-hidden">
+          <div className="mb-8 animate-fade-in order-1 lg:order-1">
+            <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-indigo-600 rounded-3xl p-6 sm:p-8 text-white shadow-2xl shadow-violet-500/30 relative overflow-hidden">
               {/* Elementos decorativos */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2" />
-              
-              <div className="relative z-10">
-                <div className="flex items-center justify-between flex-wrap gap-6">
+
+              {/* Mobile: botão estilo FAB + texto abaixo + grupos com scroll */}
+              <div className="relative z-10 lg:hidden flex flex-col items-center">
+                <button
+                  type="button"
+                  onClick={() => startPlayMode()}
+                  className={`relative flex h-16 w-full max-w-[260px] flex-col items-center justify-center gap-0.5 rounded-2xl text-white transition-transform active:scale-[0.98] overflow-hidden ${playFabGradient} before:pointer-events-none before:absolute before:inset-x-2 before:top-1.5 before:h-[42%] before:rounded-t-xl before:bg-gradient-to-b before:from-white/30 before:to-transparent`}
+                >
+                  <Gamepad2 className="relative z-[1] h-7 w-7 shrink-0" strokeWidth={2.25} />
+                  <span className="relative z-[1] text-[11px] font-black uppercase tracking-[0.2em] leading-tight">
+                    Jogar agora
+                  </span>
+                </button>
+                <p className="mt-4 text-center text-sm text-violet-100">
+                  <span className="font-bold text-white tabular-nums">{totalReviewCount} cards</span>{' '}
+                  aguardando sua revisão
+                </p>
+
+                {groupsWithPendingReview.length > 0 && (
+                  <div className="mt-5 w-full border-t border-white/20 pt-4">
+                    <p className="mb-2 text-center text-xs text-violet-200">
+                      Ou escolha um grupo específico:
+                    </p>
+                    <div className="max-h-[min(220px,38vh)] overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.35)_transparent]">
+                      <div className="flex flex-col gap-2">
+                        {groupsWithPendingReview.map(({ group, reviewCount }) => (
+                          <button
+                            key={group.id}
+                            type="button"
+                            onClick={() => startPlayMode(group.id)}
+                            className="flex w-full shrink-0 items-center justify-between gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-left text-sm backdrop-blur-sm transition-colors hover:bg-white/20"
+                          >
+                            <span className="flex min-w-0 items-center gap-2">
+                              <Folder className="h-4 w-4 shrink-0" />
+                              <span className="truncate font-medium">{group.name}</span>
+                            </span>
+                            <span className="shrink-0 rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold tabular-nums">
+                              {reviewCount}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop: layout original */}
+              <div className="relative z-10 hidden lg:block">
+                <div className="flex flex-wrap items-center justify-between gap-6">
                   <div className="flex items-center gap-5">
-                    <div className="p-4 bg-white/20 rounded-2xl backdrop-blur-sm">
-                      <Gamepad2 className="w-10 h-10" />
+                    <div className="rounded-2xl bg-white/20 p-4 backdrop-blur-sm">
+                      <Gamepad2 className="h-10 w-10" />
                     </div>
                     <div>
-                      <h2 className="text-3xl font-bold mb-1">Hora de Jogar! 🎮</h2>
-                      <p className="text-violet-100 text-lg">
-                        <span className="font-bold text-white">{totalReviewCount} cards</span> aguardando sua revisão
+                      <h2 className="mb-1 text-3xl font-bold">Hora de Jogar! 🎮</h2>
+                      <p className="text-lg text-violet-100">
+                        <span className="font-bold text-white">{totalReviewCount} cards</span> aguardando
+                        sua revisão
                       </p>
                     </div>
                   </div>
                   <button
+                    type="button"
                     onClick={() => startPlayMode()}
-                    className="px-8 py-4 bg-white text-violet-600 font-bold text-lg rounded-2xl hover:bg-violet-50 transition-all shadow-lg flex items-center gap-3 group"
+                    className="group flex items-center gap-3 rounded-2xl bg-white px-8 py-4 text-lg font-bold text-violet-600 shadow-lg transition-all hover:bg-violet-50"
                   >
-                    <Play className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                    <Play className="h-6 w-6 transition-transform group-hover:scale-110" />
                     Jogar Agora
                   </button>
                 </div>
 
-                {/* Lista de grupos com revisões pendentes */}
                 {groupsWithPendingReview.length > 0 && (
-                  <div className="mt-8 pt-6 border-t border-white/20">
-                    <p className="text-sm text-violet-200 mb-3">Ou escolha um grupo específico:</p>
-                    <div className="flex flex-wrap gap-3">
+                  <div className="mt-8 border-t border-white/20 pt-6">
+                    <p className="mb-3 text-sm text-violet-200">Ou escolha um grupo específico:</p>
+                    <div className="max-h-[min(280px,40vh)] overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.35)_transparent]">
+                      <div className="flex flex-wrap gap-3">
                       {groupsWithPendingReview.map(({ group, reviewCount }) => (
                         <button
                           key={group.id}
+                          type="button"
                           onClick={() => startPlayMode(group.id)}
-                          className="px-5 py-2.5 bg-white/15 hover:bg-white/25 backdrop-blur-sm rounded-xl transition-all flex items-center gap-2 border border-white/10"
+                          className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/15 px-5 py-2.5 backdrop-blur-sm transition-all hover:bg-white/25"
                         >
-                          <Folder className="w-4 h-4" />
+                          <Folder className="h-4 w-4" />
                           <span className="font-medium">{group.name}</span>
-                          <span className="px-2.5 py-0.5 bg-white/20 rounded-full text-xs font-bold">
+                          <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-bold">
                             {reviewCount}
                           </span>
                         </button>
                       ))}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -109,8 +164,12 @@ export function Home() {
           </div>
         )}
 
-        {/* Cards de estatísticas */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {/* Cards de estatísticas — abaixo do card Jogar no mobile */}
+        <div
+          className={`mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4 ${
+            totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'
+          }`}
+        >
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 bg-cyan-100 rounded-xl">
@@ -152,8 +211,10 @@ export function Home() {
           </div>
         </div>
 
-        {/* Seção de Grupos */}
-        <div className="mb-8">
+        {/* Seção de Grupos — order explícito para não ficar acima dos stats no mobile */}
+        <div
+          className={`mb-8 ${totalReviewCount > 0 ? 'order-3 lg:order-3' : 'order-2 lg:order-3'}`}
+        >
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
               <Folder className="w-6 h-6 text-slate-400" />
@@ -225,38 +286,44 @@ export function Home() {
               </button>
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {groupsWithReview.map(({ group, reviewCount, totalCards }, index) => (
-                <button
-                  key={group.id}
-                  onClick={() => selectGroup(group.id)}
-                  className="bg-gradient-to-br from-cyan-50/80 to-white rounded-2xl p-5 shadow-sm border border-cyan-100/80 hover:shadow-md hover:border-cyan-200 hover:from-cyan-100/60 hover:to-white transition-all text-left animate-fade-in group"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="p-2 bg-cyan-100/70 rounded-xl group-hover:bg-cyan-200/80 transition-colors">
-                      <Folder className="w-6 h-6 text-cyan-600 group-hover:text-cyan-700 transition-colors" />
+            <div
+              className="max-h-[min(320px,48vh)] overflow-y-auto overscroll-contain pr-1 [scrollbar-width:thin] [scrollbar-color:rgba(148,163,184,0.5)_transparent] md:max-h-[min(380px,52vh)] lg:max-h-[min(440px,55vh)]"
+            >
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {groupsWithReview.map(({ group, reviewCount, totalCards }, index) => (
+                  <button
+                    key={group.id}
+                    onClick={() => selectGroup(group.id)}
+                    className="bg-gradient-to-br from-cyan-50/80 to-white rounded-2xl p-5 shadow-sm border border-cyan-100/80 hover:shadow-md hover:border-cyan-200 hover:from-cyan-100/60 hover:to-white transition-all text-left animate-fade-in group"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="p-2 bg-cyan-100/70 rounded-xl group-hover:bg-cyan-200/80 transition-colors">
+                        <Folder className="w-6 h-6 text-cyan-600 group-hover:text-cyan-700 transition-colors" />
+                      </div>
+                      {reviewCount > 0 && (
+                        <span className="px-2.5 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full">
+                          {reviewCount} para revisar
+                        </span>
+                      )}
                     </div>
-                    {reviewCount > 0 && (
-                      <span className="px-2.5 py-1 bg-red-100 text-red-600 text-xs font-bold rounded-full">
-                        {reviewCount} para revisar
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-lg font-semibold text-slate-800 mb-1 group-hover:text-cyan-800 transition-colors">
-                    {group.name}
-                  </h3>
-                  <p className="text-sm text-slate-600">
-                    {totalCards} card{totalCards !== 1 ? 's' : ''}
-                  </p>
-                </button>
-              ))}
+                    <h3 className="text-lg font-semibold text-slate-800 mb-1 group-hover:text-cyan-800 transition-colors">
+                      {group.name}
+                    </h3>
+                    <p className="text-sm text-slate-600">
+                      {totalCards} card{totalCards !== 1 ? 's' : ''}
+                    </p>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
         {/* Ações rápidas */}
-        <div className="grid md:grid-cols-2 gap-4">
+        <div
+          className={`grid gap-4 md:grid-cols-2 ${totalReviewCount > 0 ? 'order-4 lg:order-4' : 'order-3 lg:order-4'}`}
+        >
           {/* Import/Export */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
             <div className="flex items-center gap-3 mb-4">
