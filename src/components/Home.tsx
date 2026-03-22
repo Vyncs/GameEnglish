@@ -53,60 +53,7 @@ export function Home() {
   return (
     <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
       <div className="max-w-5xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-800 mb-2">
-            Bem-vindo de volta! 👋
-          </h1>
-          <p className="text-lg text-slate-500">
-            Continue seu estudo de inglês e mantenha a consistência.
-          </p>
-        </div>
-
-        {/* Cards de estatísticas */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-cyan-100 rounded-xl">
-                <BookOpen className="w-5 h-5 text-cyan-600" />
-              </div>
-              <span className="text-sm text-slate-500">Total de Cards</span>
-            </div>
-            <p className="text-3xl font-bold text-slate-800">{totalCards}</p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-amber-100 rounded-xl">
-                <Clock className="w-5 h-5 text-amber-600" />
-              </div>
-              <span className="text-sm text-slate-500">Para Revisar</span>
-            </div>
-            <p className="text-3xl font-bold text-amber-600">{totalReviewCount}</p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-purple-100 rounded-xl">
-                <Target className="w-5 h-5 text-purple-600" />
-              </div>
-              <span className="text-sm text-slate-500">Nível Médio</span>
-            </div>
-            <p className="text-3xl font-bold text-slate-800">{avgLevel}</p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="p-2 bg-emerald-100 rounded-xl">
-                <Trophy className="w-5 h-5 text-emerald-600" />
-              </div>
-              <span className="text-sm text-slate-500">Dominados</span>
-            </div>
-            <p className="text-3xl font-bold text-emerald-600">{masteredCards}</p>
-          </div>
-        </div>
-
-        {/* Seção "Jogar" - Destaque principal */}
+        {/* Seção "Jogar" - Destaque principal (primeiro) */}
         {totalReviewCount > 0 && (
           <div className="mb-8 animate-fade-in">
             <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-indigo-600 rounded-3xl p-8 text-white shadow-2xl shadow-violet-500/30 relative overflow-hidden">
@@ -161,6 +108,49 @@ export function Home() {
             </div>
           </div>
         )}
+
+        {/* Cards de estatísticas */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-cyan-100 rounded-xl">
+                <BookOpen className="w-5 h-5 text-cyan-600" />
+              </div>
+              <span className="text-sm text-slate-500">Total de Cards</span>
+            </div>
+            <p className="text-3xl font-bold text-slate-800">{totalCards}</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-amber-100 rounded-xl">
+                <Clock className="w-5 h-5 text-amber-600" />
+              </div>
+              <span className="text-sm text-slate-500">Para Revisar</span>
+            </div>
+            <p className="text-3xl font-bold text-amber-600">{totalReviewCount}</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-purple-100 rounded-xl">
+                <Target className="w-5 h-5 text-purple-600" />
+              </div>
+              <span className="text-sm text-slate-500">Nível Médio</span>
+            </div>
+            <p className="text-3xl font-bold text-slate-800">{avgLevel}</p>
+          </div>
+
+          <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 bg-emerald-100 rounded-xl">
+                <Trophy className="w-5 h-5 text-emerald-600" />
+              </div>
+              <span className="text-sm text-slate-500">Dominados</span>
+            </div>
+            <p className="text-3xl font-bold text-emerald-600">{masteredCards}</p>
+          </div>
+        </div>
 
         {/* Seção de Grupos */}
         <div className="mb-8">

@@ -3,6 +3,7 @@ import { useStore } from '../store/useStore';
 import { FlashCard } from './FlashCard';
 import type { TranslationDirection } from '../types';
 import { Plus, Search, SortAsc, SortDesc, Inbox, Image as ImageIcon, Link, ArrowRight, Languages, Gamepad2, Lightbulb } from 'lucide-react';
+import { GroupsManagerPanel } from './GroupsManagerPanel';
 
 export function CardList() {
   const { cards, selectedGroupId, groups, addCard, getCardsForReviewCount, startPlayMode } = useStore();
@@ -55,27 +56,28 @@ export function CardList() {
     }
   };
 
-  if (!selectedGroupId) {
-    return (
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="text-center max-w-md">
-          <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-full flex items-center justify-center">
-            <Inbox className="w-12 h-12 text-cyan-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-3">
-            Selecione um grupo
-          </h2>
-          <p className="text-slate-500 leading-relaxed">
-            Escolha um grupo na barra lateral para ver e gerenciar seus flash cards, 
-            ou crie um novo grupo para começar.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
+      <div className="max-w-5xl mx-auto mb-8">
+        <GroupsManagerPanel />
+      </div>
+
+      {!selectedGroupId ? (
+        <div className="flex flex-col items-center justify-center py-12 px-4">
+          <div className="text-center max-w-md">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-full flex items-center justify-center">
+              <Inbox className="w-12 h-12 text-cyan-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-slate-800 mb-3">
+              Selecione um grupo
+            </h2>
+            <p className="text-slate-500 leading-relaxed">
+              Escolha um grupo acima ou crie um novo para ver e gerenciar seus flash cards.
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
       {/* Header */}
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-slate-800 mb-2">
@@ -389,6 +391,8 @@ export function CardList() {
             </div>
           ))}
         </div>
+      )}
+        </>
       )}
     </div>
   );

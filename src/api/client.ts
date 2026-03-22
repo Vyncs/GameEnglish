@@ -286,6 +286,7 @@ export interface AdminMetrics {
     totalUsers: number;
     newUsersThisMonth: number;
     paidUsers: number;
+    vipUsers: number;
     freeUsers: number;
     conversionRate: number;
     growthRate: number;
@@ -352,6 +353,8 @@ export interface AdminFinancial {
   mrr: number;
   arr: number;
   activeSubscriptions: number;
+  /** Usuários com acesso VIP (cupom); não entram na receita recorrente */
+  vipUsers: number;
   canceledThisMonth: number;
   newPaidThisMonth: number;
   churnRate: number;

@@ -64,7 +64,9 @@ export function Account() {
 
   if (!user) return null;
 
-  const isActive = user.subscriptionStatus === 'active';
+  const isPaying = user.subscriptionStatus === 'active';
+  const isVip = user.subscriptionStatus === 'vip';
+  const hasFullAccess = isPaying || isVip;
 
   return (
     <>
@@ -85,11 +87,26 @@ export function Account() {
         </div>
 
         <div className="border-t border-slate-200 pt-6 space-y-4">
-          <div className="flex items-center justify-between py-3 px-4 bg-slate-50 rounded-xl">
-            <span className="text-slate-600">Assinatura</span>
-            <span className={`font-medium ${isActive ? 'text-emerald-600' : 'text-amber-600'}`}>
-              {isActive ? 'Ativa' : 'Plano gratuito'}
-            </span>
+          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/80 px-4 py-3.5 shadow-sm">
+            <div className="flex items-center gap-3 w-full min-h-[2rem]">
+              <span className="text-sm font-semibold text-slate-800 shrink-0">Assinatura</span>
+              <div className="flex-1 border-b border-dashed border-slate-300 min-w-[1rem] self-center" aria-hidden />
+              {isPaying && (
+                <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-md shadow-cyan-500/20 shrink-0">
+                  Assinante
+                </span>
+              )}
+              {isVip && (
+                <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 shadow-md shadow-violet-500/25 shrink-0">
+                  VIP
+                </span>
+              )}
+              {!isPaying && !isVip && (
+                <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-700 bg-white border border-slate-200 shadow-sm shrink-0">
+                  Free
+                </span>
+              )}
+            </div>
           </div>
 
           {error && (
@@ -97,7 +114,7 @@ export function Account() {
           )}
 
           <div className="flex gap-3">
-            {!isActive && (
+            {!hasFullAccess && (
               <button
                 onClick={() => setShowSubscriptionModal(true)}
                 className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-medium rounded-xl hover:opacity-90 transition-opacity"
@@ -106,7 +123,7 @@ export function Account() {
                 Assinar agora
               </button>
             )}
-            {isActive && (
+            {isPaying && (
               <button
                 onClick={handlePortal}
                 disabled={paymentLoading}
@@ -118,7 +135,7 @@ export function Account() {
             )}
           </div>
 
-          {isDev && !isActive && (
+          {isDev && !hasFullAccess && (
             <button
               type="button"
               onClick={handleSimulateNotification}
@@ -129,7 +146,7 @@ export function Account() {
               Simular pagamento aprovado (dev)
             </button>
           )}
-          {isDev && isActive && (
+          {isDev && isPaying && (
             <button
               type="button"
               onClick={handleSimulateClearSubscription}

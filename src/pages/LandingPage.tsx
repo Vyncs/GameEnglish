@@ -18,6 +18,8 @@ import {
   Construction,
 } from 'lucide-react';
 
+import logoMark from '../assets/logotipo-educacional-raio-tablet.png';
+
 const WHATSAPP_URL = 'https://wa.me/5513988513127?text=Ol%C3%A1!%20Tenho%20interesse%20no%20Play%20Flash%20Cards';
 
 const VIDEOS = {
@@ -41,19 +43,45 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white text-slate-800 overflow-x-hidden">
-      {/* Navbar */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/90 backdrop-blur-xl shadow-sm border-b border-slate-100'
-            : 'bg-transparent'
-        }`}
-      >
+      <div className="fixed top-0 left-0 right-0 z-50">
+        {/* Promoção de lançamento */}
+        <div className="bg-gradient-to-r from-violet-600 via-violet-500 to-indigo-600 text-white px-4 py-2.5 text-center text-[11px] sm:text-sm leading-snug border-b border-white/10">
+          <p className="max-w-4xl mx-auto">
+            <span className="inline-flex items-center justify-center gap-1.5 font-semibold">
+              <Sparkles className="w-3.5 h-3.5 shrink-0 opacity-95" aria-hidden />
+              Promoção de lançamento:
+            </span>{' '}
+            <span className="text-violet-50">
+              acesso VIP para os primeiros <strong className="text-white font-bold">50</strong> cadastros.
+              {' '}
+              <span className="hidden sm:inline">·</span>{' '}
+              Para os <strong className="text-white font-bold">10</strong> primeiros professores:{' '}
+              <strong className="text-white font-bold">10</strong> alunos gratuitos.
+            </span>
+          </p>
+        </div>
+
+        {/* Navbar */}
+        <nav
+          className={`transition-all duration-300 w-full ${
+            scrolled
+              ? 'bg-white/90 backdrop-blur-xl shadow-sm border-b border-slate-100'
+              : 'bg-transparent'
+          }`}
+        >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-                <Layers className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-3">
+              <div
+                className="h-10 w-10 rounded-full overflow-hidden ring-1 ring-slate-200/80 shadow-sm shrink-0"
+                aria-hidden
+              >
+                <img
+                  src={logoMark}
+                  alt=""
+                  className="h-full w-full object-cover object-center pointer-events-none"
+                  draggable={false}
+                />
               </div>
               <span className="text-xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                 Play Flash Cards
@@ -108,10 +136,11 @@ export function LandingPage() {
             </div>
           </div>
         )}
-      </nav>
+        </nav>
+      </div>
 
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 lg:pt-44 lg:pb-32 overflow-hidden">
+      {/* Hero — padding compensa faixa promocional + navbar */}
+      <section className="relative pt-44 pb-20 lg:pt-52 lg:pb-32 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-cyan-100/40 rounded-full blur-3xl" />
           <div className="absolute top-1/3 -left-40 w-[500px] h-[500px] bg-blue-100/30 rounded-full blur-3xl" />
@@ -482,7 +511,23 @@ export function LandingPage() {
                 <a href="/privacidade" className="hover:text-slate-600 transition-colors">Política de Privacidade</a>
               </div>
             </div>
-            <div className="text-center">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="h-9 w-9 rounded-full overflow-hidden ring-1 ring-slate-200/80 shadow-sm shrink-0"
+                  aria-hidden
+                >
+                  <img
+                    src={logoMark}
+                    alt=""
+                    className="h-full w-full object-cover object-center"
+                    draggable={false}
+                  />
+                </div>
+                <span className="text-sm font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                  Play Flash Cards
+                </span>
+              </div>
               <p className="text-xs text-slate-400">
                 &copy; {new Date().getFullYear()} Play Flash Cards. Todos os direitos reservados.
               </p>

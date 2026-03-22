@@ -14,6 +14,7 @@ import { GradedReaders } from './components/GradedReaders';
 import { Account } from './components/Account';
 import { StudentMaterials } from './components/StudentMaterials';
 import { PaywallOverlay } from './components/PaywallOverlay';
+import { hasPremiumAccess } from './utils/subscription';
 import { api } from './api/client';
 
 const SUBSCRIPTION_VIEWS: Record<string, string> = {
@@ -31,7 +32,7 @@ const FULLSCREEN_VIEWS = new Set(['play', 'karaoke', 'readers']);
 export function AppLayout() {
   const { viewMode, hydrateFromSync, memoryDecks, hiddenDefaultDeckIds } = useStore();
   const { user } = useAuthStore();
-  const isSubscribed = user?.subscriptionStatus === 'active';
+  const isSubscribed = hasPremiumAccess(user?.subscriptionStatus);
   const isFullscreen = FULLSCREEN_VIEWS.has(viewMode);
 
   useEffect(() => {

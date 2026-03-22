@@ -9,6 +9,7 @@ import {
   CreditCard,
   Target,
   AlertTriangle,
+  Sparkles,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -73,7 +74,7 @@ export function AdminFinancialPage() {
     {
       title: 'MRR',
       value: fmt(data.mrr),
-      subtitle: 'Receita Mensal Recorrente',
+      subtitle: 'Só assinantes Premium (pagantes). VIP não entra.',
       icon: <DollarSign className="w-5 h-5 text-emerald-600" />,
       color: 'bg-emerald-50',
       trend: data.revenueGrowth,
@@ -94,11 +95,18 @@ export function AdminFinancialPage() {
       trend: data.revenueGrowth,
     },
     {
-      title: 'Assinantes Ativos',
+      title: 'Assinantes pagantes',
       value: data.activeSubscriptions,
       subtitle: `${data.newPaidThisMonth} novo${data.newPaidThisMonth !== 1 ? 's' : ''} este mês`,
       icon: <Users className="w-5 h-5 text-cyan-600" />,
       color: 'bg-cyan-50',
+    },
+    {
+      title: 'Usuários VIP',
+      value: data.vipUsers,
+      subtitle: 'Acesso cortesia (cupom). Fora da receita.',
+      icon: <Sparkles className="w-5 h-5 text-violet-600" />,
+      color: 'bg-violet-50',
     },
     {
       title: 'Taxa de Conversão',
@@ -123,7 +131,7 @@ export function AdminFinancialPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Financeiro</h1>
           <p className="text-sm text-slate-500">
-            Receita, assinaturas e métricas financeiras
+            Receita e assinaturas pagantes; usuários VIP (cupom) aparecem à parte e não entram no MRR.
             <span className="ml-2 text-xs text-slate-400">(Preço base: {fmt(data.monthlyPrice)}/mês)</span>
           </p>
         </div>

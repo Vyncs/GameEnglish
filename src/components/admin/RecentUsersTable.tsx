@@ -43,11 +43,19 @@ export function RecentUsersTable({ users }: RecentUsersTableProps) {
                   <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                     u.subscriptionStatus === 'active'
                       ? 'bg-emerald-50 text-emerald-700'
-                      : u.subscriptionStatus === 'canceled'
-                        ? 'bg-red-50 text-red-600'
-                        : 'bg-slate-50 text-slate-500'
+                      : u.subscriptionStatus === 'vip'
+                        ? 'bg-violet-50 text-violet-700'
+                        : u.subscriptionStatus === 'canceled'
+                          ? 'bg-red-50 text-red-600'
+                          : 'bg-slate-50 text-slate-500'
                   }`}>
-                    {u.subscriptionStatus === 'active' ? 'Premium' : u.subscriptionStatus === 'canceled' ? 'Cancelado' : 'Free'}
+                    {u.subscriptionStatus === 'active'
+                      ? 'Premium'
+                      : u.subscriptionStatus === 'vip'
+                        ? 'VIP'
+                        : u.subscriptionStatus === 'canceled'
+                          ? 'Cancelado'
+                          : 'Free'}
                   </span>
                 </td>
                 <td className="py-3 text-slate-500">

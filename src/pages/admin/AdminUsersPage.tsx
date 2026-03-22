@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { api, type AdminUser, type AdminUsersResponse } from '../../api/client';
 
-type FilterStatus = '' | 'active' | 'free' | 'canceled';
+type FilterStatus = '' | 'active' | 'vip' | 'free' | 'canceled';
 
 export function AdminUsersPage() {
   const [data, setData] = useState<AdminUsersResponse | null>(null);
@@ -63,6 +63,7 @@ export function AdminUsersPage() {
   const statusFilters: { value: FilterStatus; label: string }[] = [
     { value: '', label: 'Todos' },
     { value: 'active', label: 'Premium' },
+    { value: 'vip', label: 'VIP' },
     { value: 'free', label: 'Free' },
     { value: 'canceled', label: 'Cancelado' },
   ];
@@ -166,11 +167,19 @@ export function AdminUsersPage() {
                       <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
                         u.subscriptionStatus === 'active'
                           ? 'bg-emerald-50 text-emerald-700'
-                          : u.subscriptionStatus === 'canceled' || u.subscriptionStatus === 'past_due'
-                            ? 'bg-red-50 text-red-600'
-                            : 'bg-slate-50 text-slate-500'
+                          : u.subscriptionStatus === 'vip'
+                            ? 'bg-violet-50 text-violet-700'
+                            : u.subscriptionStatus === 'canceled' || u.subscriptionStatus === 'past_due'
+                              ? 'bg-red-50 text-red-600'
+                              : 'bg-slate-50 text-slate-500'
                       }`}>
-                        {u.subscriptionStatus === 'active' ? 'Premium' : u.subscriptionStatus === 'canceled' ? 'Cancelado' : 'Free'}
+                        {u.subscriptionStatus === 'active'
+                          ? 'Premium'
+                          : u.subscriptionStatus === 'vip'
+                            ? 'VIP'
+                            : u.subscriptionStatus === 'canceled'
+                              ? 'Cancelado'
+                              : 'Free'}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-slate-600">
@@ -343,7 +352,8 @@ function EditUserModal({ user, onClose, onSaved }: { user: AdminUser; onClose: (
               className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
             >
               <option value="">Free</option>
-              <option value="active">Premium (active)</option>
+              <option value="active">Premium (pagante)</option>
+              <option value="vip">VIP (acesso cortesia)</option>
               <option value="canceled">Cancelado</option>
               <option value="past_due">Past Due</option>
             </select>

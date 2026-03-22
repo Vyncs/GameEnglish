@@ -1,4 +1,4 @@
-import { Users, CreditCard, UserPlus, TrendingUp, TrendingDown, BarChart3, Layers, FolderOpen } from 'lucide-react';
+import { Users, CreditCard, UserPlus, TrendingUp, TrendingDown, BarChart3, Layers, FolderOpen, Sparkles } from 'lucide-react';
 import type { AdminMetrics } from '../../api/client';
 
 interface MetricsCardsProps {
@@ -53,11 +53,18 @@ export function MetricsCards({ metrics }: MetricsCardsProps) {
         color="bg-blue-50"
       />
       <MetricCard
-        title="Assinantes Ativos"
+        title="Assinantes pagantes"
         value={overview.paidUsers}
-        subtitle={`${overview.conversionRate}% de conversão`}
+        subtitle={`${overview.conversionRate}% conversão (pagos / total)`}
         icon={<CreditCard className="w-5 h-5 text-emerald-600" />}
         color="bg-emerald-50"
+      />
+      <MetricCard
+        title="Usuários VIP"
+        value={overview.vipUsers}
+        subtitle="Acesso cortesia (cupom); fora da receita"
+        icon={<Sparkles className="w-5 h-5 text-violet-600" />}
+        color="bg-violet-50"
       />
       <MetricCard
         title="Churn Mensal"
