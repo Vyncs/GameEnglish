@@ -1,4 +1,10 @@
-import type { GradedBook, ReaderWord, ReaderParagraph, BookTag } from '../types';
+import type {
+  GradedBook,
+  ReaderWord,
+  ReaderParagraph,
+  BookTag,
+  ComprehensionQuestion,
+} from '../types';
 import { BOOK_TAGS } from '../types';
 
 /**
@@ -1181,36 +1187,91 @@ const generateBookId = () => `ai-${Date.now()}-${Math.random().toString(36).slic
 
 /** Imagens de capa por tema (Unsplash, compatíveis com a história) */
 const THEME_COVER_URLS: Record<BookTag, string> = {
+  /** Foto verificada (Unsplash/imgix); IDs antigos podem retornar 404 e quebrar a capa. */
   'daily-life':
-    'https://images.unsplash.com/photo-1484480974693-6d0e1c4b5d8a?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=300&h=400&fit=crop&auto=format&q=80',
   travel:
-    'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=300&h=400&fit=crop&auto=format&q=80',
   romance:
-    'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300&h=400&fit=crop',
-  work: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300&h=400&fit=crop&auto=format&q=80',
+  work: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=300&h=400&fit=crop&auto=format&q=80',
   adventure:
-    'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=300&h=400&fit=crop&auto=format&q=80',
   mystery:
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop&auto=format&q=80',
   fantasy:
-    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&h=400&fit=crop&auto=format&q=80',
   science:
-    'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=300&h=400&fit=crop&auto=format&q=80',
   'rpg-fantasy':
-    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=300&h=400&fit=crop&auto=format&q=80',
   horror:
-    'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300&h=400&fit=crop',
+    'https://images.unsplash.com/photo-1509248961158-e54f6934749c?w=300&h=400&fit=crop&auto=format&q=80',
 };
 
 export function getCoverUrlForTheme(theme: BookTag): string {
   return THEME_COVER_URLS[theme] ?? THEME_COVER_URLS['daily-life'];
 }
 
+function tryParseJsonStory(trimmed: string): {
+  title: string;
+  storyText: string;
+  questions?: ComprehensionQuestion[];
+} | null {
+  let text = trimmed;
+  const fence = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fence) text = fence[1].trim();
+  if (!text.startsWith('{')) return null;
+  try {
+    const o = JSON.parse(text) as Record<string, unknown>;
+    if (!o || typeof o !== 'object') return null;
+    const title = typeof o.title === 'string' ? o.title : 'Story by AI';
+    const paragraphs = Array.isArray(o.paragraphs)
+      ? o.paragraphs.filter((p): p is string => typeof p === 'string')
+      : [];
+    const storyText = paragraphs.map((p) => p.trim()).filter(Boolean).join('\n\n');
+    if (!storyText.trim()) return null;
+    const questions: ComprehensionQuestion[] = [];
+    if (Array.isArray(o.questions)) {
+      for (let i = 0; i < o.questions.length; i++) {
+        const q = o.questions[i] as Record<string, unknown>;
+        if (!q || typeof q.question !== 'string') continue;
+        const opts = Array.isArray(q.options)
+          ? q.options.filter((x): x is string => typeof x === 'string')
+          : [];
+        const ci = typeof q.correctIndex === 'number' ? q.correctIndex : 0;
+        if (opts.length < 2) continue;
+        const correctIndex = Math.min(Math.max(0, ci), opts.length - 1);
+        questions.push({
+          id: typeof q.id === 'string' ? q.id : `q${i + 1}`,
+          question: q.question,
+          options: opts,
+          correctIndex,
+        });
+      }
+    }
+    return {
+      title,
+      storyText,
+      questions: questions.length ? questions : undefined,
+    };
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Extrai título e corpo do texto retornado pela IA (primeira linha = título, resto = história).
+ * Extrai título, corpo e (opcional) quiz do retorno da IA: JSON preferencial; senão texto (1ª linha = título).
  */
-export function parseAIStoryResponse(rawText: string): { title: string; storyText: string } {
+export function parseAIStoryResponse(rawText: string): {
+  title: string;
+  storyText: string;
+  questions?: ComprehensionQuestion[];
+} {
   const t = rawText.trim();
+  const fromJson = tryParseJsonStory(t);
+  if (fromJson) return fromJson;
+
   const firstLineEnd = t.indexOf('\n');
   if (firstLineEnd <= 0) {
     return { title: t ? t.slice(0, 80) : 'Story by AI', storyText: t };
@@ -1235,9 +1296,20 @@ export function parseAIStoryResponse(rawText: string): { title: string; storyTex
  */
 export function parseRawStoryToBook(
   rawText: string,
-  options: { title: string; level: GradedBook['level']; theme: BookTag; coverUrl?: string }
+  options: {
+    title: string;
+    level: GradedBook['level'];
+    theme: BookTag;
+    coverUrl?: string;
+    questions?: ComprehensionQuestion[];
+  }
 ): GradedBook {
-  const { title, level, theme, coverUrl } = options;
+  const { title, level, theme, coverUrl, questions } = options;
+  /** ID removido do CDN Unsplash/imgix — URL antiga retornava 404. */
+  let resolvedCover = coverUrl ?? getCoverUrlForTheme(theme);
+  if (resolvedCover.includes('photo-1484480974693-6d0e1c4b5d8a')) {
+    resolvedCover = getCoverUrlForTheme(theme);
+  }
   const paragraphsRaw = rawText
     .split(/\n\n+/)
     .map((p) => p.trim())
@@ -1261,11 +1333,12 @@ export function parseRawStoryToBook(
     author: 'IA (Groq)',
     level,
     tags: [theme],
-    coverUrl: coverUrl ?? getCoverUrlForTheme(theme),
+    coverUrl: resolvedCover,
     totalWords,
     estimatedMinutes,
     description: `História gerada por IA. Tema: ${themeLabel}.`,
     paragraphs,
+    ...(questions?.length ? { questions } : {}),
     progress: 0,
     createdAt: Date.now(),
     isCustom: true,

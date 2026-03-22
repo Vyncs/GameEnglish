@@ -1,6 +1,11 @@
 import { useState, useRef } from 'react';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { hasPremiumAccess } from '../utils/subscription';
+import { FREE_KARAOKE_SONG_IDS } from '../utils/freeTier';
 import { defaultKaraokeSongs } from '../data/karaokeSongs';
+import { SubscriptionModal } from './SubscriptionModal';
+import { LockedCardOverlay } from './LockedCardOverlay';
 import { useSpeechRecognition, compareTexts } from '../hooks/useSpeechRecognition';
 import { KARAOKE_DIFFICULTY_CONFIG } from '../types';
 import type { Song, SongDifficulty, LineResult, WordResult } from '../types';
@@ -22,6 +27,8 @@ import {
 } from 'lucide-react';
 
 export function KaraokeMode() {
+  const { user } = useAuthStore();
+  const isPremium = hasPremiumAccess(user?.subscriptionStatus);
   const {
     karaokePhase,
     karaokeSong,
@@ -44,15 +51,19 @@ export function KaraokeMode() {
   } = useSpeechRecognition();
 
   const [filterDifficulty, setFilterDifficulty] = useState<SongDifficulty | 'all'>('all');
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [currentResult, setCurrentResult] = useState<{ words: WordResult[]; accuracy: number; spokenText: string } | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Filtrar músicas
-  const filteredSongs = filterDifficulty === 'all'
-    ? defaultKaraokeSongs
-    : defaultKaraokeSongs.filter(s => s.difficulty === filterDifficulty);
+  const filteredSongs =
+    filterDifficulty === 'all'
+      ? defaultKaraokeSongs
+      : defaultKaraokeSongs.filter((s) => s.difficulty === filterDifficulty);
+
+  const isSongLocked = (song: Song) =>
+    !isPremium && !FREE_KARAOKE_SONG_IDS.has(song.id);
 
   // Linha atual
   const currentLine = karaokeSong?.lyrics[karaokeLineIndex];
@@ -117,7 +128,21 @@ export function KaraokeMode() {
   // =============================================
   if (karaokePhase === 'song-selection') {
     return (
-      <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
+      <div className="flex-1 p-6 lg:p-8 overflow-y-auto relative">
+        <SubscriptionModal
+          open={showSubscriptionModal}
+          onClose={() => setShowSubscriptionModal(false)}
+        />
+        <div className="max-w-4xl mx-auto mb-4 flex justify-start">
+          <button
+            type="button"
+            onClick={goToHome}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
+          >
+            <Home className="w-4 h-4" />
+            Voltar ao início
+          </button>
+        </div>
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-violet-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
@@ -168,17 +193,31 @@ export function KaraokeMode() {
 
         {/* Lista de músicas */}
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-lg font-semibold text-slate-700 mb-4">
+          <h2 className="text-lg font-semibold text-slate-700 mb-2">
             Choose a lesson ({filteredSongs.length})
           </h2>
+          {!isPremium && (
+            <p className="text-sm text-slate-500 mb-4">
+              Plano free: <span className="font-medium text-slate-600">English Basics</span> e{' '}
+              <span className="font-medium text-slate-600">Daily Routines</span> liberados. Nas demais
+              aulas o cadeado indica conteúdo premium — toque no card para assinar e jogar todas.
+            </p>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredSongs.map((song) => (
-              <SongCard
-                key={song.id}
-                song={song}
-                onClick={() => selectKaraokeSong(song)}
-              />
-            ))}
+            {filteredSongs.map((song) => {
+              const locked = isSongLocked(song);
+              return (
+                <SongCard
+                  key={song.id}
+                  song={song}
+                  locked={locked}
+                  onClick={() => {
+                    if (locked) setShowSubscriptionModal(true);
+                    else selectKaraokeSong(song);
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
 
@@ -208,10 +247,20 @@ export function KaraokeMode() {
         )}
 
         {/* Header */}
-        <div className="absolute top-6 left-6">
+        <div className="absolute top-6 left-6 flex gap-2">
+          <button
+            type="button"
+            onClick={goToHome}
+            className="inline-flex items-center gap-2 px-3 py-2 bg-white/15 hover:bg-white/25 text-white rounded-xl transition-colors text-sm"
+            title="Início"
+          >
+            <Home className="w-5 h-5" />
+            Início
+          </button>
           <button
             onClick={resetKaraoke}
             className="p-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors"
+            title="Lista de músicas"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -490,14 +539,31 @@ export function KaraokeMode() {
 // =============================================
 // Componente de Card da Música
 // =============================================
-function SongCard({ song, onClick }: { song: Song; onClick: () => void }) {
+function SongCard({
+  song,
+  locked,
+  onClick,
+}: {
+  song: Song;
+  locked?: boolean;
+  onClick: () => void;
+}) {
   const config = KARAOKE_DIFFICULTY_CONFIG[song.difficulty];
-  
+
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="p-6 bg-white rounded-2xl shadow-lg border border-slate-200 hover:border-violet-300 hover:shadow-xl transition-all text-left group"
+      aria-label={
+        locked
+          ? `${song.title} — exclusivo para assinantes, toque para ver planos`
+          : `Abrir lição ${song.title}`
+      }
+      className={`relative overflow-hidden p-6 bg-white rounded-2xl shadow-lg border border-slate-200 transition-all text-left group ${
+        locked ? 'cursor-pointer' : 'hover:border-violet-300 hover:shadow-xl'
+      }`}
     >
+      {locked && <LockedCardOverlay />}
       <div className="flex items-start gap-4">
         <div className="w-14 h-14 bg-gradient-to-br from-violet-100 to-purple-100 rounded-xl flex items-center justify-center overflow-hidden group-hover:scale-110 transition-transform">
           {song.coverUrl ? (

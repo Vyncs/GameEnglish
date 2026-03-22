@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { hasPremiumAccess } from '../utils/subscription';
 import { api } from '../api/client';
 import type { NormalizedImportData } from '../types';
 import { 
@@ -42,6 +44,8 @@ interface ImportExportProps {
 }
 
 export function ImportExport({ onClose }: ImportExportProps) {
+  const { user } = useAuthStore();
+  const canSyncImportExport = hasPremiumAccess(user?.subscriptionStatus);
   const { exportProgress, validateImportData, normalizeImportData, hydrateFromSync, groups, cards } = useStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
@@ -80,6 +84,14 @@ export function ImportExport({ onClose }: ImportExportProps) {
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!canSyncImportExport) {
+      setImportResult({
+        success: false,
+        message: 'Importação e exportação completas são para assinantes. Faça upgrade em Conta.',
+      });
+      e.target.value = '';
+      return;
+    }
 
     setSelectedFile(file);
     setImportResult(null);
@@ -107,6 +119,13 @@ export function ImportExport({ onClose }: ImportExportProps) {
 
   const handleImport = async () => {
     if (!normalizedData) return;
+    if (!canSyncImportExport) {
+      setImportResult({
+        success: false,
+        message: 'Importação disponível apenas para assinantes.',
+      });
+      return;
+    }
 
     const mergeMode = importMode === 'merge';
     const isLoggedIn = !!api.getToken();
@@ -206,6 +225,11 @@ export function ImportExport({ onClose }: ImportExportProps) {
             </h3>
             <p className="text-sm text-emerald-600 mb-4">
               Baixe um arquivo JSON com todos os seus grupos e cards.
+              {!canSyncImportExport && (
+                <span className="block mt-2 text-amber-800">
+                  Exportação completa disponível para assinantes.
+                </span>
+              )}
             </p>
             <div className="flex items-center justify-between">
               <span className="text-xs text-emerald-700">
@@ -213,7 +237,8 @@ export function ImportExport({ onClose }: ImportExportProps) {
               </span>
               <button
                 onClick={handleExport}
-                className="px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors flex items-center gap-2"
+                disabled={!canSyncImportExport}
+                className="px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download className="w-4 h-4" />
                 Exportar JSON
@@ -229,6 +254,11 @@ export function ImportExport({ onClose }: ImportExportProps) {
             </h3>
             <p className="text-sm text-blue-600 mb-3">
               Selecione um arquivo JSON para importar seus dados.
+              {!canSyncImportExport && (
+                <span className="block mt-2 font-medium text-amber-800">
+                  No plano free, importação está desativada. Assine para importar e exportar.
+                </span>
+              )}
             </p>
 
             {/* Botão baixar exemplo */}
@@ -251,8 +281,9 @@ export function ImportExport({ onClose }: ImportExportProps) {
 
             {!selectedFile ? (
               <button
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full p-6 border-2 border-dashed border-blue-200 rounded-xl hover:border-blue-400 hover:bg-blue-50/50 transition-colors text-center"
+                onClick={() => canSyncImportExport && fileInputRef.current?.click()}
+                disabled={!canSyncImportExport}
+                className="w-full p-6 border-2 border-dashed border-blue-200 rounded-xl hover:border-blue-400 hover:bg-blue-50/50 transition-colors text-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Upload className="w-8 h-8 text-blue-400 mx-auto mb-2" />
                 <span className="text-blue-600 font-medium">Clique para selecionar arquivo</span>

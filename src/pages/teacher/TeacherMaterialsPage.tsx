@@ -3,6 +3,7 @@ import {
   Plus, Trash2, Pencil, X, Check, Loader2,
   Link as LinkIcon, FileText, Video, File, Users, UserPlus, UserMinus,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { api, type TeacherMaterialItem, type TeacherStudent } from '../../api/client';
 
 const TYPE_META: Record<string, { label: string; icon: typeof LinkIcon; color: string }> = {
@@ -34,7 +35,7 @@ export function TeacherMaterialsPage() {
     try {
       await api.deleteTeacherMaterial(id);
       fetchMaterials();
-    } catch { alert('Erro ao excluir'); }
+    } catch { toast.error('Erro ao excluir'); }
   };
 
   if (loading) {
@@ -288,7 +289,7 @@ function AssignModal({
     try {
       await api.assignTeacherMaterial(material.id, [studentId]);
       onChanged();
-    } catch { alert('Erro ao atribuir'); }
+    } catch { toast.error('Erro ao atribuir'); }
     finally { setSaving(false); }
   };
 
@@ -297,7 +298,7 @@ function AssignModal({
     try {
       await api.unassignTeacherMaterial(material.id, studentId);
       onChanged();
-    } catch { alert('Erro ao remover'); }
+    } catch { toast.error('Erro ao remover'); }
     finally { setSaving(false); }
   };
 
@@ -308,7 +309,7 @@ function AssignModal({
     try {
       await api.assignTeacherMaterial(material.id, unassigned);
       onChanged();
-    } catch { alert('Erro ao atribuir'); }
+    } catch { toast.error('Erro ao atribuir'); }
     finally { setSaving(false); }
   };
 

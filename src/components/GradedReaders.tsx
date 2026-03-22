@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { hasPremiumAccess } from '../utils/subscription';
+import { FREE_AI_STORIES_PER_LEVEL } from '../utils/freeTier';
 import { defaultGradedBooks, parseRawStoryToBook, parseAIStoryResponse, getCoverUrlForTheme } from '../data/gradedBooks';
+import { SubscriptionModal } from './SubscriptionModal';
 import { useSpeech } from '../hooks/useSpeech';
 import {
   READER_LEVEL_CONFIG,
@@ -670,6 +674,7 @@ export function GradedReaders() {
 
         {readerSubTab === 'create' && (
           <CreateWithAI
+            customBooks={customBooks}
             addCustomBook={addCustomBook}
             openBook={openBook}
           />
@@ -693,6 +698,12 @@ function BookCard({
   onDelete?: () => void;
 }) {
   const levelConfig = READER_LEVEL_CONFIG[book.level];
+  const themeTag = (book.tags[0] ?? 'daily-life') as BookTag;
+  const fallbackCover = getCoverUrlForTheme(themeTag);
+  const [coverSrc, setCoverSrc] = useState(() => book.coverUrl ?? fallbackCover);
+  useEffect(() => {
+    setCoverSrc(book.coverUrl ?? fallbackCover);
+  }, [book.id, book.coverUrl, fallbackCover]);
 
   return (
     <div className="relative bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all text-left group">
@@ -703,10 +714,16 @@ function BookCard({
       >
         {/* Cover */}
         <div className="aspect-[3/4] relative overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
-          {book.coverUrl ? (
+          {coverSrc ? (
             <img
-              src={book.coverUrl}
-              alt={book.title}
+              src={coverSrc}
+              alt=""
+              referrerPolicy="no-referrer"
+              onError={() => {
+                setCoverSrc((prev) =>
+                  prev && prev !== fallbackCover ? fallbackCover : ''
+                );
+              }}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
@@ -802,17 +819,63 @@ function BookCard({
 // =============================================
 const GROQ_API_KEY_STORAGE = 'gradereaders_groq_api_key';
 
+/** O modelo tende a repetir “família + casa + jardim”; cada tema força foco e cenário diferentes. */
+const THEME_STORY_FOCUS: Record<BookTag, string> = {
+  'daily-life':
+    'Routines, meals, school, neighbors, shopping, weather—vary the place (flat, bus, park, market). Do not default to the same “small house + garden + pet” plot every time.',
+  travel:
+    'Trip, ticket, hotel/hostel, airport/train, new city, language mix-up, luggage, a small travel problem to solve.',
+  romance:
+    'Meeting someone, a kind gesture, feelings in simple words—keep it age-appropriate and light; avoid cliché “perfect date” only.',
+  work:
+    'Job tasks, colleagues, break time, email/call, a simple problem at work (deadline, mistake, helping a coworker).',
+  adventure:
+    'A journey, map, weather, obstacle, choice—outdoor or exploration; concrete actions, not only description.',
+  mystery:
+    'A small puzzle (lost item, strange note, wrong number)—the narrator notices clues and finds a simple answer.',
+  fantasy:
+    'One magical rule or creature, a humble hero, a small quest—clear but simple for the CEFR level.',
+  science:
+    'Experiment, lab/school project, nature discovery, “why” questions—simple cause and effect.',
+  'rpg-fantasy':
+    'Party, quest hook, tavern or road, one battle or riddle—keep vocabulary controlled for the level.',
+  horror:
+    'Moody setting, strange sound or shadow, mild suspense—no gore; safe for learners.',
+};
+
+const LENGTH_SPECS = {
+  short: { min: 150, max: 200, paragraphsMin: 4, target: 180 },
+  medium: { min: 300, max: 400, paragraphsMin: 5, target: 350 },
+  long: { min: 500, max: 600, paragraphsMin: 7, target: 550 },
+} as const;
+
+function maxTokensForStorySize(size: 'short' | 'medium' | 'long'): number {
+  if (size === 'short') return 2300;
+  if (size === 'medium') return 3400;
+  return 4500;
+}
+
+function isAiGeneratedStory(b: GradedBook): boolean {
+  if (!b.isCustom) return false;
+  const a = String(b.author || '');
+  return a.includes('Groq') || a.includes('IA (');
+}
+
 function CreateWithAI({
+  customBooks,
   addCustomBook,
   openBook,
 }: {
+  customBooks: GradedBook[];
   addCustomBook: (book: GradedBook) => void;
   openBook: (book: GradedBook) => void;
 }) {
+  const { user } = useAuthStore();
+  const isPremium = hasPremiumAccess(user?.subscriptionStatus);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [title, setTitle] = useState('');
   const [theme, setTheme] = useState<BookTag>('daily-life');
   const [size, setSize] = useState<'short' | 'medium' | 'long'>('medium');
-  const [includeQuestions, setIncludeQuestions] = useState(true);
   const [apiKey, setApiKey] = useState(() => {
     try {
       return localStorage.getItem(GROQ_API_KEY_STORAGE) || '';
@@ -834,37 +897,72 @@ function CreateWithAI({
     }
   };
 
-  const generatePrompt = () => {
+  /**
+   * @param variationSeed — só na chamada à API: história diferente a cada geração. Omitido no texto “Copiar prompt”.
+   */
+  const buildGroqPrompt = (variationSeed?: number) => {
     const levelConfig = READER_LEVEL_CONFIG[readerLevel];
-    const wordCount = size === 'short' ? '150-200' : size === 'medium' ? '300-400' : '500-600';
-    return `Create a graded reader story in English.
+    const spec = LENGTH_SPECS[size];
+    const tagMeta = BOOK_TAGS.find((t) => t.tag === theme);
+    const themeLabel = tagMeta?.label ?? theme;
+    const themeFocus = THEME_STORY_FOCUS[theme];
+    const seedBlock =
+      variationSeed !== undefined
+        ? `
+Variation (mandatory): generation id ${variationSeed} — use NEW names, NEW place, NEW conflict. Do NOT reuse a generic opener you often use (e.g. "My name is… I live with my family in a small house with a big garden") unless the user theme explicitly requires that exact setting.`
+        : '';
 
-Level: ${readerLevel} (${levelConfig.label})
-Vocabulary limit: ${levelConfig.vocabularyRange}
-Grammar focus: ${levelConfig.grammarFocus}
-Theme: ${BOOK_TAGS.find((t) => t.tag === theme)?.label || theme}
-Word count: ${wordCount} words
-${title ? `Title suggestion (you may use or adapt): ${title}` : ''}
+    return `You write graded-reader fiction for English learners.
 
-IMPORTANT - Output format:
-1. First line: ONLY the story title (e.g. "The Lost Castle" or "A Day at the Beach"). No quotes, no "Title:" prefix.
-2. One blank line.
-3. Then the story paragraphs, with one blank line between each paragraph.
+OUTPUT: Return ONLY valid JSON. No markdown fences, no commentary before or after the JSON.
 
-Rules:
-- Simple, clear sentences appropriate for ${readerLevel} level
-- High repetition of core vocabulary
-- Natural context and engaging story
-- No complex metaphors or idioms
-- Common phrasal verbs only
-- Each paragraph should be 2-3 sentences
-- After the title line, output ONLY the story text. No extra commentary.${includeQuestions ? '\n\nOptional: at the end add 5 comprehension questions with 4 options each.' : ''}`;
+Schema (exact keys):
+{
+  "title": "English title",
+  "paragraphs": ["...", "..."],
+  "questions": [
+    { "id": "q1", "question": "English question", "options": ["A","B","C","D"], "correctIndex": 0 }
+  ]
+}
+
+Level & language:
+- CEFR ${readerLevel} (${levelConfig.label})
+- Vocabulary range: ${levelConfig.vocabularyRange}
+- Grammar focus: ${levelConfig.grammarFocus}
+- Short sentences, high repetition of key words, natural dialogue allowed in very simple lines.
+
+Theme (this generation must OBVIOUSLY match the theme — not a generic story with the theme label ignored):
+- Theme: "${themeLabel}" (${tagMeta?.emoji ?? ''})
+- Theme focus: ${themeFocus}
+${seedBlock}
+
+Length (STRICT — models often write too little; follow this literally):
+- Count words in the STORY ONLY: join every string in "paragraphs" with spaces and count English words.
+- Minimum: ${spec.min} words. Maximum: ${spec.max} words. Target: about ${spec.target} words.
+- Use at least ${spec.paragraphsMin} paragraphs. Each paragraph should have several sentences (not one or two very short lines).
+- If your draft is below ${spec.min} words, DO NOT output JSON yet: mentally expand with more scenes, sensory detail, a small problem, or short dialogue until the story reaches at least ${spec.min} words.
+
+Questions:
+- 4 to 6 questions; each has exactly 4 options (strings); correctIndex is 0-based and must match one option.
+${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
   };
+
+  const generatePrompt = () => buildGroqPrompt(undefined);
 
   const generateWithAI = async () => {
     const key = apiKey.trim();
     if (!key) {
       setError('Coloque sua API key do Groq (grátis em console.groq.com)');
+      return;
+    }
+    const aiCountForLevel = customBooks.filter(
+      (b) => b.level === readerLevel && isAiGeneratedStory(b)
+    ).length;
+    if (!isPremium && aiCountForLevel >= FREE_AI_STORIES_PER_LEVEL) {
+      setError(
+        `No plano free você pode criar até ${FREE_AI_STORIES_PER_LEVEL} histórias com IA por nível. Assine para gerar mais.`
+      );
+      setShowSubscriptionModal(true);
       return;
     }
     setError(null);
@@ -879,9 +977,9 @@ Rules:
         },
         body: JSON.stringify({
           model: 'llama-3.1-8b-instant',
-          messages: [{ role: 'user', content: generatePrompt() }],
-          max_tokens: 2048,
-          temperature: 0.7,
+          messages: [{ role: 'user', content: buildGroqPrompt(Date.now()) }],
+          max_tokens: maxTokensForStorySize(size),
+          temperature: 0.78,
         }),
       });
       const data = await res.json();
@@ -895,12 +993,13 @@ Rules:
         setError('Resposta vazia da IA.');
         return;
       }
-      const { title: aiTitle, storyText } = parseAIStoryResponse(text);
+      const { title: aiTitle, storyText, questions } = parseAIStoryResponse(text);
       const book = parseRawStoryToBook(storyText, {
         title: aiTitle,
         level: readerLevel,
         theme,
         coverUrl: getCoverUrlForTheme(theme),
+        questions,
       });
       addCustomBook(book);
       openBook(book);
@@ -918,13 +1017,22 @@ Rules:
 
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+      <SubscriptionModal
+        open={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+      />
       <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
         <Sparkles className="w-5 h-5 text-purple-500" />
         Criar história com IA (Groq – grátis)
       </h3>
       <p className="text-sm text-slate-500 mb-6">
-        Use uma API key gratuita do Groq para gerar a história direto aqui (funciona em localhost,
-        Netlify, Vercel ou qualquer host). A história será adicionada à biblioteca.
+        Crie diversas histórias divertidas com a IA de acordo com seu nível. Use uma chave gratuita do
+        Groq; a resposta vem em JSON com texto e quiz de múltipla escolha para o modo Take Quiz.
+        {!isPremium && (
+          <span className="block mt-2 text-amber-700">
+            Plano free: até {FREE_AI_STORIES_PER_LEVEL} histórias por nível (A1, A2…).
+          </span>
+        )}
       </p>
 
       <div className="space-y-4">
@@ -1046,19 +1154,10 @@ Rules:
 
         <div className="border-t border-slate-200 pt-4 mt-4">
           <p className="text-sm font-medium text-slate-600 mb-2">Ou copie o prompt e use em outro lugar</p>
-          <label className="flex items-center gap-2 mb-2 text-sm text-slate-600">
-            <input
-              type="checkbox"
-              checked={includeQuestions}
-              onChange={(e) => setIncludeQuestions(e.target.checked)}
-              className="rounded border-slate-300 text-blue-500"
-            />
-            Incluir sugestão de perguntas no prompt
-          </label>
           <textarea
             value={generatePrompt()}
             readOnly
-            className="w-full h-32 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono resize-none"
+            className="w-full min-h-[200px] px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono resize-y"
           />
           <button
             onClick={copyPrompt}

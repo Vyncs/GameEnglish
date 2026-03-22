@@ -13,17 +13,8 @@ import { KaraokeMode } from './components/KaraokeMode';
 import { GradedReaders } from './components/GradedReaders';
 import { Account } from './components/Account';
 import { StudentMaterials } from './components/StudentMaterials';
-import { PaywallOverlay } from './components/PaywallOverlay';
 import { hasPremiumAccess } from './utils/subscription';
 import { api } from './api/client';
-
-const SUBSCRIPTION_VIEWS: Record<string, string> = {
-  'bricks': 'Bricks Challenge',
-  'bricks-challenge': 'Bricks Challenge',
-  'memory': 'Pairs Challenge',
-  'karaoke': 'Karaoke Mode',
-  'readers': 'Graded Readers',
-};
 
 const MEMORY_SYNC_DEBOUNCE_MS = 1500;
 
@@ -32,7 +23,7 @@ const FULLSCREEN_VIEWS = new Set(['play', 'karaoke', 'readers']);
 export function AppLayout() {
   const { viewMode, hydrateFromSync, memoryDecks, hiddenDefaultDeckIds } = useStore();
   const { user } = useAuthStore();
-  const isSubscribed = hasPremiumAccess(user?.subscriptionStatus);
+  const isPremium = hasPremiumAccess(user?.subscriptionStatus);
   const isFullscreen = FULLSCREEN_VIEWS.has(viewMode);
 
   useEffect(() => {
@@ -42,12 +33,12 @@ export function AppLayout() {
   }, [hydrateFromSync]);
 
   useEffect(() => {
-    if (!api.getToken()) return;
+    if (!api.getToken() || !isPremium) return;
     const t = setTimeout(() => {
       api.putMemory({ memoryDecks, hiddenDefaultDeckIds }).catch(() => {});
     }, MEMORY_SYNC_DEBOUNCE_MS);
     return () => clearTimeout(t);
-  }, [memoryDecks, hiddenDefaultDeckIds]);
+  }, [memoryDecks, hiddenDefaultDeckIds, isPremium]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-blue-50/50">
@@ -66,30 +57,10 @@ export function AppLayout() {
           {viewMode === 'cards' && <CardList />}
           {viewMode === 'review' && <ReviewSession />}
           {viewMode === 'play' && <PlayMode />}
-          {(viewMode === 'bricks' || viewMode === 'bricks-challenge') && (
-            <>
-              <BricksChallenge />
-              {!isSubscribed && <PaywallOverlay featureName={SUBSCRIPTION_VIEWS[viewMode] || 'Bricks Challenge'} />}
-            </>
-          )}
-          {viewMode === 'memory' && (
-            <>
-              <MemoryGame />
-              {!isSubscribed && <PaywallOverlay featureName="Pairs Challenge" />}
-            </>
-          )}
-          {viewMode === 'karaoke' && (
-            <>
-              <KaraokeMode />
-              {!isSubscribed && <PaywallOverlay featureName="Karaoke Mode" />}
-            </>
-          )}
-          {viewMode === 'readers' && (
-            <>
-              <GradedReaders />
-              {!isSubscribed && <PaywallOverlay featureName="Graded Readers" />}
-            </>
-          )}
+          {(viewMode === 'bricks' || viewMode === 'bricks-challenge') && <BricksChallenge />}
+          {viewMode === 'memory' && <MemoryGame />}
+          {viewMode === 'karaoke' && <KaraokeMode />}
+          {viewMode === 'readers' && <GradedReaders />}
           {viewMode === 'teacher-materials' && <StudentMaterials />}
           {viewMode === 'account' && <Account />}
         </div>

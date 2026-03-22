@@ -23,7 +23,15 @@ import type {
 import { LEITNER_INTERVALS, MEMORY_DIFFICULTY_CONFIG } from '../types';
 import { generateBricksPhrases } from '../utils/bricksGenerator';
 import { fuzzyCompare } from '../utils/fuzzyMatch';
+import { toast } from 'sonner';
 import { api } from '../api/client';
+import { useAuthStore } from './useAuthStore';
+import { hasPremiumAccess } from '../utils/subscription';
+import { FREE_MAX_GROUPS, FREE_MAX_CARDS_PER_GROUP } from '../utils/freeTier';
+
+function isFreeTierLimited(): boolean {
+  return !hasPremiumAccess(useAuthStore.getState().user?.subscriptionStatus);
+}
 
 /** Mesmo critério do PlayMode e FlashCard para respostas aproximadas */
 const FUZZY_THRESHOLD = 85;
@@ -233,6 +241,11 @@ export const useStore = create<AppState>()(
       
       // Implementação - Grupos (com sync para backend quando logado)
       addGroup: async (name) => {
+        const { groups } = get();
+        if (isFreeTierLimited() && groups.length >= FREE_MAX_GROUPS) {
+          toast.warning(`Plano free: no máximo ${FREE_MAX_GROUPS} grupos. Assine para criar mais.`);
+          return;
+        }
         if (api.getToken()) {
           try {
             const g = await api.postGroup(name);
@@ -242,7 +255,11 @@ export const useStore = create<AppState>()(
               viewMode: 'cards',
             }));
             return;
-          } catch (_) { /* fallback local */ }
+          } catch (e) {
+            const msg = e instanceof Error ? e.message : 'Erro ao criar grupo';
+            toast.error(msg);
+            return;
+          }
         }
         const newGroup: Group = {
           id: generateId(),
@@ -289,6 +306,13 @@ export const useStore = create<AppState>()(
       
       // Implementação - Cards (com sync para backend quando logado)
       addCard: async (portuguesePhrase, englishPhrase, groupId, direction = 'pt-en', imageUrl, tips) => {
+        const inGroup = get().cards.filter((c) => c.groupId === groupId).length;
+        if (isFreeTierLimited() && inGroup >= FREE_MAX_CARDS_PER_GROUP) {
+          toast.warning(
+            `Plano free: no máximo ${FREE_MAX_CARDS_PER_GROUP} cards por grupo. Assine para adicionar mais.`
+          );
+          return;
+        }
         if (api.getToken()) {
           try {
             const c = await api.postCard({
@@ -307,7 +331,11 @@ export const useStore = create<AppState>()(
             };
             set((state) => ({ cards: [...state.cards, newCard] }));
             return;
-          } catch (_) {}
+          } catch (e) {
+            const msg = e instanceof Error ? e.message : 'Erro ao criar card';
+            toast.error(msg);
+            return;
+          }
         }
         const now = Date.now();
         const newCard: FlashCard = {

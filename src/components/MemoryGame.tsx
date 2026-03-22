@@ -1,6 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { useStore } from '../store/useStore';
+import { useAuthStore } from '../store/useAuthStore';
+import { hasPremiumAccess } from '../utils/subscription';
+import { FREE_MEMORY_DECK_IDS } from '../utils/freeTier';
 import { defaultMemoryDecks } from '../data/memoryDecks';
+import { SubscriptionModal } from './SubscriptionModal';
+import { LockedCardOverlay } from './LockedCardOverlay';
 import { MEMORY_DIFFICULTY_CONFIG } from '../types';
 import type { MemoryDeck, MemoryDifficulty, MemoryPair } from '../types';
 import {
@@ -62,6 +67,9 @@ function normalizeImageUrl(url: string): string {
 }
 
 export function MemoryGame() {
+  const { user } = useAuthStore();
+  const isPremium = hasPremiumAccess(user?.subscriptionStatus);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const {
     memoryGame,
     memoryDecks,
@@ -90,6 +98,10 @@ export function MemoryGame() {
   const [newPairMode, setNewPairMode] = useState<string | null>(null);
   const [importMessage, setImportMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isPremium) setShowManageMode(false);
+  }, [isPremium]);
 
   // Form states
   const [deckForm, setDeckForm] = useState({ title: '', category: '', emoji: '', description: '' });
@@ -125,6 +137,9 @@ export function MemoryGame() {
 
   // Identificar decks customizados (que podem ser deletados; padrão só oculta)
   const isCustomDeck = (deckId: string) => !defaultMemoryDecks.some((d) => d.id === deckId);
+
+  const isDeckLockedForFree = (deckId: string) =>
+    !isPremium && (!FREE_MEMORY_DECK_IDS.has(deckId) || isCustomDeck(deckId));
 
   // Função para deletar deck (customizado ou ocultar padrão)
   const handleDeleteDeck = (deckId: string) => {
@@ -254,6 +269,10 @@ export function MemoryGame() {
   if (memoryGame.phase === 'deck-selection') {
     return (
       <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
+        <SubscriptionModal
+          open={showSubscriptionModal}
+          onClose={() => setShowSubscriptionModal(false)}
+        />
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-pink-400 to-rose-500 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/30">
@@ -274,42 +293,52 @@ export function MemoryGame() {
 
         {/* Botões de ação */}
         <div className="max-w-4xl mx-auto mb-6 flex flex-wrap gap-3">
-          <button
-            onClick={() => setShowManageMode(!showManageMode)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
-              showManageMode
-                ? 'bg-pink-500 text-white'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
-            }`}
-          >
-            <Settings className="w-4 h-4" />
-            {showManageMode ? 'Fechar Gerenciamento' : 'Gerenciar Decks'}
-          </button>
-          
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all"
-          >
-            <Download className="w-4 h-4" />
-            Exportar Decks
-          </button>
-          
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all"
-          >
-            <Upload className="w-4 h-4" />
-            Importar Decks
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".json"
-            onChange={handleImport}
-            className="hidden"
-          />
+          {isPremium && (
+            <>
+              <button
+                onClick={() => setShowManageMode(!showManageMode)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
+                  showManageMode
+                    ? 'bg-pink-500 text-white'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Settings className="w-4 h-4" />
+                {showManageMode ? 'Fechar Gerenciamento' : 'Gerenciar Decks'}
+              </button>
 
-          {showManageMode && (
+              <button
+                onClick={handleExport}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all"
+              >
+                <Download className="w-4 h-4" />
+                Exportar Decks
+              </button>
+
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all"
+              >
+                <Upload className="w-4 h-4" />
+                Importar Decks
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                onChange={handleImport}
+                className="hidden"
+              />
+            </>
+          )}
+          {!isPremium && (
+            <p className="text-sm text-slate-600 w-full">
+              Plano free: jogue nos temas Common Verbs, Adjectives e Body Parts. Assine para todos os
+              temas e para gerenciar decks.
+            </p>
+          )}
+
+          {isPremium && showManageMode && (
             <>
               <button
                 onClick={() => setShowNewDeck(true)}
@@ -619,7 +648,14 @@ export function MemoryGame() {
               <DeckCard
                 key={deck.id}
                 deck={deck}
-                onClick={() => !showManageMode && selectMemoryDeck(deck)}
+                locked={isDeckLockedForFree(deck.id)}
+                onClick={() => {
+                  if (!showManageMode && isDeckLockedForFree(deck.id)) {
+                    setShowSubscriptionModal(true);
+                    return;
+                  }
+                  if (!showManageMode) selectMemoryDeck(deck);
+                }}
                 showManageMode={showManageMode}
                 isCustom={isCustomDeck(deck.id)}
                 onEdit={() => startEditDeck(deck)}
@@ -908,6 +944,7 @@ function DeckCard({
   isCustom,
   onEdit,
   onDelete,
+  locked,
 }: { 
   deck: MemoryDeck; 
   onClick: () => void;
@@ -915,14 +952,21 @@ function DeckCard({
   isCustom: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  locked?: boolean;
 }) {
   return (
     <div
-      className={`p-6 bg-white rounded-2xl shadow-lg border border-slate-200 transition-all text-left group ${
-        showManageMode ? '' : 'hover:border-pink-300 hover:shadow-xl cursor-pointer'
+      className={`relative overflow-hidden p-6 bg-white rounded-2xl shadow-lg border border-slate-200 transition-all text-left group ${
+        showManageMode ? '' : locked ? 'cursor-pointer' : 'hover:border-pink-300 hover:shadow-xl cursor-pointer'
       }`}
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onClick();
+      }}
     >
+      {locked && !showManageMode && <LockedCardOverlay />}
       <div className="flex items-start gap-4">
         <div className="w-14 h-14 bg-gradient-to-br from-pink-100 to-rose-100 rounded-xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">
           {deck.emoji}

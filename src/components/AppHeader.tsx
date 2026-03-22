@@ -7,7 +7,6 @@ import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../api/client';
 import { AccountMenu } from './AccountMenu';
-import { hasPremiumAccess } from '../utils/subscription';
 import logoMark from '../assets/logotipo-educacional-raio-tablet.png';
 
 interface NavItem {
@@ -31,7 +30,6 @@ export function AppHeader() {
     startReaders, getTotalCardsForReview,
   } = useStore();
 
-  const isSubscribed = hasPremiumAccess(user?.subscriptionStatus);
   const [hasTeacher, setHasTeacher] = useState(false);
 
   const checkTeacher = useCallback(() => {
@@ -75,7 +73,6 @@ export function AppHeader() {
       icon: <Library className="w-4 h-4" />,
       viewModes: ['readers'],
       action: () => startReaders(),
-      locked: !isSubscribed,
       gradient: 'from-indigo-500 to-purple-500',
     },
     {
@@ -93,7 +90,6 @@ export function AppHeader() {
       icon: <Blocks className="w-4 h-4" />,
       viewModes: ['bricks', 'bricks-challenge'],
       action: () => setViewMode('bricks'),
-      locked: !isSubscribed,
       gradient: 'from-amber-500 to-orange-500',
     },
     {
@@ -102,7 +98,6 @@ export function AppHeader() {
       icon: <Puzzle className="w-4 h-4" />,
       viewModes: ['memory'],
       action: () => startMemoryGame(),
-      locked: !isSubscribed,
       gradient: 'from-pink-500 to-rose-500',
     },
     {
@@ -142,9 +137,17 @@ export function AppHeader() {
     } else if (item.inDevelopment) {
       pillClass += ' text-slate-600 hover:bg-amber-50/80 border border-amber-200/60';
     } else if (playHasReviews) {
-      /* Jogar com revisões pendentes: destaque gamificação */
+      /* Jogar com revisões: vidro leve + borda refinada + filete superior “espelhado” */
       pillClass +=
-        ' bg-gradient-to-r from-violet-500/12 via-fuchsia-500/12 to-violet-600/12 text-violet-900 border border-violet-400/45 shadow-md shadow-violet-500/20 ring-1 ring-fuchsia-400/25 hover:from-violet-500/18 hover:via-fuchsia-500/18 hover:to-violet-600/18';
+        ' relative overflow-hidden rounded-xl text-violet-900 ' +
+        ' bg-gradient-to-br from-violet-50/95 via-fuchsia-50/45 to-violet-100/65 ' +
+        ' border border-violet-300/40 ' +
+        ' shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_2px_10px_-3px_rgba(124,58,237,0.18)] ' +
+        ' transition-all duration-200 ' +
+        ' hover:border-violet-400/55 hover:bg-gradient-to-br hover:from-violet-50 hover:via-fuchsia-50/55 hover:to-violet-100/75 ' +
+        ' hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.98),0_4px_16px_-4px_rgba(124,58,237,0.26)] ' +
+        ' after:pointer-events-none after:absolute after:left-2 after:right-2 after:top-px after:z-10 after:h-px after:rounded-full ' +
+        ' after:bg-gradient-to-r after:from-transparent after:via-white after:to-transparent after:opacity-90';
     } else {
       pillClass += ' text-slate-600 hover:bg-slate-100';
     }
@@ -170,10 +173,10 @@ export function AppHeader() {
         {!compact && <span>{item.label}</span>}
         {item.badge && (
           <span
-            className={`px-1.5 py-0.5 text-[10px] font-bold rounded-full ${
+            className={`relative z-10 px-1.5 py-0.5 text-[10px] font-bold rounded-full ${
               isActive
                 ? 'bg-white/25 text-white'
-                : 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-sm ring-1 ring-white/40 animate-pulse'
+                : 'bg-gradient-to-b from-amber-300 to-orange-600 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45)] ring-1 ring-amber-400/50 ring-offset-1 ring-offset-transparent animate-pulse'
             }`}
           >
             {item.badge}

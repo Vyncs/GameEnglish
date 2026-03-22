@@ -22,6 +22,7 @@ import { TermosDeUso } from './pages/TermosDeUso';
 import { PoliticaPrivacidade } from './pages/PoliticaPrivacidade';
 import { CookieBanner } from './components/CookieBanner';
 import { setToken } from './api/client';
+import { Toaster } from 'sonner';
 
 function AuthInit() {
   const initAuth = useAuthStore((s) => s.initAuth);
@@ -47,6 +48,7 @@ function AuthInit() {
 export default function App() {
   return (
     <>
+      <Toaster position="top-center" richColors closeButton duration={4500} />
       <AuthInit />
       <CookieBanner />
       <Routes>

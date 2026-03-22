@@ -22,6 +22,28 @@ import logoMark from '../assets/logotipo-educacional-raio-tablet.png';
 
 const WHATSAPP_URL = 'https://wa.me/5513988513127?text=Ol%C3%A1!%20Tenho%20interesse%20no%20Play%20Flash%20Cards';
 
+/** 24h em segundos — contador fictício (reinicia ao zerar). */
+const LAUNCH_COUNTDOWN_START_SEC = 24 * 60 * 60;
+
+function formatCountdownHMS(totalSec: number): string {
+  const t = Math.max(0, totalSec);
+  const h = Math.floor(t / 3600);
+  const m = Math.floor((t % 3600) / 60);
+  const s = t % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function useLaunchCountdown() {
+  const [secondsLeft, setSecondsLeft] = useState(LAUNCH_COUNTDOWN_START_SEC);
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setSecondsLeft((prev) => (prev <= 1 ? LAUNCH_COUNTDOWN_START_SEC : prev - 1));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+  return secondsLeft;
+}
+
 const VIDEOS = {
   bricks: '/videos/BricksChallenge.mp4',
   pairs: '/videos/PairsChallenge.mp4',
@@ -34,6 +56,7 @@ export function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [videoModal, setVideoModal] = useState<{ title: string; videoUrl: string } | null>(null);
+  const launchCountdownSec = useLaunchCountdown();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -52,13 +75,24 @@ export function LandingPage() {
               Promoção de lançamento:
             </span>{' '}
             <span className="text-violet-50">
-              acesso VIP para os primeiros <strong className="text-white font-bold">50</strong> cadastros.
-              {' '}
+              GARANTA seu acesso VIP durante 6 meses para os primeiros{' '}
+              <strong className="text-white font-bold">50</strong> cadastros.{' '}
               <span className="hidden sm:inline">·</span>{' '}
               Para os <strong className="text-white font-bold">10</strong> primeiros professores:{' '}
               <strong className="text-white font-bold">10</strong> alunos gratuitos.
             </span>
           </p>
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-[11px] sm:text-sm font-medium text-violet-100">
+            <span className="opacity-95">Oferta acaba em:</span>
+            <span
+              className="inline-flex items-center rounded-lg bg-white/15 px-2.5 py-0.5 font-mono text-[13px] sm:text-sm font-bold tabular-nums tracking-wide text-white ring-1 ring-white/25"
+              role="timer"
+              aria-live="polite"
+              aria-label={`Tempo restante da oferta: ${formatCountdownHMS(launchCountdownSec)}`}
+            >
+              {formatCountdownHMS(launchCountdownSec)}
+            </span>
+          </div>
         </div>
 
         {/* Navbar */}
@@ -83,9 +117,6 @@ export function LandingPage() {
                   draggable={false}
                 />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                Play Flash Cards
-              </span>
             </div>
 
             <div className="hidden md:flex items-center gap-8">
@@ -512,22 +543,6 @@ export function LandingPage() {
               </div>
             </div>
             <div className="flex flex-col items-center gap-3 text-center">
-              <div className="flex items-center gap-2.5">
-                <div
-                  className="h-9 w-9 rounded-full overflow-hidden ring-1 ring-slate-200/80 shadow-sm shrink-0"
-                  aria-hidden
-                >
-                  <img
-                    src={logoMark}
-                    alt=""
-                    className="h-full w-full object-cover object-center"
-                    draggable={false}
-                  />
-                </div>
-                <span className="text-sm font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                  Play Flash Cards
-                </span>
-              </div>
               <p className="text-xs text-slate-400">
                 &copy; {new Date().getFullYear()} Play Flash Cards. Todos os direitos reservados.
               </p>

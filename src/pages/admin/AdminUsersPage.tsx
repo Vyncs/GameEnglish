@@ -12,6 +12,7 @@ import {
   X,
   Check,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { api, type AdminUser, type AdminUsersResponse } from '../../api/client';
 
 type FilterStatus = '' | 'active' | 'vip' | 'free' | 'canceled';
@@ -54,7 +55,7 @@ export function AdminUsersPage() {
       await api.deleteAdminUser(user.id);
       fetchUsers();
     } catch {
-      alert('Erro ao excluir usuário');
+      toast.error('Erro ao excluir usuário');
     } finally {
       setDeleting(null);
     }

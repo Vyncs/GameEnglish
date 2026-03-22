@@ -88,9 +88,8 @@ export function Account() {
 
         <div className="border-t border-slate-200 pt-6 space-y-4">
           <div className="rounded-2xl border border-slate-200/90 bg-slate-50/80 px-4 py-3.5 shadow-sm">
-            <div className="flex items-center gap-3 w-full min-h-[2rem]">
+            <div className="flex items-center justify-between gap-3 w-full min-h-[2rem]">
               <span className="text-sm font-semibold text-slate-800 shrink-0">Assinatura</span>
-              <div className="flex-1 border-b border-dashed border-slate-300 min-w-[1rem] self-center" aria-hidden />
               {isPaying && (
                 <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-md shadow-cyan-500/20 shrink-0">
                   Assinante

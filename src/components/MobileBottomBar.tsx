@@ -1,12 +1,7 @@
-import { Home, Blocks, Gamepad2, Puzzle, Library, Lock } from 'lucide-react';
+import { Home, Blocks, Gamepad2, Puzzle, Library } from 'lucide-react';
 import { useStore } from '../store/useStore';
-import { hasPremiumAccess } from '../utils/subscription';
-import { useAuthStore } from '../store/useAuthStore';
-
 export function MobileBottomBar() {
   const { viewMode, goToHome, setViewMode, startPlayMode, startMemoryGame, startReaders, getTotalCardsForReview } = useStore();
-  const { user } = useAuthStore();
-  const isSubscribed = hasPremiumAccess(user?.subscriptionStatus);
   const totalReview = getTotalCardsForReview();
 
   const items = [
@@ -25,7 +20,6 @@ export function MobileBottomBar() {
       icon: Blocks,
       viewModes: ['bricks', 'bricks-challenge'],
       action: () => setViewMode('bricks'),
-      locked: !isSubscribed,
       gradient: 'from-amber-400 to-orange-500',
       color: 'text-amber-500',
     },
@@ -46,7 +40,6 @@ export function MobileBottomBar() {
       icon: Puzzle,
       viewModes: ['memory'],
       action: () => startMemoryGame(),
-      locked: !isSubscribed,
       gradient: 'from-pink-400 to-rose-500',
       color: 'text-pink-500',
     },
@@ -56,7 +49,6 @@ export function MobileBottomBar() {
       icon: Library,
       viewModes: ['readers'],
       action: () => startReaders(),
-      locked: !isSubscribed,
       gradient: 'from-indigo-400 to-purple-500',
       color: 'text-indigo-500',
     },
@@ -79,11 +71,14 @@ export function MobileBottomBar() {
                 title={hasReviews ? 'Cards para revisar!' : undefined}
               >
                 <div
-                  className={`relative w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-200 ${
+                  className={`relative w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl transition-all duration-200 overflow-hidden ${
                     isActive
                       ? `bg-gradient-to-br ${item.gradient} shadow-violet-500/40 scale-105`
                       : hasReviews
-                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-500 shadow-lg shadow-fuchsia-500/35 ring-2 ring-amber-300/50'
+                        ? 'bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-500 shadow-lg shadow-fuchsia-500/30 ' +
+                          'ring-2 ring-violet-400/35 ring-offset-2 ring-offset-white/80 ' +
+                          'shadow-[inset_0_2px_0_0_rgba(255,255,255,0.35)] ' +
+                          'before:pointer-events-none before:absolute before:inset-x-1 before:top-1 before:h-[45%] before:rounded-t-xl before:bg-gradient-to-b before:from-white/30 before:to-transparent'
                         : `bg-gradient-to-br ${item.gradient} shadow-violet-500/20`
                   }`}
                 >
@@ -119,9 +114,6 @@ export function MobileBottomBar() {
                   ? `bg-gradient-to-br ${item.gradient} shadow-md`
                   : 'bg-transparent'
               }`}>
-                {item.locked && !isActive && (
-                  <Lock className="absolute -top-1 -right-1 w-3 h-3 text-slate-400 opacity-60" />
-                )}
                 <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : 'text-slate-500'}`} />
               </div>
               <span className={`text-[10px] font-medium mt-0.5 ${
