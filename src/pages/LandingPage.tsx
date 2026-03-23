@@ -443,10 +443,12 @@ export function LandingPage() {
                 <span className="text-slate-400 text-sm">/mês</span>
               </div>
               <ul className="space-y-3 mb-8">
-                <PricingItem text="Flash Cards ilimitados" />
-                <PricingItem text="Grupos organizados" />
+                <PricingItem text="Até 10 grupos de cards" />
+                <PricingItem text="Até 20 cards por grupo" />
                 <PricingItem text="Repetição espaçada (Leitner)" />
-                <PricingItem text="Modo Play" />
+                <PricingItem text="Modo Play de revisão" />
+                <PricingItem text="3 temas no Pairs Challenge" />
+                <PricingItem text="2 histórias por nível nos Readers" />
                 <PricingItem text="Import / Export" />
                 <PricingItem text="Sincronização na nuvem" />
               </ul>
@@ -475,11 +477,13 @@ export function LandingPage() {
                 <p className="text-cyan-400 text-xs mt-1">ou R$ 179/ano (25% off)</p>
               </div>
               <ul className="space-y-3 mb-8">
-                <PricingItem text="Tudo do plano Grátis" light />
-                <PricingItem text="Bricks Challenge" light />
-                <PricingItem text="Pairs Challenge" light />
+                <PricingItem text="Grupos e cards ilimitados" light />
+                <PricingItem text="Bricks Challenge sem limites" light />
+                <PricingItem text="Pairs Challenge — crie seus próprios temas" light />
+                <PricingItem text="Readers — adicione seus próprios livros" light />
                 <PricingItem text="Karaoke Mode" light />
-                <PricingItem text="Graded Readers" light />
+                <PricingItem text="Import / Export ilimitado" light />
+                <PricingItem text="Sincronização na nuvem" light />
                 <PricingItem text="Suporte prioritário" light />
               </ul>
               <button
