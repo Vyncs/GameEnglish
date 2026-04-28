@@ -84,7 +84,7 @@ export const BRICK_TYPES: { type: BrickType; label: string }[] = [
   { type: 'have_you', label: 'Have you' },
 ];
 
-export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory' | 'karaoke' | 'readers' | 'account' | 'teacher-materials';
+export type ViewMode = 'home' | 'cards' | 'review' | 'play' | 'bricks' | 'bricks-challenge' | 'memory' | 'karaoke' | 'readers' | 'account' | 'teacher-materials' | 'english-coach';
 
 // Modo de jogo (direção das perguntas)
 export type PlayModeDirection = 'pt-en' | 'en-pt' | 'mixed';

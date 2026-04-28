@@ -221,7 +221,110 @@ export const api = {
   async getAdminFinancial() {
     return request<AdminFinancial>('GET', '/api/admin/financial');
   },
+
+  // ==========================================
+  // English Coach Avatar (chat com tutor IA)
+  // ==========================================
+  async postCoachMessage(payload: {
+    message: string;
+    level: 'beginner' | 'intermediate' | 'advanced';
+    mode: 'free' | 'travel' | 'work' | 'interview' | 'restaurant' | 'airport' | 'pronunciation';
+    conversationId?: string;
+  }) {
+    return request<import('../types/englishCoach').CoachChatResponse>(
+      'POST',
+      '/api/english-coach/chat',
+      payload
+    );
+  },
+  async getCoachConversations() {
+    return request<import('../types/englishCoach').CoachConversationSummary[]>(
+      'GET',
+      '/api/english-coach/conversations'
+    );
+  },
+  async getCoachConversation(id: string) {
+    return request<import('../types/englishCoach').CoachConversation>(
+      'GET',
+      `/api/english-coach/conversations/${id}`
+    );
+  },
+  async deleteCoachConversation(id: string) {
+    return request<void>('DELETE', `/api/english-coach/conversations/${id}`);
+  },
+
+  // ---- Memória pedagógica ----
+  async getCoachMemory() {
+    return request<import('../types/englishCoach').CoachMemory>(
+      'GET',
+      '/api/english-coach/memory'
+    );
+  },
+  async analyzeCoachMemory() {
+    return request<import('../types/englishCoach').CoachMemoryAnalyzeResponse>(
+      'POST',
+      '/api/english-coach/memory/analyze'
+    );
+  },
+  async resetCoachMemory() {
+    return request<import('../types/englishCoach').CoachMemory>(
+      'DELETE',
+      '/api/english-coach/memory'
+    );
+  },
+
+  // ----- Retention engine (Sprint A) -----
+  async getProgress(): Promise<UserProgressResponse> {
+    return request<UserProgressResponse>('GET', '/api/progress');
+  },
+  async getMissionsToday(): Promise<MissionResponse[]> {
+    return request<MissionResponse[]>('GET', '/api/missions/today');
+  },
+  async updateMissionProgress(type: string, increment = 1): Promise<{
+    mission: MissionResponse | null;
+    completed: boolean;
+    xp: { finalXp: number; leveledUp: boolean; newLevel?: number } | null;
+  }> {
+    return request('POST', '/api/missions/progress', { type, increment });
+  },
 };
+
+export interface MissionResponse {
+  id: string;
+  type: string;
+  target: number;
+  progress: number;
+  xpReward: number;
+  completedAt: string | null;
+  rewardedAt: string | null;
+  date: string;
+}
+
+export interface UserProgressResponse {
+  totalXp: number;
+  currentLevel: number;
+  rank: { key: string; name: string; cefr: string };
+  xpForCurrent: number;
+  xpForNext: number;
+  xpInLevel: number;
+  xpNeededInLevel: number;
+  xpToNext: number;
+  progressPct: number;
+  streak: {
+    current: number;
+    rawCurrent: number;
+    best: number;
+    status: 'active' | 'at_risk' | 'broken' | 'none';
+    lastActiveDate: string | null;
+    weekActivity: boolean[];
+    lateInDay: boolean;
+    freezesAvailable: number;
+  };
+  missions: MissionResponse[];
+  urgency: { dueToday: number; critical: number };
+  stats: { totalActiveDays: number; totalCardsReviewed: number };
+  timezone: string;
+}
 
 // Teacher types
 export interface TeacherDashboard {
