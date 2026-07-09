@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useStore } from '../store/useStore';
+import { useLessonStore } from '../store/useLessonStore';
+import { LESSON_01 } from '../data/lessonClassify';
 import { ImportExport } from './ImportExport';
-import { 
-  BookOpen, 
-  Clock, 
+import {
+  BookOpen,
+  Clock,
   Trophy,
   Folder,
   Plus,
@@ -13,19 +15,32 @@ import {
   Target,
   Calendar,
   Gamepad2,
-  Play
+  Play,
+  GraduationCap,
+  CheckCircle2,
+  ArrowRight
 } from 'lucide-react';
 
 export function Home() {
-  const { 
-    groups, 
+  const {
+    groups,
     cards,
-    getGroupsWithReviewCount, 
+    getGroupsWithReviewCount,
     getTotalCardsForReview,
     startPlayMode,
     addGroup,
-    selectGroup
+    selectGroup,
+    setViewMode
   } = useStore();
+
+  // Progresso da Aula 01 (classificação de frases)
+  const lessonAnswers = useLessonStore((s) => s.progress[LESSON_01.id]?.answers);
+  const lessonTotal = LESSON_01.questions.length;
+  const lessonAnswered = lessonAnswers ? Object.keys(lessonAnswers).length : 0;
+  const lessonCorrect = lessonAnswers
+    ? LESSON_01.questions.filter((q) => lessonAnswers[q.id] === q.answer).length
+    : 0;
+  const lessonDone = lessonAnswered === lessonTotal;
   
   const [showImportExport, setShowImportExport] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
@@ -209,6 +224,73 @@ export function Home() {
             </div>
             <p className="text-3xl font-bold text-emerald-600">{masteredCards}</p>
           </div>
+        </div>
+
+        {/* Aula 01 — gancho para o exercício de classificação de frases */}
+        <div className={`mb-8 ${totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}`}>
+          <button
+            type="button"
+            onClick={() => setViewMode('lesson-classify')}
+            className="group relative w-full overflow-hidden rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50 via-white to-cyan-50/60 p-5 sm:p-6 text-left shadow-sm transition-all hover:shadow-md hover:border-indigo-200"
+          >
+            {lessonDone && (
+              <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Concluída
+              </span>
+            )}
+
+            <div className="flex items-center gap-4">
+              <div
+                className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-white shadow-lg transition-transform group-hover:scale-105 ${
+                  lessonDone
+                    ? 'bg-gradient-to-br from-emerald-500 to-teal-600 shadow-emerald-500/25'
+                    : 'bg-gradient-to-br from-indigo-500 to-cyan-500 shadow-indigo-500/25'
+                }`}
+              >
+                {lessonDone ? <CheckCircle2 className="h-7 w-7" /> : <GraduationCap className="h-7 w-7" />}
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-slate-800">{LESSON_01.title}</h3>
+                  {!lessonDone && (
+                    <ArrowRight className="h-4 w-4 text-indigo-400 transition-transform group-hover:translate-x-1" />
+                  )}
+                </div>
+                <p className="text-sm text-slate-500">{LESSON_01.subtitle}</p>
+              </div>
+            </div>
+
+            {/* Progresso */}
+            <div className="mt-4">
+              <div className="mb-1.5 flex items-center justify-between text-xs font-medium text-slate-500">
+                <span className="tabular-nums">
+                  {lessonAnswered}/{lessonTotal} respondidas
+                </span>
+                {lessonAnswered > 0 && (
+                  <span className="tabular-nums text-emerald-600">{lessonCorrect} acertos</span>
+                )}
+              </div>
+              <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200/80">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    lessonDone
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                      : 'bg-gradient-to-r from-indigo-500 to-cyan-500'
+                  }`}
+                  style={{ width: `${(lessonAnswered / lessonTotal) * 100}%` }}
+                />
+              </div>
+              <p className="mt-2 text-sm font-semibold text-indigo-600">
+                {lessonDone
+                  ? 'Ver resultado e revisão →'
+                  : lessonAnswered > 0
+                    ? 'Continuar exercício →'
+                    : 'Começar exercício →'}
+              </p>
+            </div>
+          </button>
         </div>
 
         {/* Seção de Grupos — order explícito para não ficar acima dos stats no mobile */}

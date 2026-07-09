@@ -12,6 +12,8 @@ import { MemoryGame } from './components/MemoryGame';
 import { KaraokeMode } from './components/KaraokeMode';
 import { GradedReaders } from './components/GradedReaders';
 import { Account } from './components/Account';
+import { InstallApp } from './components/InstallApp';
+import { LessonClassify } from './components/LessonClassify';
 import { StudentMaterials } from './components/StudentMaterials';
 import { hasPremiumAccess } from './utils/subscription';
 import { api } from './api/client';
@@ -63,6 +65,8 @@ export function AppLayout() {
           {viewMode === 'readers' && <GradedReaders />}
           {viewMode === 'teacher-materials' && <StudentMaterials />}
           {viewMode === 'account' && <Account />}
+          {viewMode === 'install' && <InstallApp />}
+          {viewMode === 'lesson-classify' && <LessonClassify />}
         </div>
       </main>
     </div>

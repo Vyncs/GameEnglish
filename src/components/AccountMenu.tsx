@@ -1,15 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  User, ChevronDown, UserCircle, GraduationCap, LayoutDashboard,
+  User, ChevronDown, UserCircle, GraduationCap, LayoutDashboard, Download,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { usePwaInstall } from '../hooks/usePwaInstall';
 
 export function AccountMenu() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { viewMode, setViewMode } = useStore();
+  const { isInstalled } = usePwaInstall();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -61,6 +63,20 @@ export function AccountMenu() {
             <UserCircle className="w-4 h-4 text-slate-500 shrink-0" />
             Meu perfil
           </button>
+          {!isInstalled && (
+            <button
+              type="button"
+              role="menuitem"
+              className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-cyan-700 hover:bg-cyan-50 transition-colors text-left"
+              onClick={() => {
+                setViewMode('install');
+                setOpen(false);
+              }}
+            >
+              <Download className="w-4 h-4 shrink-0" />
+              Instalar app
+            </button>
+          )}
           {isAdmin && (
             <button
               type="button"
