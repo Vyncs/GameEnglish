@@ -24,12 +24,21 @@ export interface Lesson {
 }
 
 export const CLASSIFY_CATEGORIES: { id: ClassifyCategory; label: string; hint: string }[] = [
-  { id: 'A', label: 'A', hint: 'Verbo de ação (do/does/did)' },
+  { id: 'A', label: 'A', hint: 'Verbo de ação — usa do / does / did' },
   { id: 'B', label: 'B', hint: 'Ser / estar (to be)' },
   { id: 'B2', label: 'B2', hint: 'Haver / existir / ter (there is · have)' },
-  { id: 'C', label: 'C', hint: 'Modais (can, should, would…)' },
-  { id: 'Imperative', label: 'Imperative', hint: 'Ordem / comando' },
+  { id: 'C', label: 'C', hint: 'Modais — poder, saber, conseguir, dever (can, know, should…)' },
+  { id: 'Imperative', label: 'I', hint: 'Imperativo — ordem / comando' },
 ];
+
+// Rótulo curto por categoria (usado nos botões, explicação e revisão).
+export const CATEGORY_LABEL: Record<ClassifyCategory, string> = {
+  A: 'A',
+  B: 'B',
+  B2: 'B2',
+  C: 'C',
+  Imperative: 'I',
+};
 
 export const LESSON_01: Lesson = {
   id: 'classify-01',
