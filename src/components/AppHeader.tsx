@@ -26,7 +26,7 @@ interface NavItem {
 export function AppHeader() {
   const { user } = useAuthStore();
   const {
-    viewMode, setViewMode, goToHome, startPlayMode, startMemoryGame,
+    viewMode, setViewMode, goToHome, startMemoryGame,
     startReaders, getTotalCardsForReview,
   } = useStore();
 
@@ -79,8 +79,8 @@ export function AppHeader() {
       id: 'review',
       label: 'Revisar',
       icon: <RefreshCw className="w-4 h-4" />,
-      viewModes: ['play'],
-      action: () => startPlayMode(),
+      viewModes: ['play', 'review-hub'],
+      action: () => setViewMode('review-hub'),
       badge: totalReviewCount > 0 ? totalReviewCount : undefined,
       gradient: 'from-violet-500 to-purple-500',
     },

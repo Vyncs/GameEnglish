@@ -2,7 +2,7 @@ import { Home, Blocks, RefreshCw, Puzzle, Library } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 export function MobileBottomBar() {
-  const { viewMode, goToHome, setViewMode, startPlayMode, startMemoryGame, startReaders, getTotalCardsForReview } = useStore();
+  const { viewMode, goToHome, setViewMode, startMemoryGame, startReaders, getTotalCardsForReview } = useStore();
   const totalReview = getTotalCardsForReview();
 
   const items = [
@@ -28,8 +28,8 @@ export function MobileBottomBar() {
       id: 'review',
       label: 'Revisar',
       icon: RefreshCw,
-      viewModes: ['play'],
-      action: () => startPlayMode(),
+      viewModes: ['play', 'review-hub'],
+      action: () => setViewMode('review-hub'),
       badge: totalReview > 0 ? totalReview : undefined,
       gradient: 'from-violet-500 to-purple-500',
       color: 'text-violet-500',
@@ -72,14 +72,14 @@ export function MobileBottomBar() {
                   isActive ? `bg-gradient-to-br ${item.gradient} shadow-md` : 'bg-transparent'
                 }`}
               >
-                <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : item.color}`} />
                 {item.badge && (
                   <span className="absolute -right-1.5 -top-1.5 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-violet-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white tabular-nums">
                     {item.badge}
                   </span>
                 )}
               </div>
-              <span className={`text-[10px] font-medium mt-0.5 ${isActive ? item.color : 'text-slate-400'}`}>
+              <span className={`text-[10px] font-semibold mt-0.5 ${item.color}`}>
                 {item.label}
               </span>
             </button>
