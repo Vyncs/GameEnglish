@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import {
   ArrowLeft, ArrowRight, Check, X, RotateCcw, Trophy,
-  ChevronLeft, Sparkles, ListChecks,
+  ChevronLeft, Sparkles, ListChecks, Lightbulb,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useLessonStore } from '../store/useLessonStore';
 import {
-  LESSON_01, CLASSIFY_CATEGORIES, type ClassifyCategory,
+  LESSON_01, CLASSIFY_CATEGORIES, CATEGORY_LABEL, type ClassifyCategory,
 } from '../data/lessonClassify';
 
 const EMPTY_ANSWERS: Record<number, ClassifyCategory> = {};
@@ -28,6 +28,7 @@ export function LessonClassify() {
   const firstUnanswered = lesson.questions.findIndex((q) => !answers[q.id]);
   const [index, setIndex] = useState(firstUnanswered === -1 ? 0 : firstUnanswered);
   const [showResults, setShowResults] = useState(false);
+  const [showHints, setShowHints] = useState(false);
 
   const current = lesson.questions[index];
   const chosen = answers[current.id];
@@ -106,11 +107,11 @@ export function LessonClassify() {
                         </p>
                         <p className="mt-0.5 text-xs text-slate-500">
                           {ok ? (
-                            <>Você acertou: <strong className="text-emerald-700">{q.answer}</strong></>
+                            <>Você acertou: <strong className="text-emerald-700">{CATEGORY_LABEL[q.answer]}</strong></>
                           ) : (
                             <>
-                              Sua resposta: <strong className="text-red-600">{a}</strong> · Correta:{' '}
-                              <strong className="text-emerald-700">{q.answer}</strong>
+                              Sua resposta: <strong className="text-red-600">{a ? CATEGORY_LABEL[a] : '—'}</strong> · Correta:{' '}
+                              <strong className="text-emerald-700">{CATEGORY_LABEL[q.answer]}</strong>
                             </>
                           )}
                         </p>
@@ -199,22 +200,56 @@ export function LessonClassify() {
         </div>
         <p className="mb-5 text-lg font-semibold leading-snug text-slate-800">{current.pt}</p>
 
-        {/* Opções */}
-        <div className="space-y-2.5">
+        {/* Cabeçalho das opções + botão de dica */}
+        <div className="mb-2.5 flex items-center justify-between">
+          <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+            Classifique a frase
+          </span>
+          <button
+            type="button"
+            onClick={() => setShowHints((v) => !v)}
+            aria-pressed={showHints}
+            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors ${
+              showHints
+                ? 'border-amber-300 bg-amber-50 text-amber-700'
+                : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+            }`}
+          >
+            <Lightbulb className="h-3.5 w-3.5" />
+            Dica
+          </button>
+        </div>
+
+        {/* Legenda das regras (revelada pela dica) */}
+        {showHints && (
+          <div className="mb-3 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50/70 p-3 animate-fade-in">
+            {CLASSIFY_CATEGORIES.map((cat) => (
+              <div key={cat.id} className="flex items-start gap-2 text-xs">
+                <span className="flex h-5 min-w-[1.75rem] shrink-0 items-center justify-center rounded-md bg-white px-1 font-bold text-slate-700 ring-1 ring-slate-200">
+                  {cat.label}
+                </span>
+                <span className="pt-0.5 text-slate-600">{cat.hint}</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Opções compactas: A · B · B2 · C · I */}
+        <div className="grid grid-cols-5 gap-2">
           {CLASSIFY_CATEGORIES.map((cat) => {
             const isThisChosen = chosen === cat.id;
             const isTheCorrect = current.answer === cat.id;
 
             let cls =
-              'w-full flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ';
+              'relative flex flex-col items-center justify-center gap-1 rounded-xl border py-3.5 text-center transition-all ';
             if (!isAnswered) {
-              cls += 'border-slate-200 bg-white hover:border-cyan-300 hover:bg-cyan-50/50 active:scale-[0.99]';
+              cls += 'border-slate-200 bg-white hover:border-cyan-300 hover:bg-cyan-50/50 active:scale-[0.97]';
             } else if (isTheCorrect) {
               cls += 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300';
             } else if (isThisChosen) {
               cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
             } else {
-              cls += 'border-slate-200 bg-white opacity-60';
+              cls += 'border-slate-200 bg-white opacity-50';
             }
 
             return (
@@ -224,23 +259,21 @@ export function LessonClassify() {
                 disabled={isAnswered}
                 onClick={() => handleAnswer(cat.id)}
                 className={cls}
+                title={cat.hint}
               >
                 <span
-                  className={`flex h-9 w-11 shrink-0 items-center justify-center rounded-lg text-sm font-bold ${
+                  className={`text-lg font-extrabold leading-none ${
                     isAnswered && isTheCorrect
-                      ? 'bg-emerald-500 text-white'
+                      ? 'text-emerald-600'
                       : isAnswered && isThisChosen
-                        ? 'bg-red-500 text-white'
-                        : 'bg-slate-100 text-slate-700'
+                        ? 'text-red-600'
+                        : 'text-slate-700'
                   }`}
                 >
                   {cat.label}
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium text-slate-700">{cat.hint}</span>
-                </span>
-                {isAnswered && isTheCorrect && <Check className="h-5 w-5 shrink-0 text-emerald-500" />}
-                {isAnswered && isThisChosen && !isTheCorrect && <X className="h-5 w-5 shrink-0 text-red-500" />}
+                {isAnswered && isTheCorrect && <Check className="h-4 w-4 text-emerald-500" />}
+                {isAnswered && isThisChosen && !isTheCorrect && <X className="h-4 w-4 text-red-500" />}
               </button>
             );
           })}
@@ -255,7 +288,7 @@ export function LessonClassify() {
           >
             <p className={`mb-1 flex items-center gap-2 text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-amber-700'}`}>
               {isCorrect ? <Check className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
-              {isCorrect ? 'Correto!' : `Resposta correta: ${current.answer}`}
+              {isCorrect ? 'Correto!' : `Resposta correta: ${CATEGORY_LABEL[current.answer]}`}
             </p>
             <p className="text-sm italic text-slate-500">{current.en}</p>
             <p className="mt-1.5 text-sm text-slate-700">{current.explanation}</p>
