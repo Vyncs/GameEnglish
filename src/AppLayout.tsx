@@ -15,6 +15,7 @@ import { Account } from './components/Account';
 import { InstallApp } from './components/InstallApp';
 import { LessonClassify } from './components/LessonClassify';
 import { StudentMaterials } from './components/StudentMaterials';
+import { EnglishCoachPage } from './components/english-coach/EnglishCoachPage';
 import { hasPremiumAccess } from './utils/subscription';
 import { api } from './api/client';
 
@@ -64,6 +65,7 @@ export function AppLayout() {
           {viewMode === 'karaoke' && <KaraokeMode />}
           {viewMode === 'readers' && <GradedReaders />}
           {viewMode === 'teacher-materials' && <StudentMaterials />}
+          {viewMode === 'english-coach' && <EnglishCoachPage />}
           {viewMode === 'account' && <Account />}
           {viewMode === 'install' && <InstallApp />}
           {viewMode === 'lesson-classify' && <LessonClassify />}

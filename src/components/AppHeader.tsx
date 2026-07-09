@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Home, Gamepad2, Blocks, Puzzle, Mic, Library, Lock,
-  GraduationCap, BookOpen,
+  GraduationCap, BookOpen, MessagesSquare,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -108,6 +108,14 @@ export function AppHeader() {
       action: () => setViewMode('karaoke'),
       inDevelopment: true,
       gradient: 'from-fuchsia-500 to-purple-600',
+    },
+    {
+      id: 'english-coach',
+      label: 'Coach',
+      icon: <MessagesSquare className="w-4 h-4" />,
+      viewModes: ['english-coach'],
+      action: () => setViewMode('english-coach'),
+      gradient: 'from-emerald-500 to-teal-500',
     },
     {
       id: 'teacher-materials',
@@ -257,6 +265,20 @@ export function AppHeader() {
             title="Grupos"
           >
             <BookOpen className="w-5 h-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setViewMode('english-coach')}
+            className={`p-2 rounded-xl transition-colors ${
+              viewMode === 'english-coach'
+                ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
+                : 'text-slate-600 hover:bg-slate-100'
+            }`}
+            title="English Coach"
+            aria-label="English Coach"
+          >
+            <MessagesSquare className="w-5 h-5" />
           </button>
 
           <AccountMenu />
