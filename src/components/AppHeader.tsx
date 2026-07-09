@@ -82,7 +82,7 @@ export function AppHeader() {
       viewModes: ['play'],
       action: () => startPlayMode(),
       badge: totalReviewCount > 0 ? totalReviewCount : undefined,
-      gradient: 'from-emerald-500 to-teal-500',
+      gradient: 'from-violet-500 to-purple-500',
     },
     {
       id: 'bricks',
@@ -171,7 +171,7 @@ export function AppHeader() {
             className={`relative z-10 px-1.5 py-0.5 text-[10px] font-bold rounded-full ${
               isActive
                 ? 'bg-white/25 text-white'
-                : 'bg-gradient-to-b from-amber-300 to-orange-600 text-white shadow-[inset_0_1px_0_0_rgba(255,255,255,0.45)] ring-1 ring-amber-400/50 ring-offset-1 ring-offset-transparent animate-pulse'
+                : 'bg-violet-500 text-white ring-1 ring-violet-300/50 ring-offset-1 ring-offset-transparent'
             }`}
           >
             {item.badge}

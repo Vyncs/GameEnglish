@@ -31,8 +31,8 @@ export function MobileBottomBar() {
       viewModes: ['play'],
       action: () => startPlayMode(),
       badge: totalReview > 0 ? totalReview : undefined,
-      gradient: 'from-emerald-400 to-teal-500',
-      color: 'text-emerald-500',
+      gradient: 'from-violet-500 to-purple-500',
+      color: 'text-violet-500',
     },
     {
       id: 'pairs',
@@ -74,7 +74,7 @@ export function MobileBottomBar() {
               >
                 <Icon className={`w-5 h-5 transition-colors ${isActive ? 'text-white' : 'text-slate-500'}`} />
                 {item.badge && (
-                  <span className="absolute -right-1.5 -top-1.5 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white tabular-nums">
+                  <span className="absolute -right-1.5 -top-1.5 flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-violet-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white tabular-nums">
                     {item.badge}
                   </span>
                 )}
