@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  Home, Gamepad2, Blocks, Puzzle, Mic, Library, Lock,
+  Home, RefreshCw, Blocks, Puzzle, Mic, Library, Lock,
   GraduationCap, BookOpen, MessagesSquare,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
@@ -76,13 +76,13 @@ export function AppHeader() {
       gradient: 'from-indigo-500 to-purple-500',
     },
     {
-      id: 'play',
-      label: 'Jogar',
-      icon: <Gamepad2 className="w-4 h-4" />,
+      id: 'review',
+      label: 'Revisar',
+      icon: <RefreshCw className="w-4 h-4" />,
       viewModes: ['play'],
       action: () => startPlayMode(),
       badge: totalReviewCount > 0 ? totalReviewCount : undefined,
-      gradient: 'from-violet-500 to-purple-500',
+      gradient: 'from-emerald-500 to-teal-500',
     },
     {
       id: 'bricks',
@@ -133,7 +133,6 @@ export function AppHeader() {
 
   const renderNavPill = (item: NavItem, compact = false) => {
     const isActive = item.viewModes.includes(viewMode);
-    const playHasReviews = item.id === 'play' && !!item.badge;
 
     const basePill = 'relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200';
 
@@ -144,18 +143,6 @@ export function AppHeader() {
       pillClass += ' text-slate-400 hover:bg-slate-100';
     } else if (item.inDevelopment) {
       pillClass += ' text-slate-600 hover:bg-amber-50/80 border border-amber-200/60';
-    } else if (playHasReviews) {
-      /* Jogar com revisões: vidro leve + borda refinada + filete superior “espelhado” */
-      pillClass +=
-        ' relative overflow-hidden rounded-xl text-violet-900 ' +
-        ' bg-gradient-to-br from-violet-50/95 via-fuchsia-50/45 to-violet-100/65 ' +
-        ' border border-violet-300/40 ' +
-        ' shadow-[inset_0_1px_0_0_rgba(255,255,255,0.9),0_2px_10px_-3px_rgba(124,58,237,0.18)] ' +
-        ' transition-all duration-200 ' +
-        ' hover:border-violet-400/55 hover:bg-gradient-to-br hover:from-violet-50 hover:via-fuchsia-50/55 hover:to-violet-100/75 ' +
-        ' hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.98),0_4px_16px_-4px_rgba(124,58,237,0.26)] ' +
-        ' after:pointer-events-none after:absolute after:left-2 after:right-2 after:top-px after:z-10 after:h-px after:rounded-full ' +
-        ' after:bg-gradient-to-r after:from-transparent after:via-white after:to-transparent after:opacity-90';
     } else {
       pillClass += ' text-slate-600 hover:bg-slate-100';
     }
@@ -171,7 +158,7 @@ export function AppHeader() {
             ? 'Assine para desbloquear'
             : item.inDevelopment
               ? 'Em desenvolvimento'
-              : playHasReviews
+              : item.badge
                 ? 'Você tem cards para revisar!'
                 : undefined
         }

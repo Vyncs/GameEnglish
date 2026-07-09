@@ -14,14 +14,13 @@ import {
   Sparkles,
   Target,
   Calendar,
-  Gamepad2,
-  Play,
   ArrowRight,
   Check,
   ChevronRight,
   TrendingUp,
   GraduationCap,
   CheckCircle2,
+  RefreshCw,
 } from 'lucide-react';
 
 export function Home() {
@@ -160,9 +159,9 @@ export function Home() {
                   onClick={() => startPlayMode()}
                   className={`relative flex h-16 w-full max-w-[260px] flex-col items-center justify-center gap-0.5 rounded-2xl text-white transition-transform active:scale-[0.98] overflow-hidden ${playFabGradient} before:pointer-events-none before:absolute before:inset-x-2 before:top-1.5 before:h-[42%] before:rounded-t-xl before:bg-gradient-to-b before:from-white/30 before:to-transparent`}
                 >
-                  <Gamepad2 className="relative z-[1] h-7 w-7 shrink-0" strokeWidth={2.25} />
+                  <RefreshCw className="relative z-[1] h-7 w-7 shrink-0" strokeWidth={2.25} />
                   <span className="relative z-[1] text-[11px] font-black uppercase tracking-[0.2em] leading-tight">
-                    Jogar agora
+                    Revisar agora
                   </span>
                 </button>
 
@@ -224,7 +223,7 @@ export function Home() {
                         backdropFilter: 'blur(8px)',
                       }}
                     >
-                      <Gamepad2 className="h-9 w-9" strokeWidth={2} />
+                      <RefreshCw className="h-9 w-9" strokeWidth={2} />
                     </div>
                     <div>
                       {/* Eyebrow com pulse de "ao vivo" */}
@@ -237,7 +236,7 @@ export function Home() {
                           Sessão de hoje
                         </span>
                       </div>
-                      <h2 className="mb-1 text-3xl font-bold tracking-tight">Hora de Jogar!</h2>
+                      <h2 className="mb-1 text-3xl font-bold tracking-tight">Hora de Revisar!</h2>
                       <p className="text-base text-violet-100/90">
                         <span className="text-lg font-semibold text-white tabular-nums">
                           {totalReviewCount}
@@ -287,9 +286,9 @@ export function Home() {
                     }}
                   >
                     <span className="grid h-7 w-7 place-items-center rounded-full bg-gradient-to-br from-violet-600 via-violet-700 to-indigo-700 text-white shadow-md shadow-violet-500/35 transition-transform duration-200 group-hover:scale-110 group-active:scale-95">
-                      <Play className="h-3.5 w-3.5 fill-current" strokeWidth={0} />
+                      <RefreshCw className="h-3.5 w-3.5" strokeWidth={2.5} />
                     </span>
-                    <span className="tracking-tight">Jogar Agora</span>
+                    <span className="tracking-tight">Revisar Agora</span>
                     <ArrowRight className="h-4 w-4 -ml-0.5 opacity-50 transition-all duration-200 group-hover:translate-x-0.5 group-hover:opacity-100" />
                   </button>
                 </div>
@@ -579,9 +578,8 @@ export function Home() {
                   const gMastered = groupCards.filter((c) => c.level === 5).length;
                   const masteryPct = (gAvg / 5) * 100;
                   return (
-                    <button
+                    <div
                       key={group.id}
-                      onClick={() => selectGroup(group.id)}
                       className="group relative animate-fade-in overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 will-change-transform hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
                       style={{
                         animationDelay: `${index * 50}ms`,
@@ -595,6 +593,12 @@ export function Home() {
                         className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-400 transition-transform duration-300 group-hover:scale-x-100"
                       />
 
+                      {/* Área clicável: abre o grupo */}
+                      <button
+                        type="button"
+                        onClick={() => selectGroup(group.id)}
+                        className="block w-full text-left focus:outline-none"
+                      >
                       <div className="mb-3.5 flex items-start justify-between gap-2">
                         <div
                           className="grid h-10 w-10 place-items-center rounded-xl transition-all duration-200 group-hover:scale-105"
@@ -667,7 +671,19 @@ export function Home() {
                           </div>
                         </>
                       )}
-                    </button>
+                      </button>
+
+                      {reviewCount > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => startPlayMode(group.id)}
+                          className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-emerald-500/25"
+                        >
+                          <RefreshCw className="h-3.5 w-3.5" />
+                          Revisar {reviewCount} {reviewCount === 1 ? 'card' : 'cards'}
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>
