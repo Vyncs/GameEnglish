@@ -23,6 +23,20 @@ interface NavItem {
   show?: boolean;
 }
 
+// Cor de cada seção (mesma temática da barra de baixo do mobile).
+// Usada para deixar os pills do header sempre coloridos, não só o ativo.
+const NAV_COLOR: Record<string, string> = {
+  home: 'text-cyan-600',
+  groups: 'text-teal-600',
+  readers: 'text-indigo-600',
+  review: 'text-violet-600',
+  bricks: 'text-amber-600',
+  pairs: 'text-pink-600',
+  karaoke: 'text-fuchsia-600',
+  'english-coach': 'text-emerald-600',
+  'teacher-materials': 'text-violet-600',
+};
+
 export function AppHeader() {
   const { user } = useAuthStore();
   const {
@@ -136,15 +150,17 @@ export function AppHeader() {
 
     const basePill = 'relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200';
 
+    const sectionColor = NAV_COLOR[item.id] ?? 'text-slate-600';
+
     let pillClass = basePill;
     if (isActive) {
       pillClass += ` bg-gradient-to-r ${item.gradient} text-white shadow-lg`;
     } else if (item.locked) {
       pillClass += ' text-slate-400 hover:bg-slate-100';
     } else if (item.inDevelopment) {
-      pillClass += ' text-slate-600 hover:bg-amber-50/80 border border-amber-200/60';
+      pillClass += ` ${sectionColor} hover:bg-amber-50/80 border border-amber-200/60`;
     } else {
-      pillClass += ' text-slate-600 hover:bg-slate-100';
+      pillClass += ` ${sectionColor} hover:bg-slate-100`;
     }
 
     return (
