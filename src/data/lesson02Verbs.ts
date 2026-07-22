@@ -9,6 +9,10 @@
 
 export type VerbRule = 'A' | 'B' | 'C';
 
+// Ilustração de cada verbo (recortada da folha "Irregular Verbs – Actions").
+// Servida como asset estático em public/verbs/.
+export const verbImg = (id: number) => `/verbs/verb-${String(id).padStart(2, '0')}.png`;
+
 export interface Verb {
   id: number;
   base: string;

@@ -6,7 +6,7 @@ import {
 import { useStore } from '../store/useStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { useSpeech } from '../hooks/useSpeech';
-import { LESSON_02, VERB_STAGES, type Verb } from '../data/lesson02Verbs';
+import { LESSON_02, VERB_STAGES, verbImg, type Verb } from '../data/lesson02Verbs';
 import { MatchGame, BlitzGame, MemoryGame } from './VerbGames';
 
 const EMPTY_STAGES: string[] = [];
@@ -257,6 +257,12 @@ function Study({ onDone, onBack }: { onDone: () => void; onBack: () => void }) {
 
         {!flipped ? (
           <>
+            <img
+              src={verbImg(v.id)}
+              alt=""
+              className="mb-2 h-24 w-auto max-w-[220px] object-contain"
+              draggable={false}
+            />
             <p className="text-3xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
             <p className="mt-2 text-base text-slate-500">
               <span className="font-semibold text-red-500">{v.past}</span>

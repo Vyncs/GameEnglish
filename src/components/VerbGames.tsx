@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, Trophy, RotateCcw, Timer, Zap } from 'lucide-react';
-import { LESSON_02, type Verb } from '../data/lesson02Verbs';
+import { LESSON_02, verbImg, type Verb } from '../data/lesson02Verbs';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 
 const MATCH_PAIRS = 6; // pares por rodada de associação
@@ -309,15 +309,16 @@ function BlitzRound({ onReplay }: { onReplay: () => void }) {
 interface MemCard {
   key: string;
   verbId: number;
-  kind: 'en' | 'pt';
+  kind: 'img' | 'pt';
   label: string;
+  img?: string;
 }
 
 function buildMemCards(): MemCard[] {
   const picked = shuffle(LESSON_02.verbs).slice(0, MEMORY_PAIRS);
   const cards: MemCard[] = [];
   picked.forEach((v) => {
-    cards.push({ key: `en-${v.id}`, verbId: v.id, kind: 'en', label: v.base });
+    cards.push({ key: `img-${v.id}`, verbId: v.id, kind: 'img', label: v.base, img: verbImg(v.id) });
     cards.push({ key: `pt-${v.id}`, verbId: v.id, kind: 'pt', label: firstMeaning(v.pt) });
   });
   return shuffle(cards);
@@ -414,15 +415,21 @@ function MemoryRound({ onReplay }: { onReplay: () => void }) {
               type="button"
               onClick={() => handleFlip(c)}
               disabled={isUp}
-              className={`flex min-h-[72px] items-center justify-center rounded-xl border px-2 py-3 text-center text-sm font-medium transition-all ${
+              className={`flex min-h-[84px] items-center justify-center overflow-hidden rounded-xl border p-1 text-center text-sm font-medium transition-all ${
                 isMatched
-                  ? 'border-emerald-200 bg-emerald-50 text-emerald-600'
+                  ? 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
                   : isUp
                     ? 'border-violet-300 bg-white text-slate-800 ring-2 ring-violet-200'
-                    : 'border-transparent bg-gradient-to-br from-violet-500 to-indigo-600 text-white hover:opacity-90'
+                    : 'border-transparent bg-gradient-to-br from-violet-500 to-indigo-600 text-lg text-white hover:opacity-90'
               }`}
             >
-              {isUp ? c.label : '?'}
+              {!isUp ? (
+                '?'
+              ) : c.kind === 'img' ? (
+                <img src={c.img} alt="" className="max-h-[76px] w-full object-contain" draggable={false} />
+              ) : (
+                <span className="px-1">{c.label}</span>
+              )}
             </button>
           );
         })}
