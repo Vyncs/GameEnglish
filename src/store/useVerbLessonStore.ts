@@ -4,8 +4,9 @@ import { persist } from 'zustand/middleware';
 // Progresso de uma aula de verbos: etapas concluídas + recordes dos jogos.
 export interface VerbLessonProgress {
   stagesDone: string[];
-  bestMatchMs?: number; // melhor tempo (ms) no jogo de associação
-  bestBlitz?: number;   // melhor pontuação no blitz
+  bestMatchMs?: number;  // melhor tempo (ms) no jogo de associação
+  bestBlitz?: number;    // melhor pontuação no blitz
+  bestMemory?: number;   // menos jogadas no jogo da memória
 }
 
 interface VerbLessonState {
@@ -13,6 +14,7 @@ interface VerbLessonState {
   markStageDone: (lessonId: string, stage: string) => void;
   saveMatchTime: (lessonId: string, ms: number) => void;
   saveBlitzScore: (lessonId: string, score: number) => void;
+  saveMemoryMoves: (lessonId: string, moves: number) => void;
   resetLesson: (lessonId: string) => void;
 }
 
@@ -47,6 +49,14 @@ export const useVerbLessonStore = create<VerbLessonState>()(
           if (current.bestBlitz !== undefined && current.bestBlitz >= score) return state;
           return {
             progress: { ...state.progress, [lessonId]: { ...current, bestBlitz: score } },
+          };
+        }),
+      saveMemoryMoves: (lessonId, moves) =>
+        set((state) => {
+          const current = state.progress[lessonId] ?? empty();
+          if (current.bestMemory !== undefined && current.bestMemory <= moves) return state;
+          return {
+            progress: { ...state.progress, [lessonId]: { ...current, bestMemory: moves } },
           };
         }),
       resetLesson: (lessonId) =>

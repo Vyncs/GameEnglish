@@ -4,6 +4,7 @@ import { LESSON_02, type Verb } from '../data/lesson02Verbs';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 
 const MATCH_PAIRS = 6; // pares por rodada de associação
+const MEMORY_PAIRS = 6; // pares por rodada de memória
 const BLITZ_SECONDS = 60;
 
 function shuffle<T>(arr: T[]): T[] {
@@ -299,6 +300,133 @@ function BlitzRound({ onReplay }: { onReplay: () => void }) {
       </div>
       {flash === 'ok' && <p className="mt-2 text-center text-sm font-semibold text-emerald-600">+1 ✅</p>}
       {flash === 'no' && <p className="mt-2 text-center text-sm font-semibold text-red-500">errou</p>}
+    </>
+  );
+}
+
+// ============================================================================
+// Jogo 3 — Memória (concentração): vire as cartas e ache os pares verbo ↔ significado
+interface MemCard {
+  key: string;
+  verbId: number;
+  kind: 'en' | 'pt';
+  label: string;
+}
+
+function buildMemCards(): MemCard[] {
+  const picked = shuffle(LESSON_02.verbs).slice(0, MEMORY_PAIRS);
+  const cards: MemCard[] = [];
+  picked.forEach((v) => {
+    cards.push({ key: `en-${v.id}`, verbId: v.id, kind: 'en', label: v.base });
+    cards.push({ key: `pt-${v.id}`, verbId: v.id, kind: 'pt', label: firstMeaning(v.pt) });
+  });
+  return shuffle(cards);
+}
+
+export function MemoryGame({ onBack }: { onBack: () => void }) {
+  const [gameId, setGameId] = useState(0);
+  const best = useVerbLessonStore((s) => s.progress[LESSON_02.id]?.bestMemory);
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-6">
+      <GameHeader
+        onBack={onBack}
+        title="Jogo · Memória"
+        best={best !== undefined ? `${best} jogadas` : undefined}
+      />
+      <p className="mb-3 text-sm text-slate-500">
+        Vire as cartas e ache os pares verbo ↔ significado. Quanto menos jogadas, melhor!
+      </p>
+      <MemoryRound key={gameId} onReplay={() => setGameId((g) => g + 1)} />
+    </div>
+  );
+}
+
+function MemoryRound({ onReplay }: { onReplay: () => void }) {
+  const saveMemoryMoves = useVerbLessonStore((s) => s.saveMemoryMoves);
+  const [cards] = useState<MemCard[]>(() => buildMemCards());
+  const [flipped, setFlipped] = useState<string[]>([]);
+  const [matched, setMatched] = useState<string[]>([]);
+  const [moves, setMoves] = useState(0);
+  const [busy, setBusy] = useState(false);
+
+  const done = matched.length === cards.length;
+
+  useEffect(() => {
+    if (done) saveMemoryMoves(LESSON_02.id, moves);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done]);
+
+  const handleFlip = (c: MemCard) => {
+    if (busy || done || flipped.includes(c.key) || matched.includes(c.key)) return;
+    if (flipped.length === 0) {
+      setFlipped([c.key]);
+      return;
+    }
+    // segunda carta
+    const first = cards.find((x) => x.key === flipped[0])!;
+    setMoves((m) => m + 1);
+    if (first.verbId === c.verbId && first.kind !== c.kind) {
+      setMatched((m) => [...m, first.key, c.key]);
+      setFlipped([]);
+    } else {
+      setFlipped([first.key, c.key]);
+      setBusy(true);
+      setTimeout(() => {
+        setFlipped([]);
+        setBusy(false);
+      }, 850);
+    }
+  };
+
+  if (done) {
+    return (
+      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
+        <Trophy className="mx-auto h-12 w-12 text-emerald-500" />
+        <p className="mt-2 text-lg font-bold text-emerald-800">Todos os pares! 🧠</p>
+        <p className="text-sm text-emerald-700">
+          Você terminou em <strong>{moves} jogadas</strong>.
+        </p>
+        <button
+          type="button"
+          onClick={onReplay}
+          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+        >
+          <RotateCcw className="h-4 w-4" />
+          Jogar de novo
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold tabular-nums text-slate-600">
+        <Timer className="h-4 w-4 text-violet-500" />
+        {moves} jogadas
+      </div>
+      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
+        {cards.map((c) => {
+          const isUp = flipped.includes(c.key) || matched.includes(c.key);
+          const isMatched = matched.includes(c.key);
+          return (
+            <button
+              key={c.key}
+              type="button"
+              onClick={() => handleFlip(c)}
+              disabled={isUp}
+              className={`flex min-h-[72px] items-center justify-center rounded-xl border px-2 py-3 text-center text-sm font-medium transition-all ${
+                isMatched
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-600'
+                  : isUp
+                    ? 'border-violet-300 bg-white text-slate-800 ring-2 ring-violet-200'
+                    : 'border-transparent bg-gradient-to-br from-violet-500 to-indigo-600 text-white hover:opacity-90'
+              }`}
+            >
+              {isUp ? c.label : '?'}
+            </button>
+          );
+        })}
+      </div>
     </>
   );
 }
