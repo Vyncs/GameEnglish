@@ -144,7 +144,7 @@ function MatchRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
         <button
           type="button"
           onClick={onReplay}
-          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           <RotateCcw className="h-4 w-4" />
           Jogar de novo
@@ -156,7 +156,7 @@ function MatchRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
   return (
     <>
       <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold tabular-nums text-slate-600">
-        <Timer className="h-4 w-4 text-violet-500" />
+        <Timer className="h-4 w-4 text-[var(--accent)]" />
         {(elapsed / 1000).toFixed(1)}s
       </div>
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
@@ -167,8 +167,8 @@ function MatchRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
             'flex min-h-[64px] items-center justify-center rounded-xl border px-2 py-3 text-center text-sm font-medium transition-all ';
           if (t.matched) cls += 'border-emerald-200 bg-emerald-50 text-emerald-300 opacity-40';
           else if (isWrong) cls += 'border-red-400 bg-red-50 text-red-600 animate-shake';
-          else if (isSel) cls += 'border-violet-400 bg-violet-50 text-violet-700 ring-2 ring-violet-300';
-          else cls += 'border-slate-200 bg-white text-slate-700 hover:border-violet-300 hover:bg-violet-50/40';
+          else if (isSel) cls += 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-text)] ring-2 ring-[var(--accent-border)]';
+          else cls += 'border-slate-200 bg-white text-slate-700 hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]';
           return (
             <button key={t.key} type="button" disabled={t.matched} onClick={() => handleTap(t)} className={cls}>
               {t.label}
@@ -236,14 +236,14 @@ function BlitzRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
 
   if (done) {
     return (
-      <div className="rounded-2xl border border-violet-200 bg-violet-50 p-6 text-center">
-        <Zap className="mx-auto h-12 w-12 text-violet-500" />
-        <p className="mt-2 text-lg font-bold text-violet-800">Tempo!</p>
+      <div className="rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] p-6 text-center">
+        <Zap className="mx-auto h-12 w-12 text-[var(--accent)]" />
+        <p className="mt-2 text-lg font-bold text-[var(--accent-text)]">Tempo!</p>
         <p className="text-3xl font-extrabold tabular-nums text-slate-900">{score} pts</p>
         <button
           type="button"
           onClick={onReplay}
-          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           <RotateCcw className="h-4 w-4" />
           Jogar de novo
@@ -263,7 +263,7 @@ function BlitzRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
           <Timer className="h-4 w-4" />
           {timeLeft}s
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-100 px-3 py-1 text-sm font-bold tabular-nums text-violet-700">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-sm font-bold tabular-nums text-[var(--accent-text)]">
           <Zap className="h-4 w-4" />
           {score}
         </span>
@@ -274,7 +274,7 @@ function BlitzRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
           flash === 'ok' ? 'border-emerald-300' : flash === 'no' ? 'border-red-300' : 'border-slate-200/60'
         }`}
       >
-        <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">Significado de:</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-text)]">Significado de:</p>
         <p className="mt-1 mb-4 text-2xl font-extrabold tracking-tight text-slate-900">{item.base}</p>
         <div className="grid gap-2.5 sm:grid-cols-2">
           {options.map((opt) => (
@@ -282,7 +282,7 @@ function BlitzRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
               key={opt}
               type="button"
               onClick={() => pick(opt)}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-700 transition-all hover:border-violet-300 hover:bg-violet-50/50 active:scale-[0.99]"
+              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-700 transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)] active:scale-[0.99]"
             >
               {opt}
             </button>
@@ -389,7 +389,7 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
         <button
           type="button"
           onClick={onReplay}
-          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           <RotateCcw className="h-4 w-4" />
           Jogar de novo
@@ -402,20 +402,20 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
     <>
       {isPreviewing ? (
         <div className="mb-3 flex flex-col items-start gap-1.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-1.5 text-sm font-bold text-white shadow-md shadow-violet-500/25">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-1.5 text-sm font-bold text-white shadow-md shadow-slate-900/10">
             <Timer className="h-4 w-4" />
             Memorize! {previewLeft}s
           </span>
-          <div className="h-1.5 w-40 overflow-hidden rounded-full bg-violet-100">
+          <div className="h-1.5 w-40 overflow-hidden rounded-full bg-[var(--accent-soft)]">
             <div
-              className="h-full rounded-full bg-violet-500 transition-all duration-1000 ease-linear"
+              className="h-full rounded-full bg-[var(--accent)] transition-all duration-1000 ease-linear"
               style={{ width: `${(previewLeft / MEMORY_PREVIEW_SECONDS) * 100}%` }}
             />
           </div>
         </div>
       ) : (
         <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold tabular-nums text-slate-600">
-          <Timer className="h-4 w-4 text-violet-500" />
+          <Timer className="h-4 w-4 text-[var(--accent)]" />
           {moves} jogadas
         </div>
       )}
@@ -433,8 +433,8 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
                 isMatched
                   ? 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
                   : isUp
-                    ? 'border-violet-300 bg-white text-slate-800 ring-2 ring-violet-200'
-                    : 'border-transparent bg-gradient-to-br from-violet-500 to-indigo-600 text-lg text-white hover:opacity-90'
+                    ? 'border-[var(--accent-border)] bg-white text-slate-800 ring-2 ring-[var(--accent-border)]'
+                    : 'border-transparent bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)] text-lg text-white hover:opacity-90'
               }`}
             >
               {!isUp ? (

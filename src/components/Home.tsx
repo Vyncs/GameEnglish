@@ -90,7 +90,7 @@ export function Home() {
         <div className="order-first mb-8">
           <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
             <div className="flex items-center gap-2.5 border-b border-slate-100 px-5 py-4">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)] text-white">
                 <Calendar className="h-4 w-4" strokeWidth={2.4} />
               </div>
               <div>
@@ -111,7 +111,7 @@ export function Home() {
                 }
                 cta={totalReviewCount > 0 ? 'Revisar agora' : 'Praticar mesmo assim'}
                 done={totalReviewCount === 0}
-                tint="from-violet-500 to-purple-600"
+                tint="from-[var(--accent)] to-[var(--accent-strong)]"
                 icon={<RefreshCw className="h-4 w-4" />}
                 onClick={() => setViewMode('review-hub')}
               />
@@ -173,16 +173,16 @@ export function Home() {
 
           <KpiCard
             icon={<Clock className="h-4 w-4" strokeWidth={2.4} />}
-            iconTint="bg-violet-50 text-violet-600 ring-violet-100"
+            iconTint="bg-[var(--accent-soft)] text-[var(--accent-text)] ring-[var(--accent-border)]"
             label="Para Revisar"
             value={totalReviewCount}
-            valueColorClass={totalReviewCount > 0 ? 'text-violet-600' : 'text-slate-900'}
+            valueColorClass={totalReviewCount > 0 ? 'text-[var(--accent-text)]' : 'text-slate-900'}
             visual={
               totalReviewCount > 0 ? (
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-violet-600">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--accent-text)]">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-500" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
                   </span>
                   pronto agora
                 </span>
@@ -196,7 +196,7 @@ export function Home() {
 
           <KpiCard
             icon={<Target className="h-4 w-4" strokeWidth={2.4} />}
-            iconTint="bg-violet-50 text-violet-600 ring-violet-100"
+            iconTint="bg-[var(--accent-soft)] text-[var(--accent-text)] ring-[var(--accent-border)]"
             label="Nível Médio"
             value={avgLevel}
             suffix={<span className="text-base font-medium text-slate-400">/ 5</span>}
@@ -217,8 +217,8 @@ export function Home() {
         {/* AULAS — regras/gramática */}
         <div className={`mb-8 ${totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}`}>
           <div className="mb-3 flex items-center gap-2.5">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet-100 ring-1 ring-violet-200/80">
-              <GraduationCap className="h-4 w-4 text-violet-600" strokeWidth={2.4} />
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--accent-soft)] ring-1 ring-[var(--accent-border)]/80">
+              <GraduationCap className="h-4 w-4 text-[var(--accent-text)]" strokeWidth={2.4} />
             </div>
             <div>
               <h2 className="text-lg font-semibold tracking-tight text-slate-900">Aulas</h2>
@@ -230,7 +230,7 @@ export function Home() {
             <button
               type="button"
               onClick={() => setViewMode('lesson-classify')}
-              className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+              className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
             >
               {lessonDone && (
                 <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
@@ -243,7 +243,7 @@ export function Home() {
                   className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
                     lessonDone
                       ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                      : 'bg-gradient-to-br from-violet-500 to-indigo-600'
+                      : 'bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)]'
                   }`}
                 >
                   {lessonDone ? <CheckCircle2 className="h-6 w-6" /> : <GraduationCap className="h-6 w-6" strokeWidth={2.2} />}
@@ -252,7 +252,7 @@ export function Home() {
                   <div className="flex items-center gap-2">
                     <h3 className="text-base font-semibold tracking-tight text-slate-900">{LESSON_01.title}</h3>
                     {!lessonDone && (
-                      <ArrowRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5" />
+                      <ArrowRight className="h-4 w-4 text-[var(--accent)] transition-transform group-hover:translate-x-0.5" />
                     )}
                   </div>
                   <p className="text-xs text-slate-500">{LESSON_01.subtitle}</p>
@@ -272,12 +272,12 @@ export function Home() {
                     className={`h-full rounded-full transition-all duration-500 ${
                       lessonDone
                         ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                        : 'bg-gradient-to-r from-violet-500 to-indigo-500'
+                        : 'bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)]'
                     }`}
                     style={{ width: `${(lessonAnswered / lessonTotal) * 100}%` }}
                   />
                 </div>
-                <p className="mt-2 text-sm font-semibold text-violet-600">
+                <p className="mt-2 text-sm font-semibold text-[var(--accent-text)]">
                   {lessonDone
                     ? 'Ver resultado e revisão →'
                     : lessonAnswered > 0
@@ -313,7 +313,7 @@ export function Home() {
                   key={topic.id}
                   type="button"
                   onClick={() => openTopic(topic.id)}
-                  className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+                  className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
                 >
                   {complete && (
                     <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
@@ -326,7 +326,7 @@ export function Home() {
                       className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-2xl shadow-sm transition-transform group-hover:scale-105 ${
                         complete
                           ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white'
-                          : 'bg-violet-50 ring-1 ring-violet-100'
+                          : 'bg-[var(--accent-soft)] ring-1 ring-[var(--accent-border)]'
                       }`}
                     >
                       {complete ? <CheckCircle2 className="h-6 w-6" /> : <span>{topic.emoji}</span>}
@@ -335,7 +335,7 @@ export function Home() {
                       <div className="flex items-center gap-2">
                         <h3 className="text-base font-semibold tracking-tight text-slate-900">{topic.title}</h3>
                         {!complete && (
-                          <ArrowRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5" />
+                          <ArrowRight className="h-4 w-4 text-[var(--accent)] transition-transform group-hover:translate-x-0.5" />
                         )}
                       </div>
                       <p className="text-xs text-slate-500">
@@ -357,12 +357,12 @@ export function Home() {
                         className={`h-full rounded-full transition-all duration-500 ${
                           complete
                             ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                            : 'bg-gradient-to-r from-violet-500 to-indigo-500'
+                            : 'bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)]'
                         }`}
                         style={{ width: `${(done / total) * 100}%` }}
                       />
                     </div>
-                    <p className="mt-2 text-sm font-semibold text-violet-600">
+                    <p className="mt-2 text-sm font-semibold text-[var(--accent-text)]">
                       {complete ? 'Revisar tópico →' : done > 0 ? 'Continuar →' : 'Começar →'}
                     </p>
                   </div>
@@ -416,7 +416,7 @@ export function Home() {
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
                   placeholder="Nome do grupo..."
-                  className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-violet-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-violet-100"
+                  className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-[var(--accent)] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[var(--accent-border)]"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleAddGroup();
@@ -427,7 +427,7 @@ export function Home() {
                   <button
                     onClick={handleAddGroup}
                     disabled={!newGroupName.trim()}
-                    className="flex-1 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-violet-700 hover:shadow-md hover:shadow-violet-500/30 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none sm:flex-none"
+                    className="flex-1 rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[var(--accent-strong)] hover:shadow-md hover:shadow-slate-900/10 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none sm:flex-none"
                   >
                     Criar
                   </button>
@@ -456,7 +456,7 @@ export function Home() {
                   boxShadow: 'inset 0 0 0 1px rgba(124, 58, 237, 0.10)',
                 }}
               >
-                <Folder className="h-7 w-7 text-violet-500" strokeWidth={2} />
+                <Folder className="h-7 w-7 text-[var(--accent)]" strokeWidth={2} />
               </div>
               <h3 className="mb-1.5 text-base font-semibold tracking-tight text-slate-900">
                 Comece sua biblioteca
@@ -466,7 +466,7 @@ export function Home() {
               </p>
               <button
                 onClick={() => setIsAddingGroup(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-violet-700 hover:shadow-lg hover:shadow-violet-500/30"
+                className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--accent-strong)] hover:shadow-lg hover:shadow-slate-900/10"
               >
                 <Plus className="h-4 w-4" />
                 Criar Primeiro Grupo
@@ -486,7 +486,7 @@ export function Home() {
                   return (
                     <div
                       key={group.id}
-                      className="group relative animate-fade-in overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 will-change-transform hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+                      className="group relative animate-fade-in overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 will-change-transform hover:-translate-y-1 hover:border-[var(--accent-border)] hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
                       style={{
                         animationDelay: `${index * 50}ms`,
                         boxShadow:
@@ -496,7 +496,7 @@ export function Home() {
                       {/* Faixa colorida no topo (visível só no hover) */}
                       <div
                         aria-hidden
-                        className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-violet-500 via-purple-500 to-indigo-500 transition-transform duration-300 group-hover:scale-x-100"
+                        className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-[var(--accent)] via-[var(--accent)] to-[var(--accent-strong)] transition-transform duration-300 group-hover:scale-x-100"
                       />
 
                       {/* Área clicável: abre o grupo */}
@@ -515,16 +515,16 @@ export function Home() {
                           }}
                         >
                           <Folder
-                            className="h-5 w-5 text-cyan-600 transition-colors group-hover:text-violet-600"
+                            className="h-5 w-5 text-cyan-600 transition-colors group-hover:text-[var(--accent-text)]"
                             strokeWidth={2.2}
                           />
                         </div>
 
                         {reviewCount > 0 ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-violet-200/80 bg-violet-50 px-2.5 py-1 text-[11px] font-semibold text-violet-700">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--accent-text)]">
                             <span className="relative flex h-1.5 w-1.5">
-                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-violet-400 opacity-75" />
-                              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-violet-500" />
+                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
+                              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
                             </span>
                             {reviewCount} para revisar
                           </span>
@@ -536,7 +536,7 @@ export function Home() {
                         ) : null}
                       </div>
 
-                      <h3 className="mb-1 text-[15px] font-semibold tracking-tight text-slate-900 transition-colors group-hover:text-violet-900">
+                      <h3 className="mb-1 text-[15px] font-semibold tracking-tight text-slate-900 transition-colors group-hover:text-[var(--accent-text)]">
                         {group.name}
                       </h3>
                       <div className="mb-3 flex items-center gap-1.5 text-xs text-slate-500">
@@ -583,7 +583,7 @@ export function Home() {
                         <button
                           type="button"
                           onClick={() => startPlayMode(group.id)}
-                          className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-violet-500/25"
+                          className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10"
                         >
                           <RefreshCw className="h-3.5 w-3.5" />
                           Revisar {reviewCount} {reviewCount === 1 ? 'card' : 'cards'}
@@ -755,7 +755,7 @@ function LevelDots({ value }: { value: number }) {
             className="relative h-2 w-2 overflow-hidden rounded-full bg-slate-200"
           >
             <div
-              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-violet-500 to-violet-600 transition-all duration-700"
+              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-700"
               style={{ width: `${fill * 100}%` }}
             />
           </div>
@@ -819,11 +819,11 @@ function TodayStep({
         <p className="truncate text-xs text-slate-500">{subtitle}</p>
       </div>
 
-      <span className="hidden shrink-0 items-center gap-1 text-xs font-semibold text-violet-600 sm:inline-flex">
+      <span className="hidden shrink-0 items-center gap-1 text-xs font-semibold text-[var(--accent-text)] sm:inline-flex">
         {cta}
         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
       </span>
-      <ArrowRight className="h-4 w-4 shrink-0 text-violet-400 sm:hidden" />
+      <ArrowRight className="h-4 w-4 shrink-0 text-[var(--accent)] sm:hidden" />
     </button>
   );
 }

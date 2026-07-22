@@ -28,7 +28,7 @@ function ruleBadge(rule: NonNullable<TopicItem['rule']>) {
     A: 'bg-cyan-100 text-cyan-700',
     B: 'bg-blue-100 text-blue-700',
     B2: 'bg-indigo-100 text-indigo-700',
-    C: 'bg-violet-100 text-violet-700',
+    C: 'bg-[var(--accent-soft)] text-[var(--accent-text)]',
   } as const;
   return `inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold ${map[rule]}`;
 }
@@ -117,7 +117,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
         <h1 className="text-lg font-bold text-slate-800">
           {topic.emoji} {topic.title}
         </h1>
-        <span className="shrink-0 rounded-full bg-violet-100 px-3 py-1 text-xs font-bold tabular-nums text-violet-700">
+        <span className="shrink-0 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-bold tabular-nums text-[var(--accent-text)]">
           {doneCount}/{topic.stages.length} etapas
         </span>
       </div>
@@ -127,7 +127,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
 
       <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 transition-all duration-300"
+          className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-300"
           style={{ width: `${(doneCount / topic.stages.length) * 100}%` }}
         />
       </div>
@@ -159,12 +159,12 @@ export function TopicStudy({ topic }: { topic: Topic }) {
                   ? 'cursor-not-allowed border-slate-200 bg-slate-50 opacity-60'
                   : done
                     ? 'border-emerald-200 bg-emerald-50/60 hover:border-emerald-300'
-                    : 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md'
+                    : 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-md'
               }`}
             >
               <div
                 className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl ${
-                  done ? 'bg-emerald-100' : 'bg-violet-50'
+                  done ? 'bg-emerald-100' : 'bg-[var(--accent-soft)]'
                 }`}
               >
                 {done ? <CheckCircle2 className="h-6 w-6 text-emerald-500" /> : <span>{info.emoji}</span>}
@@ -180,7 +180,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
               {locked ? (
                 <Lock className="h-5 w-5 shrink-0 text-slate-400" />
               ) : (
-                <ArrowRight className="h-5 w-5 shrink-0 text-violet-400" />
+                <ArrowRight className="h-5 w-5 shrink-0 text-[var(--accent)]" />
               )}
             </button>
           );
@@ -190,7 +190,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
       {/* Jogos */}
       <div className="mt-8">
         <div className="mb-3 flex items-center gap-2">
-          <Gamepad2 className="h-5 w-5 text-violet-500" />
+          <Gamepad2 className="h-5 w-5 text-[var(--accent)]" />
           <h2 className="text-base font-bold text-slate-800">Jogos</h2>
           <span className="text-xs text-slate-400">— fixe as palavras brincando</span>
         </div>
@@ -206,7 +206,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
           <GameCard
             onClick={() => setMode('memory')}
             icon={<Brain className="h-5 w-5" />}
-            tint="from-violet-500 to-indigo-600"
+            tint="from-[var(--accent)] to-[var(--accent-strong)]"
             title="Memória"
             desc="Vire as cartas e ache os pares"
             best={bestMemory !== undefined ? `${bestMemory} jogadas` : undefined}
@@ -223,7 +223,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
       </div>
 
       {/* Integração com a revisão espaçada */}
-      <div className="mt-8 rounded-2xl border border-violet-200 bg-violet-50/60 p-4">
+      <div className="mt-8 rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] p-4">
         <p className="text-sm font-semibold text-slate-800">Levar para a revisão diária</p>
         <p className="mt-0.5 text-xs text-slate-600">
           Cria um grupo com estas {topic.items.length} palavras nos seus cards, com repetição espaçada.
@@ -232,7 +232,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
           type="button"
           onClick={addToReview}
           disabled={adding}
-          className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
           {adding
@@ -242,9 +242,9 @@ export function TopicStudy({ topic }: { topic: Topic }) {
 
         {adding && (
           <div className="mt-3">
-            <div className="h-2 w-full overflow-hidden rounded-full bg-violet-100">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--accent-soft)]">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 transition-all duration-200"
+                className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-200"
                 style={{ width: `${(addProgress / topic.items.length) * 100}%` }}
               />
             </div>
@@ -276,7 +276,7 @@ function GameCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition-all hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md"
+      className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition-all hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-md"
     >
       <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${tint} text-white`}>
         {icon}
@@ -384,7 +384,7 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
           <button
             type="button"
             onClick={() => go(index + 1)}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
           >
             Próximo
             <ArrowRight className="h-4 w-4" />
@@ -440,7 +440,7 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
       <Bar value={mastered} total={total} />
 
       <div className="mt-4 rounded-2xl border border-slate-200/60 bg-white p-5 shadow-xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">Qual o significado?</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-text)]">Qual o significado?</p>
         <p className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
         {v.past && (
           <p className="mb-4 text-sm text-slate-400">
@@ -454,7 +454,7 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
             const isThis = chosen === opt;
             const isCorrect = opt === v.pt;
             let cls = 'flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm transition-all ';
-            if (!chosen) cls += 'border-slate-200 bg-white hover:border-violet-300 hover:bg-violet-50/50 active:scale-[0.99]';
+            if (!chosen) cls += 'border-slate-200 bg-white hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)] active:scale-[0.99]';
             else if (isCorrect) cls += 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300';
             else if (isThis) cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
             else cls += 'border-slate-200 bg-white opacity-60';
@@ -481,7 +481,7 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
         type="button"
         onClick={advance}
         disabled={!chosen}
-        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         Continuar
         <ArrowRight className="h-4 w-4" />
@@ -529,7 +529,7 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
       <Bar value={mastered} total={total} />
 
       <div className="mt-4 rounded-2xl border border-slate-200/60 bg-white p-5 shadow-xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">Passado e particípio de:</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-text)]">Passado e particípio de:</p>
         <div className="mt-1 flex items-baseline gap-2">
           <p className="text-2xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
           <span className="text-sm text-slate-400">({v.pt})</span>
@@ -540,7 +540,7 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
             const isThis = chosen === opt;
             const isCorrect = opt === correct;
             let cls = 'flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm transition-all ';
-            if (!chosen) cls += 'border-slate-200 bg-white hover:border-violet-300 hover:bg-violet-50/50 active:scale-[0.99]';
+            if (!chosen) cls += 'border-slate-200 bg-white hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)] active:scale-[0.99]';
             else if (isCorrect) cls += 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300';
             else if (isThis) cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
             else cls += 'border-slate-200 bg-white opacity-60';
@@ -568,7 +568,7 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
         type="button"
         onClick={advance}
         disabled={!chosen}
-        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         Continuar
         <ArrowRight className="h-4 w-4" />
@@ -592,7 +592,7 @@ function StageHeader({ onBack, title, progress }: { onBack: () => void; title: s
       </button>
       <div className="flex items-center gap-2">
         <span className="text-sm font-semibold text-slate-700">{title}</span>
-        <span className="rounded-full bg-violet-100 px-2.5 py-0.5 text-xs font-bold tabular-nums text-violet-700">
+        <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-0.5 text-xs font-bold tabular-nums text-[var(--accent-text)]">
           {progress}
         </span>
       </div>
@@ -604,7 +604,7 @@ function Bar({ value, total }: { value: number; total: number }) {
   return (
     <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
       <div
-        className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 transition-all duration-300"
+        className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-300"
         style={{ width: `${total > 0 ? (value / total) * 100 : 0}%` }}
       />
     </div>
