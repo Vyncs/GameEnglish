@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft, Check, X, Volume2, RotateCcw, ArrowLeft, ArrowRight,
   Trophy, Lightbulb, Lock, CheckCircle2, Gamepad2, Puzzle, Zap, Brain,
@@ -43,6 +43,19 @@ export function LessonVerbs({ lesson, imageFor }: { lesson: VerbLesson; imageFor
   const resetLesson = useVerbLessonStore((s) => s.resetLesson);
 
   const [mode, setMode] = useState<'hub' | 'study' | 'meaning' | 'forms' | 'match' | 'blitz' | 'memory'>('hub');
+
+  // Pré-carrega as ilustrações ao abrir a aula, para não haver atraso ao virar
+  // as cartas na memória / trocar de flashcard.
+  useEffect(() => {
+    if (!imageFor) return;
+    lesson.verbs.forEach((v) => {
+      const url = imageFor(v);
+      if (url) {
+        const img = new Image();
+        img.src = url;
+      }
+    });
+  }, [lesson, imageFor]);
 
   const finish = (stage: string) => {
     markStageDone(lesson.id, stage);
