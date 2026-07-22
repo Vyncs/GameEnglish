@@ -7,19 +7,22 @@
 //   can -> Regra C (modal: poder/saber/conseguir/dever)
 //   demais -> Regra A (verbos de ação com do/does/did)
 
-import type { VerbLesson } from './verbLesson';
-export type { VerbRule, Verb, VerbLesson } from './verbLesson';
-export { VERB_STAGES } from './verbLesson';
+import type { Topic } from './topic';
 
 // Ilustração de cada verbo (recortada da folha "Irregular Verbs – Actions").
 // Servida como asset estático em public/verbs/.
 export const verbImg = (id: number) => `/verbs/verb-${String(id).padStart(2, '0')}.png`;
 
-export const LESSON_02: VerbLesson = {
+// id mantido ('verbs-01-25') para preservar o progresso já salvo do usuário.
+export const TOPIC_VERBS_1: Topic = {
   id: 'verbs-01-25',
-  title: 'Aula 02 — 25 verbos',
-  subtitle: 'Decore os verbos 1–25 (arrive → eat) passo a passo',
-  verbs: [
+  title: 'Verbos · 1–25',
+  subtitle: 'arrive → eat',
+  emoji: '🏃',
+  level: 1,
+  stages: ['study', 'meaning', 'forms'],
+  imageFor: (item) => verbImg(item.id),
+  items: [
     { id: 1, base: 'arrive', past: 'arrived', participle: 'arrived', pt: 'chegar', example: 'What time did you arrive there?', irregular: false, rule: 'A', tip: 'Regular: passado e particípio com -ed (arrive → arrived).' },
     { id: 2, base: 'ask', past: 'asked', participle: 'asked', pt: 'pedir, perguntar, chamar', example: "Why don't you ask your father?", irregular: false, rule: 'A', tip: 'Regular: ask → asked.' },
     { id: 3, base: 'be', past: 'was/were', participle: 'been', pt: 'ser, estar', example: 'I want to be your friend.', irregular: true, rule: 'B', tip: 'Regra B (ser/estar). Irregular: was/were – been.' },

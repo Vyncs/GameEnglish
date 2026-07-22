@@ -11,6 +11,9 @@ export interface VerbLessonProgress {
 
 interface VerbLessonState {
   progress: Record<string, VerbLessonProgress>;
+  /** Tópico aberto no momento (usado pela view 'topic'). */
+  selectedTopicId: string | null;
+  setSelectedTopic: (topicId: string) => void;
   markStageDone: (lessonId: string, stage: string) => void;
   saveMatchTime: (lessonId: string, ms: number) => void;
   saveBlitzScore: (lessonId: string, score: number) => void;
@@ -24,6 +27,8 @@ export const useVerbLessonStore = create<VerbLessonState>()(
   persist(
     (set) => ({
       progress: {},
+      selectedTopicId: null,
+      setSelectedTopic: (topicId) => set({ selectedTopicId: topicId }),
       markStageDone: (lessonId, stage) =>
         set((state) => {
           const current = state.progress[lessonId] ?? empty();

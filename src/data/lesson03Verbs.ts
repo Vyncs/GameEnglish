@@ -1,15 +1,19 @@
-import type { VerbLesson } from './verbLesson';
+import type { Topic } from './topic';
 
-// Aula 03 — verbos 26–50 (fall → like).
+// Verbos 26–50 (fall → like).
 // Dicas conectam com o mapa de regras da Aula 01:
 //   have -> Regra B2 (ter/haver)
 //   demais -> Regra A (verbos de ação com do/does/did)
 
-export const LESSON_03: VerbLesson = {
+// id mantido ('verbs-26-50') para preservar o progresso já salvo do usuário.
+export const TOPIC_VERBS_2: Topic = {
   id: 'verbs-26-50',
-  title: 'Aula 03 — 25 verbos',
-  subtitle: 'Decore os verbos 26–50 (fall → like) passo a passo',
-  verbs: [
+  title: 'Verbos · 26–50',
+  subtitle: 'fall → like',
+  emoji: '🏃',
+  level: 2,
+  stages: ['study', 'meaning', 'forms'],
+  items: [
     { id: 26, base: 'fall', past: 'fell', participle: 'fallen', pt: 'cair', example: 'Be careful, don’t fall!', irregular: true, rule: 'A', tip: 'Irregular: fall – fell – fallen.' },
     { id: 27, base: 'find', past: 'found', participle: 'found', pt: 'encontrar, achar', example: 'Did you find your keys?', irregular: true, rule: 'A', tip: 'Irregular: passado = particípio (found).' },
     { id: 28, base: 'finish', past: 'finished', participle: 'finished', pt: 'terminar, acabar, concluir', example: 'What time do you finish work?', irregular: false, rule: 'A', tip: 'Regular: finish → finished.' },
