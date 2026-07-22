@@ -1,12 +1,13 @@
 import { useMemo, useState } from 'react';
 import {
   ChevronLeft, Check, X, Volume2, RotateCcw, ArrowLeft, ArrowRight,
-  Trophy, Lightbulb, Lock, CheckCircle2,
+  Trophy, Lightbulb, Lock, CheckCircle2, Gamepad2, Puzzle, Zap,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { useSpeech } from '../hooks/useSpeech';
 import { LESSON_02, VERB_STAGES, type Verb } from '../data/lesson02Verbs';
+import { MatchGame, BlitzGame } from './VerbGames';
 
 const EMPTY_STAGES: string[] = [];
 // Verbos que entram no exercício de formas (irregulares com particípio; exclui "can").
@@ -35,10 +36,12 @@ export function LessonVerbs() {
   const goToHome = useStore((s) => s.goToHome);
   const lesson = LESSON_02;
   const stagesDone = useVerbLessonStore((s) => s.progress[lesson.id]?.stagesDone ?? EMPTY_STAGES);
+  const bestMatch = useVerbLessonStore((s) => s.progress[lesson.id]?.bestMatchMs);
+  const bestBlitz = useVerbLessonStore((s) => s.progress[lesson.id]?.bestBlitz);
   const markStageDone = useVerbLessonStore((s) => s.markStageDone);
   const resetLesson = useVerbLessonStore((s) => s.resetLesson);
 
-  const [mode, setMode] = useState<'hub' | 'study' | 'meaning' | 'forms'>('hub');
+  const [mode, setMode] = useState<'hub' | 'study' | 'meaning' | 'forms' | 'match' | 'blitz'>('hub');
 
   const finish = (stage: string) => {
     markStageDone(lesson.id, stage);
@@ -48,6 +51,8 @@ export function LessonVerbs() {
   if (mode === 'study') return <Study onDone={() => finish('study')} onBack={() => setMode('hub')} />;
   if (mode === 'meaning') return <Meaning onDone={() => finish('meaning')} onBack={() => setMode('hub')} />;
   if (mode === 'forms') return <Forms onDone={() => finish('forms')} onBack={() => setMode('hub')} />;
+  if (mode === 'match') return <MatchGame onBack={() => setMode('hub')} />;
+  if (mode === 'blitz') return <BlitzGame onBack={() => setMode('hub')} />;
 
   const doneCount = stagesDone.length;
   const allDone = doneCount === VERB_STAGES.length;
@@ -132,6 +137,54 @@ export function LessonVerbs() {
             </button>
           );
         })}
+      </div>
+
+      {/* Jogos */}
+      <div className="mt-8">
+        <div className="mb-3 flex items-center gap-2">
+          <Gamepad2 className="h-5 w-5 text-violet-500" />
+          <h2 className="text-base font-bold text-slate-800">Jogos</h2>
+          <span className="text-xs text-slate-400">— fixe os verbos brincando</span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <button
+            type="button"
+            onClick={() => setMode('match')}
+            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md"
+          >
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 text-white">
+              <Puzzle className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-slate-800">Associação</p>
+              <p className="text-xs text-slate-500">Pareie verbo ↔ significado contra o tempo</p>
+              {bestMatch !== undefined && (
+                <p className="mt-0.5 text-xs font-semibold text-amber-600">
+                  🏆 melhor: {(bestMatch / 1000).toFixed(1)}s
+                </p>
+              )}
+            </div>
+            <ArrowRight className="h-4 w-4 shrink-0 text-violet-400" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMode('blitz')}
+            className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition-all hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md"
+          >
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white">
+              <Zap className="h-5 w-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-semibold text-slate-800">Blitz</p>
+              <p className="text-xs text-slate-500">60s valendo pontos: acerte o significado</p>
+              {bestBlitz !== undefined && (
+                <p className="mt-0.5 text-xs font-semibold text-amber-600">🏆 recorde: {bestBlitz} pts</p>
+              )}
+            </div>
+            <ArrowRight className="h-4 w-4 shrink-0 text-violet-400" />
+          </button>
+        </div>
       </div>
 
       <button
