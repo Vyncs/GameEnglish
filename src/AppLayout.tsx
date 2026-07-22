@@ -14,6 +14,7 @@ import { GradedReaders } from './components/GradedReaders';
 import { Account } from './components/Account';
 import { InstallApp } from './components/InstallApp';
 import { LessonClassify } from './components/LessonClassify';
+import { LessonVerbs } from './components/LessonVerbs';
 import { ReviewHub } from './components/ReviewHub';
 import { StudentMaterials } from './components/StudentMaterials';
 import { EnglishCoachPage } from './components/english-coach/EnglishCoachPage';
@@ -70,6 +71,7 @@ export function AppLayout() {
           {viewMode === 'account' && <Account />}
           {viewMode === 'install' && <InstallApp />}
           {viewMode === 'lesson-classify' && <LessonClassify />}
+          {viewMode === 'lesson-verbs' && <LessonVerbs />}
           {viewMode === 'review-hub' && <ReviewHub />}
         </div>
       </main>
