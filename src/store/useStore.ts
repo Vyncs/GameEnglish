@@ -89,7 +89,8 @@ interface AppState {
   viewMode: ViewMode;
   
   // Ações - Grupos
-  addGroup: (name: string) => void;
+  /** Cria um grupo e retorna o id. Com `silent`, não navega nem troca o grupo selecionado. */
+  addGroup: (name: string, silent?: boolean) => Promise<string | null>;
   renameGroup: (id: string, newName: string) => void;
   deleteGroup: (id: string) => void;
   selectGroup: (id: string | null) => void;
@@ -240,25 +241,29 @@ export const useStore = create<AppState>()(
       viewMode: 'home',
       
       // Implementação - Grupos (com sync para backend quando logado)
-      addGroup: async (name) => {
+      addGroup: async (name, silent) => {
         const { groups } = get();
         if (isFreeTierLimited() && groups.length >= FREE_MAX_GROUPS) {
           toast.warning(`Plano free: no máximo ${FREE_MAX_GROUPS} grupos. Assine para criar mais.`);
-          return;
+          return null;
         }
         if (api.getToken()) {
           try {
             const g = await api.postGroup(name);
-            set((state) => ({
-              groups: [...state.groups, g as Group],
-              selectedGroupId: g.id,
-              viewMode: 'cards',
-            }));
-            return;
+            if (silent) {
+              set((state) => ({ groups: [...state.groups, g as Group] }));
+            } else {
+              set((state) => ({
+                groups: [...state.groups, g as Group],
+                selectedGroupId: g.id,
+                viewMode: 'cards',
+              }));
+            }
+            return g.id as string;
           } catch (e) {
             const msg = e instanceof Error ? e.message : 'Erro ao criar grupo';
             toast.error(msg);
-            return;
+            return null;
           }
         }
         const newGroup: Group = {
@@ -266,11 +271,16 @@ export const useStore = create<AppState>()(
           name,
           createdAt: Date.now(),
         };
-        set((state) => ({
-          groups: [...state.groups, newGroup],
-          selectedGroupId: newGroup.id,
-          viewMode: 'cards',
-        }));
+        if (silent) {
+          set((state) => ({ groups: [...state.groups, newGroup] }));
+        } else {
+          set((state) => ({
+            groups: [...state.groups, newGroup],
+            selectedGroupId: newGroup.id,
+            viewMode: 'cards',
+          }));
+        }
+        return newGroup.id;
       },
       
       renameGroup: async (id, newName) => {

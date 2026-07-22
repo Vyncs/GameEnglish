@@ -45,6 +45,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
 
   const [mode, setMode] = useState<'hub' | TopicStage | 'match' | 'blitz' | 'memory'>('hub');
   const [adding, setAdding] = useState(false);
+  const [addProgress, setAddProgress] = useState(0);
 
   // Pré-carrega as ilustrações (se houver) para não haver atraso ao virar cartas.
   useEffect(() => {
@@ -71,15 +72,18 @@ export function TopicStudy({ topic }: { topic: Topic }) {
       return;
     }
     setAdding(true);
-    toast.message(`Adicionando ${topic.items.length} cards à sua revisão…`);
+    setAddProgress(0);
     try {
-      await (store.addGroup(topic.title) as unknown as Promise<void>);
-      const groupId = useStore.getState().selectedGroupId;
+      // silent = true: não navega para a tela de cards, então o progresso
+      // continua visível aqui enquanto os cards são criados.
+      const groupId = await store.addGroup(topic.title, true);
       if (!groupId) return; // o store já avisou o motivo (limite do plano, erro de rede)
-      for (const it of topic.items) {
+      for (let i = 0; i < topic.items.length; i++) {
+        const it = topic.items[i];
         await (useStore
           .getState()
           .addCard(it.pt, it.base, groupId, 'pt-en', undefined, it.tip) as unknown as Promise<void>);
+        setAddProgress(i + 1);
       }
       const added = useStore.getState().cards.filter((c) => c.groupId === groupId).length;
       toast.success(`${added} cards no grupo "${topic.title}" — já entram na sua revisão diária!`);
@@ -231,8 +235,24 @@ export function TopicStudy({ topic }: { topic: Topic }) {
           className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-          {adding ? 'Adicionando…' : 'Adicionar à minha revisão'}
+          {adding
+            ? `Adicionando… ${addProgress}/${topic.items.length}`
+            : 'Adicionar à minha revisão'}
         </button>
+
+        {adding && (
+          <div className="mt-3">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-violet-100">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 transition-all duration-200"
+                style={{ width: `${(addProgress / topic.items.length) * 100}%` }}
+              />
+            </div>
+            <p className="mt-1.5 text-xs text-slate-500">
+              Criando seus cards… pode levar alguns segundos.
+            </p>
+          </div>
+        )}
       </div>
 
       <button
