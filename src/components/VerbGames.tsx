@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, Trophy, RotateCcw, Timer, Zap } from 'lucide-react';
-import { LESSON_02, verbImg, type Verb } from '../data/lesson02Verbs';
+import type { Verb, VerbLesson } from '../data/verbLesson';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 
-const MATCH_PAIRS = 6; // pares por rodada de associação
-const MEMORY_PAIRS = 6; // pares por rodada de memória
+const MATCH_PAIRS = 6;
+const MEMORY_PAIRS = 6;
 const BLITZ_SECONDS = 60;
+
+export type ImageFor = (v: Verb) => string | undefined;
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -17,7 +19,8 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 const firstMeaning = (pt: string) => pt.split(',')[0].trim();
-const randomVerb = (): Verb => LESSON_02.verbs[Math.floor(Math.random() * LESSON_02.verbs.length)];
+const randomVerb = (lesson: VerbLesson): Verb =>
+  lesson.verbs[Math.floor(Math.random() * lesson.verbs.length)];
 
 function fmtTime(ms: number): string {
   const s = ms / 1000;
@@ -52,7 +55,7 @@ function GameHeader({ onBack, title, best }: { onBack: () => void; title: string
 }
 
 // ============================================================================
-// Jogo 1 — Associação (parear inglês ↔ português)
+// Jogo 1 — Associação (parear termo ↔ português)
 interface Tile {
   key: string;
   verbId: number;
@@ -61,8 +64,8 @@ interface Tile {
   matched: boolean;
 }
 
-function buildTiles(): Tile[] {
-  const picked = shuffle(LESSON_02.verbs).slice(0, MATCH_PAIRS);
+function buildTiles(lesson: VerbLesson): Tile[] {
+  const picked = shuffle(lesson.verbs).slice(0, MATCH_PAIRS);
   const tiles: Tile[] = [];
   picked.forEach((v) => {
     tiles.push({ key: `en-${v.id}`, verbId: v.id, kind: 'en', label: v.base, matched: false });
@@ -71,23 +74,23 @@ function buildTiles(): Tile[] {
   return shuffle(tiles);
 }
 
-export function MatchGame({ onBack }: { onBack: () => void }) {
+export function MatchGame({ lesson, onBack }: { lesson: VerbLesson; onBack: () => void }) {
   const [gameId, setGameId] = useState(0);
-  const best = useVerbLessonStore((s) => s.progress[LESSON_02.id]?.bestMatchMs);
+  const best = useVerbLessonStore((s) => s.progress[lesson.id]?.bestMatchMs);
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <GameHeader onBack={onBack} title="Jogo · Associação" best={best ? fmtTime(best) : undefined} />
       <p className="mb-3 text-sm text-slate-500">
         Toque em um verbo e depois no seu significado. Pareie os {MATCH_PAIRS} o mais rápido que conseguir!
       </p>
-      <MatchRound key={gameId} onReplay={() => setGameId((g) => g + 1)} />
+      <MatchRound key={gameId} lesson={lesson} onReplay={() => setGameId((g) => g + 1)} />
     </div>
   );
 }
 
-function MatchRound({ onReplay }: { onReplay: () => void }) {
+function MatchRound({ lesson, onReplay }: { lesson: VerbLesson; onReplay: () => void }) {
   const saveMatchTime = useVerbLessonStore((s) => s.saveMatchTime);
-  const [tiles, setTiles] = useState<Tile[]>(() => buildTiles());
+  const [tiles, setTiles] = useState<Tile[]>(() => buildTiles(lesson));
   const [selected, setSelected] = useState<string | null>(null);
   const [wrong, setWrong] = useState<string[]>([]);
   const [done, setDone] = useState(false);
@@ -123,7 +126,7 @@ function MatchRound({ onReplay }: { onReplay: () => void }) {
       if (next.every((x) => x.matched)) {
         doneRef.current = true;
         setDone(true);
-        saveMatchTime(LESSON_02.id, Math.round(elapsed));
+        saveMatchTime(lesson.id, Math.round(elapsed));
       }
     } else {
       setWrong([a.key, t.key]);
@@ -169,13 +172,7 @@ function MatchRound({ onReplay }: { onReplay: () => void }) {
           else if (isSel) cls += 'border-violet-400 bg-violet-50 text-violet-700 ring-2 ring-violet-300';
           else cls += 'border-slate-200 bg-white text-slate-700 hover:border-violet-300 hover:bg-violet-50/40';
           return (
-            <button
-              key={t.key}
-              type="button"
-              disabled={t.matched}
-              onClick={() => handleTap(t)}
-              className={cls}
-            >
+            <button key={t.key} type="button" disabled={t.matched} onClick={() => handleTap(t)} className={cls}>
               {t.label}
             </button>
           );
@@ -187,37 +184,33 @@ function MatchRound({ onReplay }: { onReplay: () => void }) {
 
 // ============================================================================
 // Jogo 2 — Blitz (quiz cronometrado de 60s)
-function buildBlitzOptions(verb: Verb): string[] {
-  const others = LESSON_02.verbs.filter((x) => x.id !== verb.id).map((x) => x.pt);
+function buildBlitzOptions(lesson: VerbLesson, verb: Verb): string[] {
+  const others = lesson.verbs.filter((x) => x.id !== verb.id).map((x) => x.pt);
   return shuffle([verb.pt, ...shuffle(others).slice(0, 3)]);
 }
 
-export function BlitzGame({ onBack }: { onBack: () => void }) {
+export function BlitzGame({ lesson, onBack }: { lesson: VerbLesson; onBack: () => void }) {
   const [gameId, setGameId] = useState(0);
-  const best = useVerbLessonStore((s) => s.progress[LESSON_02.id]?.bestBlitz);
+  const best = useVerbLessonStore((s) => s.progress[lesson.id]?.bestBlitz);
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
-      <GameHeader
-        onBack={onBack}
-        title="Jogo · Blitz"
-        best={best !== undefined ? `${best} pts` : undefined}
-      />
+      <GameHeader onBack={onBack} title="Jogo · Blitz" best={best !== undefined ? `${best} pts` : undefined} />
       <p className="mb-3 text-sm text-slate-500">
         Acerte o máximo de significados em {BLITZ_SECONDS} segundos. Cada acerto = 1 ponto.
       </p>
-      <BlitzRound key={gameId} onReplay={() => setGameId((g) => g + 1)} />
+      <BlitzRound key={gameId} lesson={lesson} onReplay={() => setGameId((g) => g + 1)} />
     </div>
   );
 }
 
-function BlitzRound({ onReplay }: { onReplay: () => void }) {
+function BlitzRound({ lesson, onReplay }: { lesson: VerbLesson; onReplay: () => void }) {
   const saveBlitzScore = useVerbLessonStore((s) => s.saveBlitzScore);
   const [timeLeft, setTimeLeft] = useState(BLITZ_SECONDS);
   const [done, setDone] = useState(false);
   const [score, setScore] = useState(0);
-  const [verb, setVerb] = useState<Verb>(() => randomVerb());
+  const [verb, setVerb] = useState<Verb>(() => randomVerb(lesson));
   const [flash, setFlash] = useState<'ok' | 'no' | null>(null);
-  const options = useMemo(() => buildBlitzOptions(verb), [verb]);
+  const options = useMemo(() => buildBlitzOptions(lesson, verb), [lesson, verb]);
 
   useEffect(() => {
     if (done) return;
@@ -230,7 +223,7 @@ function BlitzRound({ onReplay }: { onReplay: () => void }) {
   }, [timeLeft, done]);
 
   useEffect(() => {
-    if (done) saveBlitzScore(LESSON_02.id, score);
+    if (done) saveBlitzScore(lesson.id, score);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
 
@@ -240,7 +233,7 @@ function BlitzRound({ onReplay }: { onReplay: () => void }) {
     if (ok) setScore((s) => s + 1);
     setFlash(ok ? 'ok' : 'no');
     setTimeout(() => setFlash(null), 250);
-    setVerb(randomVerb());
+    setVerb(randomVerb(lesson));
   };
 
   if (done) {
@@ -305,28 +298,36 @@ function BlitzRound({ onReplay }: { onReplay: () => void }) {
 }
 
 // ============================================================================
-// Jogo 3 — Memória (concentração): vire as cartas e ache os pares verbo ↔ significado
+// Jogo 3 — Memória (concentração): ache os pares termo ↔ significado
 interface MemCard {
   key: string;
   verbId: number;
-  kind: 'img' | 'pt';
+  kind: 'term' | 'pt';
   label: string;
   img?: string;
 }
 
-function buildMemCards(): MemCard[] {
-  const picked = shuffle(LESSON_02.verbs).slice(0, MEMORY_PAIRS);
+function buildMemCards(lesson: VerbLesson, imageFor?: ImageFor): MemCard[] {
+  const picked = shuffle(lesson.verbs).slice(0, MEMORY_PAIRS);
   const cards: MemCard[] = [];
   picked.forEach((v) => {
-    cards.push({ key: `img-${v.id}`, verbId: v.id, kind: 'img', label: v.base, img: verbImg(v.id) });
+    cards.push({ key: `term-${v.id}`, verbId: v.id, kind: 'term', label: v.base, img: imageFor?.(v) });
     cards.push({ key: `pt-${v.id}`, verbId: v.id, kind: 'pt', label: firstMeaning(v.pt) });
   });
   return shuffle(cards);
 }
 
-export function MemoryGame({ onBack }: { onBack: () => void }) {
+export function MemoryGame({
+  lesson,
+  imageFor,
+  onBack,
+}: {
+  lesson: VerbLesson;
+  imageFor?: ImageFor;
+  onBack: () => void;
+}) {
   const [gameId, setGameId] = useState(0);
-  const best = useVerbLessonStore((s) => s.progress[LESSON_02.id]?.bestMemory);
+  const best = useVerbLessonStore((s) => s.progress[lesson.id]?.bestMemory);
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <GameHeader
@@ -337,14 +338,22 @@ export function MemoryGame({ onBack }: { onBack: () => void }) {
       <p className="mb-3 text-sm text-slate-500">
         Vire as cartas e ache os pares verbo ↔ significado. Quanto menos jogadas, melhor!
       </p>
-      <MemoryRound key={gameId} onReplay={() => setGameId((g) => g + 1)} />
+      <MemoryRound key={gameId} lesson={lesson} imageFor={imageFor} onReplay={() => setGameId((g) => g + 1)} />
     </div>
   );
 }
 
-function MemoryRound({ onReplay }: { onReplay: () => void }) {
+function MemoryRound({
+  lesson,
+  imageFor,
+  onReplay,
+}: {
+  lesson: VerbLesson;
+  imageFor?: ImageFor;
+  onReplay: () => void;
+}) {
   const saveMemoryMoves = useVerbLessonStore((s) => s.saveMemoryMoves);
-  const [cards] = useState<MemCard[]>(() => buildMemCards());
+  const [cards] = useState<MemCard[]>(() => buildMemCards(lesson, imageFor));
   const [flipped, setFlipped] = useState<string[]>([]);
   const [matched, setMatched] = useState<string[]>([]);
   const [moves, setMoves] = useState(0);
@@ -353,7 +362,7 @@ function MemoryRound({ onReplay }: { onReplay: () => void }) {
   const done = matched.length === cards.length;
 
   useEffect(() => {
-    if (done) saveMemoryMoves(LESSON_02.id, moves);
+    if (done) saveMemoryMoves(lesson.id, moves);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
 
@@ -363,7 +372,6 @@ function MemoryRound({ onReplay }: { onReplay: () => void }) {
       setFlipped([c.key]);
       return;
     }
-    // segunda carta
     const first = cards.find((x) => x.key === flipped[0])!;
     setMoves((m) => m + 1);
     if (first.verbId === c.verbId && first.kind !== c.kind) {
@@ -425,7 +433,7 @@ function MemoryRound({ onReplay }: { onReplay: () => void }) {
             >
               {!isUp ? (
                 '?'
-              ) : c.kind === 'img' ? (
+              ) : c.kind === 'term' && c.img ? (
                 <img src={c.img} alt="" className="max-h-[76px] w-full object-contain" draggable={false} />
               ) : (
                 <span className="px-1">{c.label}</span>

@@ -7,30 +7,13 @@
 //   can -> Regra C (modal: poder/saber/conseguir/dever)
 //   demais -> Regra A (verbos de ação com do/does/did)
 
-export type VerbRule = 'A' | 'B' | 'C';
+import type { VerbLesson } from './verbLesson';
+export type { VerbRule, Verb, VerbLesson } from './verbLesson';
+export { VERB_STAGES } from './verbLesson';
 
 // Ilustração de cada verbo (recortada da folha "Irregular Verbs – Actions").
 // Servida como asset estático em public/verbs/.
 export const verbImg = (id: number) => `/verbs/verb-${String(id).padStart(2, '0')}.png`;
-
-export interface Verb {
-  id: number;
-  base: string;
-  past: string;
-  participle?: string; // ausente para modais (can)
-  pt: string;
-  example: string;
-  irregular: boolean;
-  rule: VerbRule;
-  tip: string;
-}
-
-export interface VerbLesson {
-  id: string;
-  title: string;
-  subtitle: string;
-  verbs: Verb[];
-}
 
 export const LESSON_02: VerbLesson = {
   id: 'verbs-01-25',
@@ -64,10 +47,3 @@ export const LESSON_02: VerbLesson = {
     { id: 25, base: 'eat', past: 'ate', participle: 'eaten', pt: 'comer', example: "Let's eat!", irregular: true, rule: 'A', tip: 'Irregular: eat – ate – eaten.' },
   ],
 };
-
-// Etapas do passo a passo (mesma ideia do Cram/Learn).
-export const VERB_STAGES: { id: string; label: string; desc: string; emoji: string }[] = [
-  { id: 'study', label: 'Estudar', desc: 'Conheça os 25 verbos (flashcards + áudio)', emoji: '📖' },
-  { id: 'meaning', label: 'Significado', desc: 'Verbo em inglês → escolha o significado', emoji: '🎯' },
-  { id: 'forms', label: 'Formas', desc: 'Passado e particípio dos irregulares', emoji: '🔁' },
-];
