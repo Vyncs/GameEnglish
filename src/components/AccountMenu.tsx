@@ -36,7 +36,7 @@ export function AccountMenu() {
         className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
           active
             ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg'
-            : 'text-slate-600 hover:bg-slate-100'
+            : 'text-secondary hover:bg-surface-2'
         }`}
         aria-expanded={open}
         aria-haspopup="menu"
@@ -48,19 +48,19 @@ export function AccountMenu() {
 
       {open && (
         <div
-          className="absolute top-full right-0 mt-2 min-w-[220px] py-1.5 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/60 z-50 overflow-hidden"
+          className="absolute top-full right-0 mt-2 min-w-[220px] py-1.5 bg-surface backdrop-blur-xl rounded-2xl shadow-2xl border border-line z-50 overflow-hidden"
           role="menu"
         >
           <button
             type="button"
             role="menuitem"
-            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors text-left"
+            className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-secondary hover:bg-surface-2 transition-colors text-left"
             onClick={() => {
               setViewMode('account');
               setOpen(false);
             }}
           >
-            <UserCircle className="w-4 h-4 text-slate-500 shrink-0" />
+            <UserCircle className="w-4 h-4 text-tertiary shrink-0" />
             Meu perfil
           </button>
           {!isInstalled && (

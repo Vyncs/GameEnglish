@@ -88,14 +88,14 @@ export function Home() {
 
         {/* HOJE — a sessão do dia montada: revisar + regra + palavras */}
         <div className="order-first mb-8">
-          <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-            <div className="flex items-center gap-2.5 border-b border-slate-100 px-5 py-4">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)] text-white">
+          <div className="overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="flex items-center gap-2.5 border-b border-line px-5 py-4">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-accent to-accent-strong text-white">
                 <Calendar className="h-4 w-4" strokeWidth={2.4} />
               </div>
               <div>
-                <h2 className="text-lg font-semibold tracking-tight text-slate-900">Sessão de hoje</h2>
-                <p className="text-xs text-slate-500">Revisar · uma regra · palavras novas</p>
+                <h2 className="text-lg font-semibold tracking-tight text-primary">Sessão de hoje</h2>
+                <p className="text-xs text-tertiary">Revisar · uma regra · palavras novas</p>
               </div>
             </div>
 
@@ -111,7 +111,7 @@ export function Home() {
                 }
                 cta={totalReviewCount > 0 ? 'Revisar agora' : 'Praticar mesmo assim'}
                 done={totalReviewCount === 0}
-                tint="from-[var(--accent)] to-[var(--accent-strong)]"
+                tint="from-accent to-accent-strong"
                 icon={<RefreshCw className="h-4 w-4" />}
                 onClick={() => setViewMode('review-hub')}
               />
@@ -164,7 +164,7 @@ export function Home() {
                   <BookOpen className="h-3 w-3" /> biblioteca
                 </span>
               ) : (
-                <span className="text-[10px] font-medium text-slate-400">
+                <span className="text-[10px] font-medium text-faint">
                   comece criando um grupo
                 </span>
               )
@@ -173,16 +173,16 @@ export function Home() {
 
           <KpiCard
             icon={<Clock className="h-4 w-4" strokeWidth={2.4} />}
-            iconTint="bg-[var(--accent-soft)] text-[var(--accent-text)] ring-[var(--accent-border)]"
+            iconTint="bg-accent-soft text-accent-text ring-accent-line"
             label="Para Revisar"
             value={totalReviewCount}
-            valueColorClass={totalReviewCount > 0 ? 'text-[var(--accent-text)]' : 'text-slate-900'}
+            valueColorClass={totalReviewCount > 0 ? 'text-accent-text' : 'text-primary'}
             visual={
               totalReviewCount > 0 ? (
-                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-[var(--accent-text)]">
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-accent-text">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
                   </span>
                   pronto agora
                 </span>
@@ -196,10 +196,10 @@ export function Home() {
 
           <KpiCard
             icon={<Target className="h-4 w-4" strokeWidth={2.4} />}
-            iconTint="bg-[var(--accent-soft)] text-[var(--accent-text)] ring-[var(--accent-border)]"
+            iconTint="bg-accent-soft text-accent-text ring-accent-line"
             label="Nível Médio"
             value={avgLevel}
-            suffix={<span className="text-base font-medium text-slate-400">/ 5</span>}
+            suffix={<span className="text-base font-medium text-faint">/ 5</span>}
             visual={<LevelDots value={avgLevelNum} />}
           />
 
@@ -208,7 +208,7 @@ export function Home() {
             iconTint="bg-emerald-50 text-emerald-600 ring-emerald-100"
             label="Dominados"
             value={masteredCards}
-            valueColorClass={masteredCards > 0 ? 'text-emerald-600' : 'text-slate-900'}
+            valueColorClass={masteredCards > 0 ? 'text-emerald-600' : 'text-primary'}
             visual={<MasteryRatio pct={masteredPct} />}
           />
         </div>
@@ -217,12 +217,12 @@ export function Home() {
         {/* AULAS — regras/gramática */}
         <div className={`mb-8 ${totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}`}>
           <div className="mb-3 flex items-center gap-2.5">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--accent-soft)] ring-1 ring-[var(--accent-border)]/80">
-              <GraduationCap className="h-4 w-4 text-[var(--accent-text)]" strokeWidth={2.4} />
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-accent-soft ring-1 ring-accent-line/80">
+              <GraduationCap className="h-4 w-4 text-accent-text" strokeWidth={2.4} />
             </div>
             <div>
-              <h2 className="text-lg font-semibold tracking-tight text-slate-900">Aulas</h2>
-              <p className="text-xs text-slate-500">As regras — aprenda uma vez, use sempre</p>
+              <h2 className="text-lg font-semibold tracking-tight text-primary">Aulas</h2>
+              <p className="text-xs text-tertiary">As regras — aprenda uma vez, use sempre</p>
             </div>
           </div>
 
@@ -230,7 +230,7 @@ export function Home() {
             <button
               type="button"
               onClick={() => setViewMode('lesson-classify')}
-              className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+              className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
             >
               {lessonDone && (
                 <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
@@ -243,23 +243,23 @@ export function Home() {
                   className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
                     lessonDone
                       ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                      : 'bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)]'
+                      : 'bg-gradient-to-br from-accent to-accent-strong'
                   }`}
                 >
                   {lessonDone ? <CheckCircle2 className="h-6 w-6" /> : <GraduationCap className="h-6 w-6" strokeWidth={2.2} />}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-base font-semibold tracking-tight text-slate-900">{LESSON_01.title}</h3>
+                    <h3 className="text-base font-semibold tracking-tight text-primary">{LESSON_01.title}</h3>
                     {!lessonDone && (
-                      <ArrowRight className="h-4 w-4 text-[var(--accent)] transition-transform group-hover:translate-x-0.5" />
+                      <ArrowRight className="h-4 w-4 text-accent transition-transform group-hover:translate-x-0.5" />
                     )}
                   </div>
-                  <p className="text-xs text-slate-500">{LESSON_01.subtitle}</p>
+                  <p className="text-xs text-tertiary">{LESSON_01.subtitle}</p>
                 </div>
               </div>
               <div className="mt-4">
-                <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-slate-500">
+                <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-tertiary">
                   <span className="tabular-nums">
                     {lessonAnswered}/{lessonTotal} respondidas
                   </span>
@@ -267,17 +267,17 @@ export function Home() {
                     <span className="tabular-nums text-emerald-600">{lessonCorrect} acertos</span>
                   )}
                 </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${
                       lessonDone
                         ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                        : 'bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)]'
+                        : 'bg-gradient-to-r from-accent to-accent-strong'
                     }`}
                     style={{ width: `${(lessonAnswered / lessonTotal) * 100}%` }}
                   />
                 </div>
-                <p className="mt-2 text-sm font-semibold text-[var(--accent-text)]">
+                <p className="mt-2 text-sm font-semibold text-accent-text">
                   {lessonDone
                     ? 'Ver resultado e revisão →'
                     : lessonAnswered > 0
@@ -296,8 +296,8 @@ export function Home() {
               <Layers className="h-4 w-4 text-cyan-600" strokeWidth={2.4} />
             </div>
             <div>
-              <h2 className="text-lg font-semibold tracking-tight text-slate-900">Tópicos</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="text-lg font-semibold tracking-tight text-primary">Tópicos</h2>
+              <p className="text-xs text-tertiary">
                 Vocabulário em blocos — do mais fácil ao mais difícil
               </p>
             </div>
@@ -313,7 +313,7 @@ export function Home() {
                   key={topic.id}
                   type="button"
                   onClick={() => openTopic(topic.id)}
-                  className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+                  className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
                 >
                   {complete && (
                     <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
@@ -326,43 +326,43 @@ export function Home() {
                       className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-2xl shadow-sm transition-transform group-hover:scale-105 ${
                         complete
                           ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white'
-                          : 'bg-[var(--accent-soft)] ring-1 ring-[var(--accent-border)]'
+                          : 'bg-accent-soft ring-1 ring-accent-line'
                       }`}
                     >
                       {complete ? <CheckCircle2 className="h-6 w-6" /> : <span>{topic.emoji}</span>}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold tracking-tight text-slate-900">{topic.title}</h3>
+                        <h3 className="text-base font-semibold tracking-tight text-primary">{topic.title}</h3>
                         {!complete && (
-                          <ArrowRight className="h-4 w-4 text-[var(--accent)] transition-transform group-hover:translate-x-0.5" />
+                          <ArrowRight className="h-4 w-4 text-accent transition-transform group-hover:translate-x-0.5" />
                         )}
                       </div>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-tertiary">
                         {topic.subtitle} · {topic.items.length} palavras
                       </p>
                     </div>
                   </div>
                   <div className="mt-4">
-                    <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-slate-500">
+                    <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-tertiary">
                       <span className="tabular-nums">
                         {done}/{total} etapas
                       </span>
-                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-tertiary">
                         {topic.level === 1 ? 'Fácil' : topic.level === 2 ? 'Médio' : 'Difícil'}
                       </span>
                     </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           complete
                             ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                            : 'bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)]'
+                            : 'bg-gradient-to-r from-accent to-accent-strong'
                         }`}
                         style={{ width: `${(done / total) * 100}%` }}
                       />
                     </div>
-                    <p className="mt-2 text-sm font-semibold text-[var(--accent-text)]">
+                    <p className="mt-2 text-sm font-semibold text-accent-text">
                       {complete ? 'Revisar tópico →' : done > 0 ? 'Continuar →' : 'Começar →'}
                     </p>
                   </div>
@@ -380,14 +380,14 @@ export function Home() {
         >
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-slate-100/80 ring-1 ring-slate-200/80">
-                <Folder className="h-4 w-4 text-slate-600" strokeWidth={2.4} />
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-surface-2/80 ring-1 ring-slate-200/80">
+                <Folder className="h-4 w-4 text-secondary" strokeWidth={2.4} />
               </div>
               <div>
-                <h2 className="text-lg font-semibold tracking-tight text-slate-900">
+                <h2 className="text-lg font-semibold tracking-tight text-primary">
                   Meus Grupos
                 </h2>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-tertiary">
                   {groups.length} {groups.length === 1 ? 'coleção' : 'coleções'}
                   {totalCards > 0 && (
                     <>
@@ -409,14 +409,14 @@ export function Home() {
 
           {/* Form novo grupo */}
           {isAddingGroup && (
-            <div className="mb-4 animate-fade-in rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+            <div className="mb-4 animate-fade-in rounded-2xl border border-line bg-surface backdrop-blur-md p-4 shadow-sm">
               <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                 <input
                   type="text"
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
                   placeholder="Nome do grupo..."
-                  className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm transition-all placeholder:text-slate-400 focus:border-[var(--accent)] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[var(--accent-border)]"
+                  className="flex-1 rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm transition-all placeholder:text-faint focus:border-[var(--accent)] focus:bg-surface focus:outline-none focus:ring-4 focus:ring-accent-line"
                   autoFocus
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleAddGroup();
@@ -427,7 +427,7 @@ export function Home() {
                   <button
                     onClick={handleAddGroup}
                     disabled={!newGroupName.trim()}
-                    className="flex-1 rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[var(--accent-strong)] hover:shadow-md hover:shadow-slate-900/10 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none sm:flex-none"
+                    className="flex-1 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[var(--accent-strong)] hover:shadow-md hover:shadow-slate-900/10 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-faint disabled:shadow-none sm:flex-none"
                   >
                     Criar
                   </button>
@@ -436,7 +436,7 @@ export function Home() {
                       setIsAddingGroup(false);
                       setNewGroupName('');
                     }}
-                    className="flex-1 rounded-xl bg-slate-100 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:bg-slate-200 sm:flex-none"
+                    className="flex-1 rounded-xl bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:bg-slate-200 sm:flex-none"
                   >
                     Cancelar
                   </button>
@@ -447,7 +447,7 @@ export function Home() {
 
           {/* Lista */}
           {groups.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-200 bg-white py-14 text-center">
+            <div className="rounded-2xl border border-dashed border-line bg-surface backdrop-blur-md py-14 text-center">
               <div
                 className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl"
                 style={{
@@ -456,17 +456,17 @@ export function Home() {
                   boxShadow: 'inset 0 0 0 1px rgba(124, 58, 237, 0.10)',
                 }}
               >
-                <Folder className="h-7 w-7 text-[var(--accent)]" strokeWidth={2} />
+                <Folder className="h-7 w-7 text-accent" strokeWidth={2} />
               </div>
-              <h3 className="mb-1.5 text-base font-semibold tracking-tight text-slate-900">
+              <h3 className="mb-1.5 text-base font-semibold tracking-tight text-primary">
                 Comece sua biblioteca
               </h3>
-              <p className="mx-auto mb-5 max-w-xs text-sm text-slate-500">
+              <p className="mx-auto mb-5 max-w-xs text-sm text-tertiary">
                 Crie seu primeiro grupo para começar a adicionar flash cards e construir seu progresso.
               </p>
               <button
                 onClick={() => setIsAddingGroup(true)}
-                className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--accent-strong)] hover:shadow-lg hover:shadow-slate-900/10"
+                className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--accent-strong)] hover:shadow-lg hover:shadow-slate-900/10"
               >
                 <Plus className="h-4 w-4" />
                 Criar Primeiro Grupo
@@ -486,7 +486,7 @@ export function Home() {
                   return (
                     <div
                       key={group.id}
-                      className="group relative animate-fade-in overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 will-change-transform hover:-translate-y-1 hover:border-[var(--accent-border)] hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+                      className="group relative animate-fade-in overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 will-change-transform hover:-translate-y-1 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
                       style={{
                         animationDelay: `${index * 50}ms`,
                         boxShadow:
@@ -496,7 +496,7 @@ export function Home() {
                       {/* Faixa colorida no topo (visível só no hover) */}
                       <div
                         aria-hidden
-                        className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-[var(--accent)] via-[var(--accent)] to-[var(--accent-strong)] transition-transform duration-300 group-hover:scale-x-100"
+                        className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gradient-to-r from-accent via-accent to-accent-strong transition-transform duration-300 group-hover:scale-x-100"
                       />
 
                       {/* Área clicável: abre o grupo */}
@@ -515,16 +515,16 @@ export function Home() {
                           }}
                         >
                           <Folder
-                            className="h-5 w-5 text-cyan-600 transition-colors group-hover:text-[var(--accent-text)]"
+                            className="h-5 w-5 text-cyan-600 transition-colors group-hover:text-accent-text"
                             strokeWidth={2.2}
                           />
                         </div>
 
                         {reviewCount > 0 ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] px-2.5 py-1 text-[11px] font-semibold text-[var(--accent-text)]">
+                          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent-line bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent-text">
                             <span className="relative flex h-1.5 w-1.5">
-                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-75" />
-                              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+                              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
+                              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
                             </span>
                             {reviewCount} para revisar
                           </span>
@@ -536,10 +536,10 @@ export function Home() {
                         ) : null}
                       </div>
 
-                      <h3 className="mb-1 text-[15px] font-semibold tracking-tight text-slate-900 transition-colors group-hover:text-[var(--accent-text)]">
+                      <h3 className="mb-1 text-[15px] font-semibold tracking-tight text-primary transition-colors group-hover:text-accent-text">
                         {group.name}
                       </h3>
-                      <div className="mb-3 flex items-center gap-1.5 text-xs text-slate-500">
+                      <div className="mb-3 flex items-center gap-1.5 text-xs text-tertiary">
                         <span className="font-medium tabular-nums">{gTotal}</span>
                         <span>{gTotal === 1 ? 'card' : 'cards'}</span>
                         {gMastered > 0 && (
@@ -556,7 +556,7 @@ export function Home() {
                       {/* Progress bar de domínio (avg level / 5) */}
                       {gTotal > 0 && (
                         <>
-                          <div className="relative h-1 overflow-hidden rounded-full bg-slate-100">
+                          <div className="relative h-1 overflow-hidden rounded-full bg-surface-2">
                             <div
                               className="absolute inset-y-0 left-0 rounded-full transition-all duration-700"
                               style={{
@@ -566,7 +566,7 @@ export function Home() {
                               }}
                             />
                           </div>
-                          <div className="mt-2 flex items-center justify-between text-[10px] font-medium text-slate-400">
+                          <div className="mt-2 flex items-center justify-between text-[10px] font-medium text-faint">
                             <span className="tabular-nums">
                               Nível {gAvg.toFixed(1)} / 5
                             </span>
@@ -583,7 +583,7 @@ export function Home() {
                         <button
                           type="button"
                           onClick={() => startPlayMode(group.id)}
-                          className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10"
+                          className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10"
                         >
                           <RefreshCw className="h-3.5 w-3.5" />
                           Revisar {reviewCount} {reviewCount === 1 ? 'card' : 'cards'}
@@ -604,7 +604,7 @@ export function Home() {
           }`}
         >
           {/* Backup & Restauração */}
-          <div className="rounded-2xl border border-slate-200/70 bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <div className="rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
             <div className="mb-4 flex items-center gap-3">
               <div
                 className="grid h-10 w-10 place-items-center rounded-xl"
@@ -617,10 +617,10 @@ export function Home() {
                 <Sparkles className="h-5 w-5 text-indigo-600" strokeWidth={2.2} />
               </div>
               <div>
-                <h3 className="text-[15px] font-semibold tracking-tight text-slate-900">
+                <h3 className="text-[15px] font-semibold tracking-tight text-primary">
                   Backup & Restauração
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-tertiary">
                   Exporte ou importe seu progresso
                 </p>
               </div>
@@ -628,14 +628,14 @@ export function Home() {
             <div className="flex gap-2.5">
               <button
                 onClick={() => setShowImportExport(true)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-sm"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-surface hover:shadow-sm"
               >
                 <Download className="h-4 w-4" strokeWidth={2.2} />
                 Exportar
               </button>
               <button
                 onClick={() => setShowImportExport(true)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200/80 bg-slate-50 px-4 py-2.5 text-sm font-medium text-slate-700 transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-white hover:shadow-sm"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-surface hover:shadow-sm"
               >
                 <Upload className="h-4 w-4" strokeWidth={2.2} />
                 Importar
@@ -664,7 +664,7 @@ export function Home() {
             />
             <div className="relative">
               <div className="mb-3 flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-sm ring-1 ring-cyan-100">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-surface shadow-sm ring-1 ring-cyan-100">
                   <Calendar className="h-5 w-5 text-cyan-600" strokeWidth={2.2} />
                 </div>
                 <h3 className="text-[15px] font-semibold tracking-tight text-cyan-950">
@@ -708,13 +708,13 @@ function KpiCard({
   iconTint,
   label,
   value,
-  valueColorClass = 'text-slate-900',
+  valueColorClass = 'text-primary',
   suffix,
   visual,
 }: KpiCardProps) {
   return (
     <div
-      className="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-[0_8px_24px_-8px_rgba(15,23,42,0.10)]"
+      className="group relative overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-4 sm:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300/80 hover:shadow-[0_8px_24px_-8px_rgba(15,23,42,0.10)]"
       style={{
         boxShadow:
           '0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 0 rgba(255, 255, 255, 1) inset',
@@ -736,7 +736,7 @@ function KpiCard({
         {suffix}
       </div>
       <div className="mt-2 flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-slate-500">{label}</span>
+        <span className="text-xs font-medium text-tertiary">{label}</span>
         {visual && <div className="flex shrink-0 items-center">{visual}</div>}
       </div>
     </div>
@@ -755,7 +755,7 @@ function LevelDots({ value }: { value: number }) {
             className="relative h-2 w-2 overflow-hidden rounded-full bg-slate-200"
           >
             <div
-              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-700"
+              className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-700"
               style={{ width: `${fill * 100}%` }}
             />
           </div>
@@ -769,7 +769,7 @@ function LevelDots({ value }: { value: number }) {
 function MasteryRatio({ pct }: { pct: number }) {
   return (
     <div className="flex items-center gap-1.5">
-      <div className="relative h-1.5 w-10 overflow-hidden rounded-full bg-slate-100">
+      <div className="relative h-1.5 w-10 overflow-hidden rounded-full bg-surface-2">
         <div
           className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500 transition-all duration-700"
           style={{ width: `${pct}%` }}
@@ -799,7 +799,7 @@ function TodayStep({
     <button
       type="button"
       onClick={onClick}
-      className="group flex w-full items-center gap-3.5 px-5 py-4 text-left transition-colors hover:bg-slate-50/80"
+      className="group flex w-full items-center gap-3.5 px-5 py-4 text-left transition-colors hover:bg-surface-2"
     >
       <div
         className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
@@ -808,22 +808,22 @@ function TodayStep({
       >
         {done ? <Check className="h-5 w-5" strokeWidth={2.6} /> : icon}
         {!done && (
-          <span className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-white text-[10px] font-bold text-slate-600 ring-1 ring-slate-200">
+          <span className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-surface text-[10px] font-bold text-secondary ring-1 ring-slate-200">
             {n}
           </span>
         )}
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-semibold text-slate-900">{title}</p>
-        <p className="truncate text-xs text-slate-500">{subtitle}</p>
+        <p className="text-sm font-semibold text-primary">{title}</p>
+        <p className="truncate text-xs text-tertiary">{subtitle}</p>
       </div>
 
-      <span className="hidden shrink-0 items-center gap-1 text-xs font-semibold text-[var(--accent-text)] sm:inline-flex">
+      <span className="hidden shrink-0 items-center gap-1 text-xs font-semibold text-accent-text sm:inline-flex">
         {cta}
         <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
       </span>
-      <ArrowRight className="h-4 w-4 shrink-0 text-[var(--accent)] sm:hidden" />
+      <ArrowRight className="h-4 w-4 shrink-0 text-accent sm:hidden" />
     </button>
   );
 }

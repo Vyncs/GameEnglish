@@ -28,7 +28,7 @@ function ruleBadge(rule: NonNullable<TopicItem['rule']>) {
     A: 'bg-cyan-100 text-cyan-700',
     B: 'bg-blue-100 text-blue-700',
     B2: 'bg-indigo-100 text-indigo-700',
-    C: 'bg-[var(--accent-soft)] text-[var(--accent-text)]',
+    C: 'bg-accent-soft text-accent-text',
   } as const;
   return `inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-bold ${map[rule]}`;
 }
@@ -107,27 +107,27 @@ export function TopicStudy({ topic }: { topic: Topic }) {
       <button
         type="button"
         onClick={goToHome}
-        className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-700"
+        className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-tertiary hover:text-secondary"
       >
         <ChevronLeft className="h-4 w-4" />
         Início
       </button>
 
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-lg font-bold text-slate-800">
+        <h1 className="text-lg font-bold text-primary">
           {topic.emoji} {topic.title}
         </h1>
-        <span className="shrink-0 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-bold tabular-nums text-[var(--accent-text)]">
+        <span className="shrink-0 rounded-full bg-accent-soft px-3 py-1 text-xs font-bold tabular-nums text-accent-text">
           {doneCount}/{topic.stages.length} etapas
         </span>
       </div>
-      <p className="mt-0.5 text-sm text-slate-500">
+      <p className="mt-0.5 text-sm text-tertiary">
         {topic.subtitle} · {topic.items.length} palavras
       </p>
 
       <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-300"
+          className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
           style={{ width: `${(doneCount / topic.stages.length) * 100}%` }}
         />
       </div>
@@ -156,31 +156,31 @@ export function TopicStudy({ topic }: { topic: Topic }) {
               onClick={() => setMode(stage)}
               className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-all ${
                 locked
-                  ? 'cursor-not-allowed border-slate-200 bg-slate-50 opacity-60'
+                  ? 'cursor-not-allowed border-line bg-surface-2 opacity-60'
                   : done
                     ? 'border-emerald-200 bg-emerald-50/60 hover:border-emerald-300'
-                    : 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-md'
+                    : 'border-line bg-surface backdrop-blur-md hover:-translate-y-0.5 hover:border-accent-line hover:shadow-md'
               }`}
             >
               <div
                 className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl ${
-                  done ? 'bg-emerald-100' : 'bg-[var(--accent-soft)]'
+                  done ? 'bg-emerald-100' : 'bg-accent-soft'
                 }`}
               >
                 {done ? <CheckCircle2 className="h-6 w-6 text-emerald-500" /> : <span>{info.emoji}</span>}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wide text-slate-400">Etapa {i + 1}</span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-faint">Etapa {i + 1}</span>
                   {done && <span className="text-xs font-semibold text-emerald-600">✓ concluída</span>}
                 </div>
-                <p className="text-base font-semibold text-slate-800">{info.label}</p>
-                <p className="text-sm text-slate-500">{info.desc}</p>
+                <p className="text-base font-semibold text-primary">{info.label}</p>
+                <p className="text-sm text-tertiary">{info.desc}</p>
               </div>
               {locked ? (
-                <Lock className="h-5 w-5 shrink-0 text-slate-400" />
+                <Lock className="h-5 w-5 shrink-0 text-faint" />
               ) : (
-                <ArrowRight className="h-5 w-5 shrink-0 text-[var(--accent)]" />
+                <ArrowRight className="h-5 w-5 shrink-0 text-accent" />
               )}
             </button>
           );
@@ -190,9 +190,9 @@ export function TopicStudy({ topic }: { topic: Topic }) {
       {/* Jogos */}
       <div className="mt-8">
         <div className="mb-3 flex items-center gap-2">
-          <Gamepad2 className="h-5 w-5 text-[var(--accent)]" />
-          <h2 className="text-base font-bold text-slate-800">Jogos</h2>
-          <span className="text-xs text-slate-400">— fixe as palavras brincando</span>
+          <Gamepad2 className="h-5 w-5 text-accent" />
+          <h2 className="text-base font-bold text-primary">Jogos</h2>
+          <span className="text-xs text-faint">— fixe as palavras brincando</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           <GameCard
@@ -206,7 +206,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
           <GameCard
             onClick={() => setMode('memory')}
             icon={<Brain className="h-5 w-5" />}
-            tint="from-[var(--accent)] to-[var(--accent-strong)]"
+            tint="from-accent to-accent-strong"
             title="Memória"
             desc="Vire as cartas e ache os pares"
             best={bestMemory !== undefined ? `${bestMemory} jogadas` : undefined}
@@ -223,16 +223,16 @@ export function TopicStudy({ topic }: { topic: Topic }) {
       </div>
 
       {/* Integração com a revisão espaçada */}
-      <div className="mt-8 rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] p-4">
-        <p className="text-sm font-semibold text-slate-800">Levar para a revisão diária</p>
-        <p className="mt-0.5 text-xs text-slate-600">
+      <div className="mt-8 rounded-2xl border border-accent-line bg-accent-soft p-4">
+        <p className="text-sm font-semibold text-primary">Levar para a revisão diária</p>
+        <p className="mt-0.5 text-xs text-secondary">
           Cria um grupo com estas {topic.items.length} palavras nos seus cards, com repetição espaçada.
         </p>
         <button
           type="button"
           onClick={addToReview}
           disabled={adding}
-          className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
         >
           {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
           {adding
@@ -242,13 +242,13 @@ export function TopicStudy({ topic }: { topic: Topic }) {
 
         {adding && (
           <div className="mt-3">
-            <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--accent-soft)]">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-accent-soft">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-200"
+                className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-200"
                 style={{ width: `${(addProgress / topic.items.length) * 100}%` }}
               />
             </div>
-            <p className="mt-1.5 text-xs text-slate-500">
+            <p className="mt-1.5 text-xs text-tertiary">
               Criando seus cards… pode levar alguns segundos.
             </p>
           </div>
@@ -258,7 +258,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
       <button
         type="button"
         onClick={() => resetLesson(topic.id)}
-        className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-slate-600"
+        className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-faint hover:text-secondary"
       >
         <RotateCcw className="h-4 w-4" />
         Reiniciar tópico
@@ -276,13 +276,13 @@ function GameCard({
     <button
       type="button"
       onClick={onClick}
-      className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition-all hover:-translate-y-0.5 hover:border-[var(--accent-border)] hover:shadow-md"
+      className="group flex flex-col items-center gap-2 rounded-2xl border border-line bg-surface backdrop-blur-md p-4 text-center transition-all hover:-translate-y-0.5 hover:border-accent-line hover:shadow-md"
     >
       <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${tint} text-white`}>
         {icon}
       </div>
-      <p className="font-semibold text-slate-800">{title}</p>
-      <p className="text-xs text-slate-500">{desc}</p>
+      <p className="font-semibold text-primary">{title}</p>
+      <p className="text-xs text-tertiary">{desc}</p>
       {best && <p className="text-xs font-semibold text-amber-600">🏆 {best}</p>}
     </button>
   );
@@ -320,9 +320,9 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
       <button
         type="button"
         onClick={() => setFlipped((f) => !f)}
-        className="relative flex min-h-[15rem] w-full flex-col items-center justify-center rounded-2xl border border-slate-200/60 bg-white p-6 text-center shadow-xl transition-all active:scale-[0.99]"
+        className="relative flex min-h-[15rem] w-full flex-col items-center justify-center rounded-2xl border border-line bg-surface backdrop-blur-md p-6 text-center shadow-xl transition-all active:scale-[0.99]"
       >
-        <span className="absolute left-4 top-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <span className="absolute left-4 top-3 text-xs font-semibold uppercase tracking-wide text-faint">
           {flipped ? 'Significado' : 'Inglês'} · {index + 1}/{total}
         </span>
         <span
@@ -332,7 +332,7 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
             e.stopPropagation();
             speak(audioText, 'en-US');
           }}
-          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border border-slate-200 text-slate-500 transition-colors hover:bg-slate-50"
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border border-line text-tertiary transition-colors hover:bg-surface-2"
           title="Ouvir pronúncia"
         >
           <Volume2 className="h-4 w-4" />
@@ -343,9 +343,9 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
             {img && (
               <img src={img} alt="" className="mb-2 h-24 w-auto max-w-[220px] object-contain" draggable={false} />
             )}
-            <p className="text-3xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
+            <p className="text-3xl font-extrabold tracking-tight text-primary">{v.base}</p>
             {v.past && (
-              <p className="mt-2 text-base text-slate-500">
+              <p className="mt-2 text-base text-tertiary">
                 <span className="font-semibold text-red-500">{v.past}</span>
                 {v.participle && (
                   <>
@@ -356,15 +356,15 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
               </p>
             )}
             {v.rule && <span className={`mt-4 ${ruleBadge(v.rule)}`}>Regra {v.rule}</span>}
-            <p className="mt-4 text-xs text-slate-400">Toque para ver o significado</p>
+            <p className="mt-4 text-xs text-faint">Toque para ver o significado</p>
           </>
         ) : (
           <>
-            <p className="text-2xl font-bold text-slate-900">{v.pt}</p>
-            <p className="mt-3 text-base italic text-slate-500">"{v.example}"</p>
+            <p className="text-2xl font-bold text-primary">{v.pt}</p>
+            <p className="mt-3 text-base italic text-tertiary">"{v.example}"</p>
             <div className="mt-4 flex items-start gap-2 rounded-xl bg-amber-50 px-3 py-2 text-left">
               <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
-              <p className="text-sm text-slate-700">{v.tip}</p>
+              <p className="text-sm text-secondary">{v.tip}</p>
             </div>
           </>
         )}
@@ -375,7 +375,7 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
           type="button"
           onClick={() => go(index - 1)}
           disabled={index === 0}
-          className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:opacity-40"
+          className="flex items-center gap-1.5 rounded-xl border border-line bg-surface backdrop-blur-md px-4 py-2.5 text-sm font-medium text-secondary transition-colors hover:bg-surface-2 disabled:opacity-40"
         >
           <ArrowLeft className="h-4 w-4" />
           Anterior
@@ -384,7 +384,7 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
           <button
             type="button"
             onClick={() => go(index + 1)}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-4 py-2.5 text-sm font-semibold text-white hover:opacity-90"
           >
             Próximo
             <ArrowRight className="h-4 w-4" />
@@ -439,11 +439,11 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
       <StageHeader onBack={onBack} title="Etapa 2 · Significado" progress={`${mastered}/${total}`} />
       <Bar value={mastered} total={total} />
 
-      <div className="mt-4 rounded-2xl border border-slate-200/60 bg-white p-5 shadow-xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-text)]">Qual o significado?</p>
-        <p className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
+      <div className="mt-4 rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-xl">
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Qual o significado?</p>
+        <p className="mt-1 text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
         {v.past && (
-          <p className="mb-4 text-sm text-slate-400">
+          <p className="mb-4 text-sm text-faint">
             <span className="text-red-500">{v.past}</span>
             {v.participle && <> · <span className="text-blue-600">{v.participle}</span></>}
           </p>
@@ -454,13 +454,13 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
             const isThis = chosen === opt;
             const isCorrect = opt === v.pt;
             let cls = 'flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm transition-all ';
-            if (!chosen) cls += 'border-slate-200 bg-white hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)] active:scale-[0.99]';
+            if (!chosen) cls += 'border-line bg-surface backdrop-blur-md hover:border-accent-line hover:bg-accent-soft active:scale-[0.99]';
             else if (isCorrect) cls += 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300';
             else if (isThis) cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
-            else cls += 'border-slate-200 bg-white opacity-60';
+            else cls += 'border-line bg-surface backdrop-blur-md opacity-60';
             return (
               <button key={opt} type="button" disabled={!!chosen} onClick={() => setChosen(opt)} className={cls}>
-                <span className="flex-1 font-medium text-slate-700">{opt}</span>
+                <span className="flex-1 font-medium text-secondary">{opt}</span>
                 {chosen && isCorrect && <Check className="h-4 w-4 text-emerald-500" />}
                 {chosen && isThis && !isCorrect && <X className="h-4 w-4 text-red-500" />}
               </button>
@@ -471,8 +471,8 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
         {chosen && (
           <div className={`mt-4 rounded-xl border p-3 text-sm animate-fade-in ${isRight ? 'border-emerald-200 bg-emerald-50/80 text-emerald-800' : 'border-amber-200 bg-amber-50/80 text-amber-800'}`}>
             <p className="font-semibold">{isRight ? 'Boa! ✅' : `Resposta: ${v.pt}`}</p>
-            <p className="mt-0.5 text-slate-600">{v.tip}</p>
-            {!isRight && <p className="mt-1 text-xs text-slate-500">Esta palavra volta no fim para você fixar.</p>}
+            <p className="mt-0.5 text-secondary">{v.tip}</p>
+            {!isRight && <p className="mt-1 text-xs text-tertiary">Esta palavra volta no fim para você fixar.</p>}
           </div>
         )}
       </div>
@@ -481,12 +481,12 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
         type="button"
         onClick={advance}
         disabled={!chosen}
-        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         Continuar
         <ArrowRight className="h-4 w-4" />
       </button>
-      <p className="mt-2 text-center text-xs text-slate-400">Faltam {queue.length} palavra(s) para dominar.</p>
+      <p className="mt-2 text-center text-xs text-faint">Faltam {queue.length} palavra(s) para dominar.</p>
     </div>
   );
 }
@@ -528,11 +528,11 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
       <StageHeader onBack={onBack} title="Etapa 3 · Formas" progress={`${mastered}/${total}`} />
       <Bar value={mastered} total={total} />
 
-      <div className="mt-4 rounded-2xl border border-slate-200/60 bg-white p-5 shadow-xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-text)]">Passado e particípio de:</p>
+      <div className="mt-4 rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-xl">
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Passado e particípio de:</p>
         <div className="mt-1 flex items-baseline gap-2">
-          <p className="text-2xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
-          <span className="text-sm text-slate-400">({v.pt})</span>
+          <p className="text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
+          <span className="text-sm text-faint">({v.pt})</span>
         </div>
 
         <div className="mt-4 grid gap-2.5 sm:grid-cols-2">
@@ -540,13 +540,13 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
             const isThis = chosen === opt;
             const isCorrect = opt === correct;
             let cls = 'flex items-center gap-2 rounded-xl border px-4 py-3 text-left text-sm transition-all ';
-            if (!chosen) cls += 'border-slate-200 bg-white hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)] active:scale-[0.99]';
+            if (!chosen) cls += 'border-line bg-surface backdrop-blur-md hover:border-accent-line hover:bg-accent-soft active:scale-[0.99]';
             else if (isCorrect) cls += 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300';
             else if (isThis) cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
-            else cls += 'border-slate-200 bg-white opacity-60';
+            else cls += 'border-line bg-surface backdrop-blur-md opacity-60';
             return (
               <button key={opt} type="button" disabled={!!chosen} onClick={() => setChosen(opt)} className={cls}>
-                <span className="flex-1 font-semibold text-slate-700">{opt}</span>
+                <span className="flex-1 font-semibold text-secondary">{opt}</span>
                 {chosen && isCorrect && <Check className="h-4 w-4 text-emerald-500" />}
                 {chosen && isThis && !isCorrect && <X className="h-4 w-4 text-red-500" />}
               </button>
@@ -559,7 +559,7 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
             <p className="font-semibold">
               {isRight ? 'Boa! ✅' : `Correto: ${v.base} – ${v.past} – ${v.participle}`}
             </p>
-            <p className="mt-0.5 text-slate-600">{v.tip}</p>
+            <p className="mt-0.5 text-secondary">{v.tip}</p>
           </div>
         )}
       </div>
@@ -568,12 +568,12 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
         type="button"
         onClick={advance}
         disabled={!chosen}
-        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
+        className="mt-4 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         Continuar
         <ArrowRight className="h-4 w-4" />
       </button>
-      <p className="mt-2 text-center text-xs text-slate-400">Faltam {queue.length} verbo(s) para dominar.</p>
+      <p className="mt-2 text-center text-xs text-faint">Faltam {queue.length} verbo(s) para dominar.</p>
     </div>
   );
 }
@@ -585,14 +585,14 @@ function StageHeader({ onBack, title, progress }: { onBack: () => void; title: s
       <button
         type="button"
         onClick={onBack}
-        className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-700"
+        className="inline-flex items-center gap-1 text-sm font-medium text-tertiary hover:text-secondary"
       >
         <ChevronLeft className="h-4 w-4" />
         Etapas
       </button>
       <div className="flex items-center gap-2">
-        <span className="text-sm font-semibold text-slate-700">{title}</span>
-        <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-0.5 text-xs font-bold tabular-nums text-[var(--accent-text)]">
+        <span className="text-sm font-semibold text-secondary">{title}</span>
+        <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-bold tabular-nums text-accent-text">
           {progress}
         </span>
       </div>
@@ -604,7 +604,7 @@ function Bar({ value, total }: { value: number; total: number }) {
   return (
     <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
       <div
-        className="h-full rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] transition-all duration-300"
+        className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
         style={{ width: `${total > 0 ? (value / total) * 100 : 0}%` }}
       />
     </div>
