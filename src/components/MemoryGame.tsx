@@ -66,6 +66,13 @@ function normalizeImageUrl(url: string): string {
   return trimmed;
 }
 
+/** Segundos de "espiada" nas cartas no início do jogo, por dificuldade. */
+const PREVIEW_SECONDS: Record<MemoryDifficulty, number> = {
+  easy: 3,
+  medium: 5,
+  hard: 7,
+};
+
 export function MemoryGame() {
   const { user } = useAuthStore();
   const isPremium = hasPremiumAccess(user?.subscriptionStatus);
@@ -91,6 +98,27 @@ export function MemoryGame() {
     deleteMemoryPair,
     addMemoryPair,
   } = useStore();
+
+  // ---- Preview inicial: cartas viradas para cima por alguns segundos ----
+  const [previewLeft, setPreviewLeft] = useState(0);
+  const previewTotal = PREVIEW_SECONDS[memoryGame.difficulty] ?? 3;
+
+  // Começa (ou recomeça) a espiada sempre que uma nova partida inicia.
+  // startTime muda a cada partida, então o preview reinicia no "jogar de novo".
+  useEffect(() => {
+    const next = memoryGame.phase === 'playing' ? (PREVIEW_SECONDS[memoryGame.difficulty] ?? 3) : 0;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sincroniza a contagem com o início da partida
+    setPreviewLeft(next);
+  }, [memoryGame.phase, memoryGame.difficulty, memoryGame.startTime]);
+
+  // Contagem regressiva da espiada.
+  useEffect(() => {
+    if (previewLeft <= 0) return;
+    const id = setTimeout(() => setPreviewLeft((p) => p - 1), 1000);
+    return () => clearTimeout(id);
+  }, [previewLeft]);
+
+  const isPreviewing = memoryGame.phase === 'playing' && previewLeft > 0;
 
   const [showManageMode, setShowManageMode] = useState(false);
   const [editingDeck, setEditingDeck] = useState<MemoryDeck | null>(null);
@@ -788,6 +816,22 @@ export function MemoryGame() {
           <div className="w-10" /> {/* Spacer */}
         </div>
 
+        {/* Aviso da espiada inicial */}
+        {isPreviewing && (
+          <div className="mb-4 flex flex-col items-center gap-2">
+            <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-2 text-white shadow-lg shadow-pink-500/25">
+              <Zap className="h-4 w-4" />
+              <span className="font-bold">Memorize! {previewLeft}s</span>
+            </div>
+            <div className="h-1.5 w-48 overflow-hidden rounded-full bg-pink-100">
+              <div
+                className="h-full rounded-full bg-pink-500 transition-all duration-1000 ease-linear"
+                style={{ width: `${(previewLeft / previewTotal) * 100}%` }}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Grid de cartas */}
         <div className="flex-1 flex items-center justify-center">
           <div className={`grid ${gridCols} gap-3 max-w-3xl w-full`}>
@@ -797,6 +841,7 @@ export function MemoryGame() {
                 card={card}
                 onClick={() => flipMemoryCard(card.id)}
                 disabled={memoryGame.selectedCardIds.length >= 2 || card.isMatched}
+                forceReveal={isPreviewing}
               />
             ))}
           </div>
@@ -811,8 +856,9 @@ export function MemoryGame() {
   if (memoryGame.phase === 'results') {
     const mistakes = memoryGame.attempts - memoryGame.matches;
     const accuracy = Math.round((memoryGame.matches / memoryGame.attempts) * 100);
+    // Desconta a espiada inicial para não penalizar o tempo do jogador.
     const duration = memoryGame.endTime && memoryGame.startTime
-      ? Math.round((memoryGame.endTime - memoryGame.startTime) / 1000)
+      ? Math.max(0, Math.round((memoryGame.endTime - memoryGame.startTime) / 1000) - previewTotal)
       : 0;
     
     return (
@@ -1030,12 +1076,15 @@ function MemoryCard({
   card,
   onClick,
   disabled,
+  forceReveal = false,
 }: {
   card: { id: string; type: 'image' | 'word'; content: string; isFlipped: boolean; isMatched: boolean };
   onClick: () => void;
   disabled: boolean;
+  /** Espiada inicial: revela a carta e bloqueia o clique. */
+  forceReveal?: boolean;
 }) {
-  const isRevealed = card.isFlipped || card.isMatched;
+  const isRevealed = forceReveal || card.isFlipped || card.isMatched;
   
   return (
     <div
