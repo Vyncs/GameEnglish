@@ -70,6 +70,44 @@
   --accent-text:   #6d28d9;
 }
 
+/* ==========================================
+   Cenário animado dos temas (wallpaper RPG)
+   ========================================== */
+
+/* Partículas que sobem: fagulhas arcanas, brasas, poeira dourada. */
+@keyframes rpg-rise {
+  0%   { transform: translate3d(0, 100vh, 0) scale(0.7); opacity: 0; }
+  12%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translate3d(var(--drift, 12px), -10vh, 0) scale(1.05); opacity: 0; }
+}
+
+/* Partículas que caem: neve, folhas. */
+@keyframes rpg-fall {
+  0%   { transform: translate3d(0, -10vh, 0) scale(0.8); opacity: 0; }
+  12%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translate3d(var(--drift, 20px), 100vh, 0) scale(1); opacity: 0; }
+}
+
+/* Respiração lenta do brilho de fundo. */
+@keyframes rpg-breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 0.9;  transform: scale(1.08); }
+}
+
+.rpg-particle {
+  position: absolute;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+}
+
+/* Acessibilidade: quem pediu menos movimento não vê partículas se mexendo. */
+@media (prefers-reduced-motion: reduce) {
+  .rpg-particle { display: none; }
+  .rpg-glow { animation: none !important; }
+}
+
 * { box-sizing: border-box; }
 
 html, body {

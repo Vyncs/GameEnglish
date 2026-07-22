@@ -18,6 +18,7 @@ import { TopicStudy } from './components/TopicStudy';
 import { findTopic } from './data/topics';
 import { useVerbLessonStore } from './store/useVerbLessonStore';
 import { ReviewHub } from './components/ReviewHub';
+import { ThemeBackground } from './components/ThemeBackground';
 import { StudentMaterials } from './components/StudentMaterials';
 import { EnglishCoachPage } from './components/english-coach/EnglishCoachPage';
 import { hasPremiumAccess } from './utils/subscription';
@@ -49,12 +50,9 @@ export function AppLayout() {
   }, [memoryDecks, hiddenDefaultDeckIds, isPremium]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-blue-50/50">
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-cyan-200/30 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 right-1/4 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl" />
-      </div>
+    <div className="min-h-screen">
+      {/* Wallpaper animado do tema escolhido */}
+      <ThemeBackground />
 
       {!isFullscreen && <AppHeader />}
       {!isFullscreen && <MobileBottomBar />}
