@@ -5,6 +5,8 @@ import { useVerbLessonStore } from '../store/useVerbLessonStore';
 
 const MATCH_PAIRS = 6;
 const MEMORY_PAIRS = 6;
+/** Segundos de "espiada" nas cartas antes de começar a memória. */
+const MEMORY_PREVIEW_SECONDS = 3;
 const BLITZ_SECONDS = 60;
 
 function shuffle<T>(arr: T[]): T[] {
@@ -338,7 +340,16 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
   const [matched, setMatched] = useState<string[]>([]);
   const [moves, setMoves] = useState(0);
   const [busy, setBusy] = useState(false);
+  // Espiada inicial: começa já com o contador cheio (o round é remontado a cada partida).
+  const [previewLeft, setPreviewLeft] = useState(MEMORY_PREVIEW_SECONDS);
 
+  useEffect(() => {
+    if (previewLeft <= 0) return;
+    const id = setTimeout(() => setPreviewLeft((p) => p - 1), 1000);
+    return () => clearTimeout(id);
+  }, [previewLeft]);
+
+  const isPreviewing = previewLeft > 0;
   const done = matched.length === cards.length;
 
   useEffect(() => {
@@ -347,7 +358,7 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
   }, [done]);
 
   const handleFlip = (c: MemCard) => {
-    if (busy || done || flipped.includes(c.key) || matched.includes(c.key)) return;
+    if (isPreviewing || busy || done || flipped.includes(c.key) || matched.includes(c.key)) return;
     if (flipped.length === 0) {
       setFlipped([c.key]);
       return;
@@ -389,13 +400,28 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
 
   return (
     <>
-      <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold tabular-nums text-slate-600">
-        <Timer className="h-4 w-4 text-violet-500" />
-        {moves} jogadas
-      </div>
+      {isPreviewing ? (
+        <div className="mb-3 flex flex-col items-start gap-1.5">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-1.5 text-sm font-bold text-white shadow-md shadow-violet-500/25">
+            <Timer className="h-4 w-4" />
+            Memorize! {previewLeft}s
+          </span>
+          <div className="h-1.5 w-40 overflow-hidden rounded-full bg-violet-100">
+            <div
+              className="h-full rounded-full bg-violet-500 transition-all duration-1000 ease-linear"
+              style={{ width: `${(previewLeft / MEMORY_PREVIEW_SECONDS) * 100}%` }}
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold tabular-nums text-slate-600">
+          <Timer className="h-4 w-4 text-violet-500" />
+          {moves} jogadas
+        </div>
+      )}
       <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
         {cards.map((c) => {
-          const isUp = flipped.includes(c.key) || matched.includes(c.key);
+          const isUp = isPreviewing || flipped.includes(c.key) || matched.includes(c.key);
           const isMatched = matched.includes(c.key);
           return (
             <button
