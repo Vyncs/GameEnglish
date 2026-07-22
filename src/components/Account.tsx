@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../api/client';
-import { User, CreditCard, LogOut, Loader2 } from 'lucide-react';
+import { User, CreditCard, LogOut, Loader2, Palette } from 'lucide-react';
 import { SubscriptionModal } from './SubscriptionModal';
+import { THEMES } from '../data/themes';
+import { useThemeStore } from '../store/useThemeStore';
 
 const isDev = import.meta.env.DEV;
 
@@ -12,6 +14,8 @@ export function Account() {
   const navigate = useNavigate();
   const { setViewMode } = useStore();
   const { user, logout, initAuth } = useAuthStore();
+  const themeId = useThemeStore((s) => s.themeId);
+  const setTheme = useThemeStore((s) => s.setTheme);
   const [error, setError] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [simulateLoading, setSimulateLoading] = useState(false);
@@ -132,6 +136,48 @@ export function Account() {
                 Gerenciar assinatura
               </button>
             )}
+          </div>
+
+          {/* Seletor de tema */}
+          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/80 p-4">
+            <div className="mb-1 flex items-center gap-2">
+              <Palette className="h-4 w-4 text-[var(--accent-text)]" />
+              <span className="text-sm font-semibold text-slate-800">Tema</span>
+            </div>
+            <p className="mb-3 text-xs text-slate-500">
+              Muda a cor de destaque do app. As cores de cada seção continuam iguais.
+            </p>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {THEMES.map((t) => {
+                const active = t.id === themeId;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setTheme(t.id)}
+                    className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition-all ${
+                      active
+                        ? 'border-slate-400 bg-white shadow-sm ring-2 ring-slate-300'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                    title={t.description}
+                  >
+                    <span
+                      className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-base"
+                      style={{
+                        background: `linear-gradient(135deg, ${t.colors.accent}, ${t.colors.accentStrong})`,
+                      }}
+                    >
+                      {t.emoji}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-xs font-semibold text-slate-800">{t.name}</span>
+                      {active && <span className="text-[10px] font-medium text-slate-500">em uso</span>}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {isDev && !hasFullAccess && (
