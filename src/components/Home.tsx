@@ -54,6 +54,11 @@ export function Home() {
     setViewMode('topic');
   };
 
+  // Sessão de hoje: sugere o próximo tópico não concluído (ou o primeiro).
+  const nextTopic =
+    TOPICS.find((t) => (topicProgress[t.id]?.stagesDone?.length ?? 0) < t.stages.length) ?? TOPICS[0];
+  const nextTopicDone = topicProgress[nextTopic.id]?.stagesDone?.length ?? 0;
+
   const [showImportExport, setShowImportExport] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
@@ -80,6 +85,67 @@ export function Home() {
   return (
     <div className="flex-1 p-6 lg:p-8 overflow-y-auto">
       <div className="max-w-5xl mx-auto flex flex-col">
+
+        {/* HOJE — a sessão do dia montada: revisar + regra + palavras */}
+        <div className="order-first mb-8">
+          <div className="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+            <div className="flex items-center gap-2.5 border-b border-slate-100 px-5 py-4">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white">
+                <Calendar className="h-4 w-4" strokeWidth={2.4} />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold tracking-tight text-slate-900">Sessão de hoje</h2>
+                <p className="text-xs text-slate-500">Revisar · uma regra · palavras novas</p>
+              </div>
+            </div>
+
+            <div className="divide-y divide-slate-100">
+              {/* 1. Revisar */}
+              <TodayStep
+                n={1}
+                title="Revisar"
+                subtitle={
+                  totalReviewCount > 0
+                    ? `${totalReviewCount} cards esperando por você`
+                    : 'Você está em dia — nada pendente'
+                }
+                cta={totalReviewCount > 0 ? 'Revisar agora' : 'Praticar mesmo assim'}
+                done={totalReviewCount === 0}
+                tint="from-violet-500 to-purple-600"
+                icon={<RefreshCw className="h-4 w-4" />}
+                onClick={() => setViewMode('review-hub')}
+              />
+
+              {/* 2. Regra do dia */}
+              <TodayStep
+                n={2}
+                title="Praticar a regra"
+                subtitle={
+                  lessonDone
+                    ? `${LESSON_01.title} · concluída`
+                    : `${LESSON_01.title} · ${lessonAnswered}/${lessonTotal} respondidas`
+                }
+                cta={lessonDone ? 'Rever a aula' : lessonAnswered > 0 ? 'Continuar' : 'Começar'}
+                done={lessonDone}
+                tint="from-cyan-500 to-blue-600"
+                icon={<GraduationCap className="h-4 w-4" />}
+                onClick={() => setViewMode('lesson-classify')}
+              />
+
+              {/* 3. Palavras do dia */}
+              <TodayStep
+                n={3}
+                title="Aprender palavras"
+                subtitle={`${nextTopic.emoji} ${nextTopic.title} · ${nextTopicDone}/${nextTopic.stages.length} etapas`}
+                cta={nextTopicDone > 0 ? 'Continuar' : 'Começar'}
+                done={nextTopicDone === nextTopic.stages.length}
+                tint="from-emerald-500 to-teal-600"
+                icon={<Layers className="h-4 w-4" />}
+                onClick={() => openTopic(nextTopic.id)}
+              />
+            </div>
+          </div>
+        </div>
 
         {/* KPIs — sistema de progresso, não dashboard administrativo */}
         <div
@@ -713,5 +779,51 @@ function MasteryRatio({ pct }: { pct: number }) {
         {pct}%
       </span>
     </div>
+  );
+}
+
+/** Um passo da "Sessão de hoje": número, título, situação e ação. */
+function TodayStep({
+  n, title, subtitle, cta, done, tint, icon, onClick,
+}: {
+  n: number;
+  title: string;
+  subtitle: string;
+  cta: string;
+  done: boolean;
+  tint: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group flex w-full items-center gap-3.5 px-5 py-4 text-left transition-colors hover:bg-slate-50/80"
+    >
+      <div
+        className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
+          done ? 'bg-gradient-to-br from-emerald-500 to-teal-600' : `bg-gradient-to-br ${tint}`
+        }`}
+      >
+        {done ? <Check className="h-5 w-5" strokeWidth={2.6} /> : icon}
+        {!done && (
+          <span className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-white text-[10px] font-bold text-slate-600 ring-1 ring-slate-200">
+            {n}
+          </span>
+        )}
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold text-slate-900">{title}</p>
+        <p className="truncate text-xs text-slate-500">{subtitle}</p>
+      </div>
+
+      <span className="hidden shrink-0 items-center gap-1 text-xs font-semibold text-violet-600 sm:inline-flex">
+        {cta}
+        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 text-violet-400 sm:hidden" />
+    </button>
   );
 }
