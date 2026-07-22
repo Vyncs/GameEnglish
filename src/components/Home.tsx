@@ -3,9 +3,7 @@ import { useStore } from '../store/useStore';
 import { useLessonStore } from '../store/useLessonStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { LESSON_01 } from '../data/lessonClassify';
-import { LESSON_02 } from '../data/lesson02Verbs';
-import { LESSON_03 } from '../data/lesson03Verbs';
-import { VERB_STAGES } from '../data/verbLesson';
+import { TOPICS } from '../data/topics';
 import { ImportExport } from './ImportExport';
 import {
   BookOpen,
@@ -24,6 +22,7 @@ import {
   GraduationCap,
   CheckCircle2,
   RefreshCw,
+  Layers,
 } from 'lucide-react';
 
 export function Home() {
@@ -47,14 +46,13 @@ export function Home() {
     : 0;
   const lessonDone = lessonAnswered === lessonTotal;
 
-  // Progresso das aulas de verbos
-  const verbTotal = VERB_STAGES.length;
-  const verb2StagesDone = useVerbLessonStore((s) => s.progress[LESSON_02.id]?.stagesDone);
-  const verb2Done = verb2StagesDone ? verb2StagesDone.length : 0;
-  const verb2Complete = verb2Done === verbTotal;
-  const verb3StagesDone = useVerbLessonStore((s) => s.progress[LESSON_03.id]?.stagesDone);
-  const verb3Done = verb3StagesDone ? verb3StagesDone.length : 0;
-  const verb3Complete = verb3Done === verbTotal;
+  // Progresso dos tópicos de vocabulário
+  const topicProgress = useVerbLessonStore((s) => s.progress);
+  const setSelectedTopic = useVerbLessonStore((s) => s.setSelectedTopic);
+  const openTopic = (id: string) => {
+    setSelectedTopic(id);
+    setViewMode('topic');
+  };
 
   const [showImportExport, setShowImportExport] = useState(false);
   const [isAddingGroup, setIsAddingGroup] = useState(false);
@@ -149,217 +147,163 @@ export function Home() {
           />
         </div>
 
-        {/* AULA 01 — gancho para o exercício de classificação de frases */}
-        <div
-          className={`mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 ${
-            totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'
-          }`}
-        >
-          <button
-            type="button"
-            onClick={() => setViewMode('lesson-classify')}
-            className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
-          >
-            {lessonDone && (
-              <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Concluída
-              </span>
-            )}
 
-            <div className="flex items-center gap-4">
-              <div
-                className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
-                  lessonDone
-                    ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                    : 'bg-gradient-to-br from-violet-500 to-indigo-600'
-                }`}
-              >
-                {lessonDone ? (
-                  <CheckCircle2 className="h-6 w-6" />
-                ) : (
-                  <GraduationCap className="h-6 w-6" strokeWidth={2.2} />
-                )}
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900">
-                    {LESSON_01.title}
-                  </h3>
-                  {!lessonDone && (
-                    <ArrowRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5" />
-                  )}
-                </div>
-                <p className="text-xs text-slate-500">{LESSON_01.subtitle}</p>
-              </div>
+        {/* AULAS — regras/gramática */}
+        <div className={`mb-8 ${totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}`}>
+          <div className="mb-3 flex items-center gap-2.5">
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-violet-100 ring-1 ring-violet-200/80">
+              <GraduationCap className="h-4 w-4 text-violet-600" strokeWidth={2.4} />
             </div>
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-slate-900">Aulas</h2>
+              <p className="text-xs text-slate-500">As regras — aprenda uma vez, use sempre</p>
+            </div>
+          </div>
 
-            {/* Progresso */}
-            <div className="mt-4">
-              <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-slate-500">
-                <span className="tabular-nums">
-                  {lessonAnswered}/{lessonTotal} respondidas
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <button
+              type="button"
+              onClick={() => setViewMode('lesson-classify')}
+              className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+            >
+              {lessonDone && (
+                <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  Concluída
                 </span>
-                {lessonAnswered > 0 && (
-                  <span className="tabular-nums text-emerald-600">{lessonCorrect} acertos</span>
-                )}
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+              )}
+              <div className="flex items-center gap-4">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${
+                  className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
                     lessonDone
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                      : 'bg-gradient-to-r from-violet-500 to-indigo-500'
+                      ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
+                      : 'bg-gradient-to-br from-violet-500 to-indigo-600'
                   }`}
-                  style={{ width: `${(lessonAnswered / lessonTotal) * 100}%` }}
-                />
+                >
+                  {lessonDone ? <CheckCircle2 className="h-6 w-6" /> : <GraduationCap className="h-6 w-6" strokeWidth={2.2} />}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-semibold tracking-tight text-slate-900">{LESSON_01.title}</h3>
+                    {!lessonDone && (
+                      <ArrowRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5" />
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-500">{LESSON_01.subtitle}</p>
+                </div>
               </div>
-              <p className="mt-2 text-sm font-semibold text-violet-600">
-                {lessonDone
-                  ? 'Ver resultado e revisão →'
-                  : lessonAnswered > 0
-                    ? 'Continuar exercício →'
-                    : 'Começar exercício →'}
-              </p>
-            </div>
-          </button>
-
-          {/* Aula 02 — decorar os 25 verbos */}
-          <button
-            type="button"
-            onClick={() => setViewMode('lesson-verbs')}
-            className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
-          >
-            {verb2Complete && (
-              <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Concluída
-              </span>
-            )}
-
-            <div className="flex items-center gap-4">
-              <div
-                className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
-                  verb2Complete
-                    ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                    : 'bg-gradient-to-br from-violet-500 to-indigo-600'
-                }`}
-              >
-                {verb2Complete ? (
-                  <CheckCircle2 className="h-6 w-6" />
-                ) : (
-                  <BookOpen className="h-6 w-6" strokeWidth={2.2} />
-                )}
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900">
-                    {LESSON_02.title}
-                  </h3>
-                  {!verb2Complete && (
-                    <ArrowRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5" />
+              <div className="mt-4">
+                <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-slate-500">
+                  <span className="tabular-nums">
+                    {lessonAnswered}/{lessonTotal} respondidas
+                  </span>
+                  {lessonAnswered > 0 && (
+                    <span className="tabular-nums text-emerald-600">{lessonCorrect} acertos</span>
                   )}
                 </div>
-                <p className="text-xs text-slate-500">{LESSON_02.subtitle}</p>
-              </div>
-            </div>
-
-            {/* Progresso */}
-            <div className="mt-4">
-              <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-slate-500">
-                <span className="tabular-nums">
-                  {verb2Done}/{verbTotal} etapas
-                </span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    verb2Complete
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                      : 'bg-gradient-to-r from-violet-500 to-indigo-500'
-                  }`}
-                  style={{ width: `${(verb2Done / verbTotal) * 100}%` }}
-                />
-              </div>
-              <p className="mt-2 text-sm font-semibold text-violet-600">
-                {verb2Complete
-                  ? 'Revisar os verbos →'
-                  : verb2Done > 0
-                    ? 'Continuar decorando →'
-                    : 'Começar a decorar →'}
-              </p>
-            </div>
-          </button>
-
-          {/* Aula 03 — verbos 26–50 */}
-          <button
-            type="button"
-            onClick={() => setViewMode('lesson-verbs-3')}
-            className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
-          >
-            {verb3Complete && (
-              <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                Concluída
-              </span>
-            )}
-
-            <div className="flex items-center gap-4">
-              <div
-                className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
-                  verb3Complete
-                    ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                    : 'bg-gradient-to-br from-violet-500 to-indigo-600'
-                }`}
-              >
-                {verb3Complete ? (
-                  <CheckCircle2 className="h-6 w-6" />
-                ) : (
-                  <BookOpen className="h-6 w-6" strokeWidth={2.2} />
-                )}
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900">
-                    {LESSON_03.title}
-                  </h3>
-                  {!verb3Complete && (
-                    <ArrowRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5" />
-                  )}
+                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      lessonDone
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                        : 'bg-gradient-to-r from-violet-500 to-indigo-500'
+                    }`}
+                    style={{ width: `${(lessonAnswered / lessonTotal) * 100}%` }}
+                  />
                 </div>
-                <p className="text-xs text-slate-500">{LESSON_03.subtitle}</p>
+                <p className="mt-2 text-sm font-semibold text-violet-600">
+                  {lessonDone
+                    ? 'Ver resultado e revisão →'
+                    : lessonAnswered > 0
+                      ? 'Continuar exercício →'
+                      : 'Começar exercício →'}
+                </p>
               </div>
-            </div>
+            </button>
+          </div>
+        </div>
 
-            {/* Progresso */}
-            <div className="mt-4">
-              <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-slate-500">
-                <span className="tabular-nums">
-                  {verb3Done}/{verbTotal} etapas
-                </span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    verb3Complete
-                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                      : 'bg-gradient-to-r from-violet-500 to-indigo-500'
-                  }`}
-                  style={{ width: `${(verb3Done / verbTotal) * 100}%` }}
-                />
-              </div>
-              <p className="mt-2 text-sm font-semibold text-violet-600">
-                {verb3Complete
-                  ? 'Revisar os verbos →'
-                  : verb3Done > 0
-                    ? 'Continuar decorando →'
-                    : 'Começar a decorar →'}
+        {/* TÓPICOS — vocabulário, do mais fácil ao mais difícil */}
+        <div className={`mb-8 ${totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}`}>
+          <div className="mb-3 flex items-center gap-2.5">
+            <div className="grid h-9 w-9 place-items-center rounded-xl bg-cyan-100 ring-1 ring-cyan-200/80">
+              <Layers className="h-4 w-4 text-cyan-600" strokeWidth={2.4} />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight text-slate-900">Tópicos</h2>
+              <p className="text-xs text-slate-500">
+                Vocabulário em blocos — do mais fácil ao mais difícil
               </p>
             </div>
-          </button>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {TOPICS.map((topic) => {
+              const done = topicProgress[topic.id]?.stagesDone?.length ?? 0;
+              const total = topic.stages.length;
+              const complete = done === total;
+              return (
+                <button
+                  key={topic.id}
+                  type="button"
+                  onClick={() => openTopic(topic.id)}
+                  className="group relative w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
+                >
+                  {complete && (
+                    <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Concluído
+                    </span>
+                  )}
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-2xl shadow-sm transition-transform group-hover:scale-105 ${
+                        complete
+                          ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white'
+                          : 'bg-violet-50 ring-1 ring-violet-100'
+                      }`}
+                    >
+                      {complete ? <CheckCircle2 className="h-6 w-6" /> : <span>{topic.emoji}</span>}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base font-semibold tracking-tight text-slate-900">{topic.title}</h3>
+                        {!complete && (
+                          <ArrowRight className="h-4 w-4 text-violet-400 transition-transform group-hover:translate-x-0.5" />
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        {topic.subtitle} · {topic.items.length} palavras
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-slate-500">
+                      <span className="tabular-nums">
+                        {done}/{total} etapas
+                      </span>
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                        {topic.level === 1 ? 'Fácil' : topic.level === 2 ? 'Médio' : 'Difícil'}
+                      </span>
+                    </div>
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          complete
+                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                            : 'bg-gradient-to-r from-violet-500 to-indigo-500'
+                        }`}
+                        style={{ width: `${(done / total) * 100}%` }}
+                      />
+                    </div>
+                    <p className="mt-2 text-sm font-semibold text-violet-600">
+                      {complete ? 'Revisar tópico →' : done > 0 ? 'Continuar →' : 'Começar →'}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* MEUS GRUPOS — mapa de evolução */}

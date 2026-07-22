@@ -14,9 +14,9 @@ import { GradedReaders } from './components/GradedReaders';
 import { Account } from './components/Account';
 import { InstallApp } from './components/InstallApp';
 import { LessonClassify } from './components/LessonClassify';
-import { LessonVerbs } from './components/LessonVerbs';
-import { LESSON_02, verbImg } from './data/lesson02Verbs';
-import { LESSON_03 } from './data/lesson03Verbs';
+import { TopicStudy } from './components/TopicStudy';
+import { findTopic } from './data/topics';
+import { useVerbLessonStore } from './store/useVerbLessonStore';
 import { ReviewHub } from './components/ReviewHub';
 import { StudentMaterials } from './components/StudentMaterials';
 import { EnglishCoachPage } from './components/english-coach/EnglishCoachPage';
@@ -32,6 +32,7 @@ export function AppLayout() {
   const { user } = useAuthStore();
   const isPremium = hasPremiumAccess(user?.subscriptionStatus);
   const isFullscreen = FULLSCREEN_VIEWS.has(viewMode);
+  const selectedTopic = findTopic(useVerbLessonStore((s) => s.selectedTopicId));
 
   useEffect(() => {
     const token = api.getToken();
@@ -73,8 +74,7 @@ export function AppLayout() {
           {viewMode === 'account' && <Account />}
           {viewMode === 'install' && <InstallApp />}
           {viewMode === 'lesson-classify' && <LessonClassify />}
-          {viewMode === 'lesson-verbs' && <LessonVerbs lesson={LESSON_02} imageFor={(v) => verbImg(v.id)} />}
-          {viewMode === 'lesson-verbs-3' && <LessonVerbs lesson={LESSON_03} />}
+          {viewMode === 'topic' && selectedTopic && <TopicStudy topic={selectedTopic} />}
           {viewMode === 'review-hub' && <ReviewHub />}
         </div>
       </main>

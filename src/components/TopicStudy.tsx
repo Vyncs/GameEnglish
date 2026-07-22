@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft, Check, X, Volume2, RotateCcw, ArrowLeft, ArrowRight,
-  Trophy, Lightbulb, Lock, CheckCircle2, Gamepad2, Puzzle, Zap, Brain,
+  Trophy, Lightbulb, Lock, CheckCircle2, Gamepad2, Puzzle, Zap, Brain, Plus, Loader2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { useStore } from '../store/useStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { useSpeech } from '../hooks/useSpeech';
-import { VERB_STAGES, type Verb, type VerbLesson } from '../data/verbLesson';
-import { MatchGame, BlitzGame, MemoryGame, type ImageFor } from './VerbGames';
+import { STAGE_INFO, type Topic, type TopicItem, type TopicStage } from '../data/topic';
+import { MatchGame, BlitzGame, MemoryGame } from './VerbGames';
 
 const EMPTY_STAGES: string[] = [];
-// Verbos que entram no exercício de formas (irregulares com particípio; exclui "can").
-const formsVerbs = (lesson: VerbLesson) => lesson.verbs.filter((v) => v.irregular && v.participle);
+/** Itens que entram no exercício de formas (irregulares com particípio). */
+const formsItems = (topic: Topic) => topic.items.filter((i) => i.irregular && i.participle);
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -22,7 +23,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-function ruleBadge(rule: Verb['rule']) {
+function ruleBadge(rule: NonNullable<TopicItem['rule']>) {
   const map = {
     A: 'bg-cyan-100 text-cyan-700',
     B: 'bg-blue-100 text-blue-700',
@@ -33,44 +34,69 @@ function ruleBadge(rule: Verb['rule']) {
 }
 
 // ============================================================================
-export function LessonVerbs({ lesson, imageFor }: { lesson: VerbLesson; imageFor?: ImageFor }) {
+export function TopicStudy({ topic }: { topic: Topic }) {
   const goToHome = useStore((s) => s.goToHome);
-  const stagesDone = useVerbLessonStore((s) => s.progress[lesson.id]?.stagesDone ?? EMPTY_STAGES);
-  const bestMatch = useVerbLessonStore((s) => s.progress[lesson.id]?.bestMatchMs);
-  const bestBlitz = useVerbLessonStore((s) => s.progress[lesson.id]?.bestBlitz);
-  const bestMemory = useVerbLessonStore((s) => s.progress[lesson.id]?.bestMemory);
+  const stagesDone = useVerbLessonStore((s) => s.progress[topic.id]?.stagesDone ?? EMPTY_STAGES);
+  const bestMatch = useVerbLessonStore((s) => s.progress[topic.id]?.bestMatchMs);
+  const bestBlitz = useVerbLessonStore((s) => s.progress[topic.id]?.bestBlitz);
+  const bestMemory = useVerbLessonStore((s) => s.progress[topic.id]?.bestMemory);
   const markStageDone = useVerbLessonStore((s) => s.markStageDone);
   const resetLesson = useVerbLessonStore((s) => s.resetLesson);
 
-  const [mode, setMode] = useState<'hub' | 'study' | 'meaning' | 'forms' | 'match' | 'blitz' | 'memory'>('hub');
+  const [mode, setMode] = useState<'hub' | TopicStage | 'match' | 'blitz' | 'memory'>('hub');
+  const [adding, setAdding] = useState(false);
 
-  // Pré-carrega as ilustrações ao abrir a aula, para não haver atraso ao virar
-  // as cartas na memória / trocar de flashcard.
+  // Pré-carrega as ilustrações (se houver) para não haver atraso ao virar cartas.
   useEffect(() => {
-    if (!imageFor) return;
-    lesson.verbs.forEach((v) => {
-      const url = imageFor(v);
+    if (!topic.imageFor) return;
+    topic.items.forEach((it) => {
+      const url = topic.imageFor?.(it);
       if (url) {
         const img = new Image();
         img.src = url;
       }
     });
-  }, [lesson, imageFor]);
+  }, [topic]);
 
   const finish = (stage: string) => {
-    markStageDone(lesson.id, stage);
+    markStageDone(topic.id, stage);
     setMode('hub');
   };
 
-  if (mode === 'study') return <Study lesson={lesson} imageFor={imageFor} onDone={() => finish('study')} onBack={() => setMode('hub')} />;
-  if (mode === 'meaning') return <Meaning lesson={lesson} onDone={() => finish('meaning')} onBack={() => setMode('hub')} />;
-  if (mode === 'forms') return <Forms lesson={lesson} onDone={() => finish('forms')} onBack={() => setMode('hub')} />;
-  if (mode === 'match') return <MatchGame lesson={lesson} onBack={() => setMode('hub')} />;
-  if (mode === 'blitz') return <BlitzGame lesson={lesson} onBack={() => setMode('hub')} />;
-  if (mode === 'memory') return <MemoryGame lesson={lesson} imageFor={imageFor} onBack={() => setMode('hub')} />;
+  /** Cria um grupo com as palavras do tópico e joga no sistema de revisão espaçada. */
+  const addToReview = async () => {
+    const store = useStore.getState();
+    if (store.groups.some((g) => g.name === topic.title)) {
+      toast.info(`Você já tem o grupo "${topic.title}" na sua revisão.`);
+      return;
+    }
+    setAdding(true);
+    toast.message(`Adicionando ${topic.items.length} cards à sua revisão…`);
+    try {
+      await (store.addGroup(topic.title) as unknown as Promise<void>);
+      const groupId = useStore.getState().selectedGroupId;
+      if (!groupId) return; // o store já avisou o motivo (limite do plano, erro de rede)
+      for (const it of topic.items) {
+        await (useStore
+          .getState()
+          .addCard(it.pt, it.base, groupId, 'pt-en', undefined, it.tip) as unknown as Promise<void>);
+      }
+      const added = useStore.getState().cards.filter((c) => c.groupId === groupId).length;
+      toast.success(`${added} cards no grupo "${topic.title}" — já entram na sua revisão diária!`);
+    } finally {
+      setAdding(false);
+    }
+  };
 
-  const doneCount = stagesDone.length;
-  const allDone = doneCount === VERB_STAGES.length;
+  if (mode === 'study') return <Study topic={topic} onDone={() => finish('study')} onBack={() => setMode('hub')} />;
+  if (mode === 'meaning') return <Meaning topic={topic} onDone={() => finish('meaning')} onBack={() => setMode('hub')} />;
+  if (mode === 'forms') return <Forms topic={topic} onDone={() => finish('forms')} onBack={() => setMode('hub')} />;
+  if (mode === 'match') return <MatchGame topic={topic} onBack={() => setMode('hub')} />;
+  if (mode === 'blitz') return <BlitzGame topic={topic} onBack={() => setMode('hub')} />;
+  if (mode === 'memory') return <MemoryGame topic={topic} onBack={() => setMode('hub')} />;
+
+  const doneCount = topic.stages.filter((s) => stagesDone.includes(s)).length;
+  const allDone = doneCount === topic.stages.length;
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
@@ -84,17 +110,21 @@ export function LessonVerbs({ lesson, imageFor }: { lesson: VerbLesson; imageFor
       </button>
 
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-lg font-bold text-slate-800">{lesson.title}</h1>
+        <h1 className="text-lg font-bold text-slate-800">
+          {topic.emoji} {topic.title}
+        </h1>
         <span className="shrink-0 rounded-full bg-violet-100 px-3 py-1 text-xs font-bold tabular-nums text-violet-700">
-          {doneCount}/{VERB_STAGES.length} etapas
+          {doneCount}/{topic.stages.length} etapas
         </span>
       </div>
-      <p className="mt-0.5 text-sm text-slate-500">{lesson.subtitle}</p>
+      <p className="mt-0.5 text-sm text-slate-500">
+        {topic.subtitle} · {topic.items.length} palavras
+      </p>
 
       <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
         <div
           className="h-full rounded-full bg-gradient-to-r from-violet-500 to-indigo-600 transition-all duration-300"
-          style={{ width: `${(doneCount / VERB_STAGES.length) * 100}%` }}
+          style={{ width: `${(doneCount / topic.stages.length) * 100}%` }}
         />
       </div>
 
@@ -102,23 +132,24 @@ export function LessonVerbs({ lesson, imageFor }: { lesson: VerbLesson; imageFor
         <div className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
           <Trophy className="h-8 w-8 shrink-0 text-emerald-500" />
           <div>
-            <p className="font-bold text-emerald-800">Aula concluída! 🎉</p>
-            <p className="text-sm text-emerald-700">Você passou por todas as etapas dos 25 verbos.</p>
+            <p className="font-bold text-emerald-800">Tópico concluído! 🎉</p>
+            <p className="text-sm text-emerald-700">Você passou por todas as etapas.</p>
           </div>
         </div>
       )}
 
       {/* Etapas */}
       <div className="mt-5 space-y-3">
-        {VERB_STAGES.map((stage, i) => {
-          const done = stagesDone.includes(stage.id);
-          const locked = i > 0 && !stagesDone.includes(VERB_STAGES[i - 1].id);
+        {topic.stages.map((stage, i) => {
+          const info = STAGE_INFO[stage];
+          const done = stagesDone.includes(stage);
+          const locked = i > 0 && !stagesDone.includes(topic.stages[i - 1]);
           return (
             <button
-              key={stage.id}
+              key={stage}
               type="button"
               disabled={locked}
-              onClick={() => setMode(stage.id as 'study' | 'meaning' | 'forms')}
+              onClick={() => setMode(stage)}
               className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-all ${
                 locked
                   ? 'cursor-not-allowed border-slate-200 bg-slate-50 opacity-60'
@@ -132,17 +163,15 @@ export function LessonVerbs({ lesson, imageFor }: { lesson: VerbLesson; imageFor
                   done ? 'bg-emerald-100' : 'bg-violet-50'
                 }`}
               >
-                {done ? <CheckCircle2 className="h-6 w-6 text-emerald-500" /> : <span>{stage.emoji}</span>}
+                {done ? <CheckCircle2 className="h-6 w-6 text-emerald-500" /> : <span>{info.emoji}</span>}
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                    Etapa {i + 1}
-                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-slate-400">Etapa {i + 1}</span>
                   {done && <span className="text-xs font-semibold text-emerald-600">✓ concluída</span>}
                 </div>
-                <p className="text-base font-semibold text-slate-800">{stage.label}</p>
-                <p className="text-sm text-slate-500">{stage.desc}</p>
+                <p className="text-base font-semibold text-slate-800">{info.label}</p>
+                <p className="text-sm text-slate-500">{info.desc}</p>
               </div>
               {locked ? (
                 <Lock className="h-5 w-5 shrink-0 text-slate-400" />
@@ -159,92 +188,103 @@ export function LessonVerbs({ lesson, imageFor }: { lesson: VerbLesson; imageFor
         <div className="mb-3 flex items-center gap-2">
           <Gamepad2 className="h-5 w-5 text-violet-500" />
           <h2 className="text-base font-bold text-slate-800">Jogos</h2>
-          <span className="text-xs text-slate-400">— fixe os verbos brincando</span>
+          <span className="text-xs text-slate-400">— fixe as palavras brincando</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
-          <button
-            type="button"
+          <GameCard
             onClick={() => setMode('match')}
-            className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition-all hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md"
-          >
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 text-white">
-              <Puzzle className="h-5 w-5" />
-            </div>
-            <p className="font-semibold text-slate-800">Associação</p>
-            <p className="text-xs text-slate-500">Pareie verbo ↔ significado contra o tempo</p>
-            {bestMatch !== undefined && (
-              <p className="text-xs font-semibold text-amber-600">🏆 {(bestMatch / 1000).toFixed(1)}s</p>
-            )}
-          </button>
-
-          <button
-            type="button"
+            icon={<Puzzle className="h-5 w-5" />}
+            tint="from-pink-500 to-rose-500"
+            title="Associação"
+            desc="Pareie termo ↔ significado contra o tempo"
+            best={bestMatch !== undefined ? `${(bestMatch / 1000).toFixed(1)}s` : undefined}
+          />
+          <GameCard
             onClick={() => setMode('memory')}
-            className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition-all hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md"
-          >
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 text-white">
-              <Brain className="h-5 w-5" />
-            </div>
-            <p className="font-semibold text-slate-800">Memória</p>
-            <p className="text-xs text-slate-500">Vire as cartas e ache os pares</p>
-            {bestMemory !== undefined && (
-              <p className="text-xs font-semibold text-amber-600">🏆 {bestMemory} jogadas</p>
-            )}
-          </button>
-
-          <button
-            type="button"
+            icon={<Brain className="h-5 w-5" />}
+            tint="from-violet-500 to-indigo-600"
+            title="Memória"
+            desc="Vire as cartas e ache os pares"
+            best={bestMemory !== undefined ? `${bestMemory} jogadas` : undefined}
+          />
+          <GameCard
             onClick={() => setMode('blitz')}
-            className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition-all hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md"
-          >
-            <div className="grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white">
-              <Zap className="h-5 w-5" />
-            </div>
-            <p className="font-semibold text-slate-800">Blitz</p>
-            <p className="text-xs text-slate-500">60s valendo pontos: acerte o significado</p>
-            {bestBlitz !== undefined && (
-              <p className="text-xs font-semibold text-amber-600">🏆 {bestBlitz} pts</p>
-            )}
-          </button>
+            icon={<Zap className="h-5 w-5" />}
+            tint="from-amber-500 to-orange-500"
+            title="Blitz"
+            desc="60s valendo pontos"
+            best={bestBlitz !== undefined ? `${bestBlitz} pts` : undefined}
+          />
         </div>
+      </div>
+
+      {/* Integração com a revisão espaçada */}
+      <div className="mt-8 rounded-2xl border border-violet-200 bg-violet-50/60 p-4">
+        <p className="text-sm font-semibold text-slate-800">Levar para a revisão diária</p>
+        <p className="mt-0.5 text-xs text-slate-600">
+          Cria um grupo com estas {topic.items.length} palavras nos seus cards, com repetição espaçada.
+        </p>
+        <button
+          type="button"
+          onClick={addToReview}
+          disabled={adding}
+          className="mt-3 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
+        >
+          {adding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+          {adding ? 'Adicionando…' : 'Adicionar à minha revisão'}
+        </button>
       </div>
 
       <button
         type="button"
-        onClick={() => resetLesson(lesson.id)}
+        onClick={() => resetLesson(topic.id)}
         className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-slate-400 hover:text-slate-600"
       >
         <RotateCcw className="h-4 w-4" />
-        Reiniciar aula
+        Reiniciar tópico
       </button>
     </div>
   );
 }
 
+function GameCard({
+  onClick, icon, tint, title, desc, best,
+}: {
+  onClick: () => void; icon: React.ReactNode; tint: string; title: string; desc: string; best?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group flex flex-col items-center gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-center transition-all hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-md"
+    >
+      <div className={`grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br ${tint} text-white`}>
+        {icon}
+      </div>
+      <p className="font-semibold text-slate-800">{title}</p>
+      <p className="text-xs text-slate-500">{desc}</p>
+      {best && <p className="text-xs font-semibold text-amber-600">🏆 {best}</p>}
+    </button>
+  );
+}
+
 // ============================================================================
 // Etapa 1 — Estudar (flashcards)
-function Study({
-  lesson,
-  imageFor,
-  onDone,
-  onBack,
-}: {
-  lesson: VerbLesson;
-  imageFor?: ImageFor;
-  onDone: () => void;
-  onBack: () => void;
-}) {
-  const verbs = lesson.verbs;
-  const total = verbs.length;
+function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; onBack: () => void }) {
+  const items = topic.items;
+  const total = items.length;
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const [seen, setSeen] = useState<Set<number>>(() => new Set([0]));
   const { speak } = useSpeech();
 
-  const v = verbs[index];
-  const audioText = v.participle && v.participle !== v.past
-    ? `${v.base}, ${v.past}, ${v.participle}`
-    : `${v.base}, ${v.past}`;
+  const v = items[index];
+  const img = topic.imageFor?.(v);
+  const audioText = v.past
+    ? v.participle && v.participle !== v.past
+      ? `${v.base}, ${v.past}, ${v.participle}`
+      : `${v.base}, ${v.past}`
+    : v.base;
 
   const go = (next: number) => {
     const clamped = Math.max(0, Math.min(total - 1, next));
@@ -280,25 +320,22 @@ function Study({
 
         {!flipped ? (
           <>
-            {imageFor?.(v) && (
-              <img
-                src={imageFor(v)}
-                alt=""
-                className="mb-2 h-24 w-auto max-w-[220px] object-contain"
-                draggable={false}
-              />
+            {img && (
+              <img src={img} alt="" className="mb-2 h-24 w-auto max-w-[220px] object-contain" draggable={false} />
             )}
             <p className="text-3xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
-            <p className="mt-2 text-base text-slate-500">
-              <span className="font-semibold text-red-500">{v.past}</span>
-              {v.participle && (
-                <>
-                  {' · '}
-                  <span className="font-semibold text-blue-600">{v.participle}</span>
-                </>
-              )}
-            </p>
-            <span className={`mt-4 ${ruleBadge(v.rule)}`}>Regra {v.rule}</span>
+            {v.past && (
+              <p className="mt-2 text-base text-slate-500">
+                <span className="font-semibold text-red-500">{v.past}</span>
+                {v.participle && (
+                  <>
+                    {' · '}
+                    <span className="font-semibold text-blue-600">{v.participle}</span>
+                  </>
+                )}
+              </p>
+            )}
+            {v.rule && <span className={`mt-4 ${ruleBadge(v.rule)}`}>Regra {v.rule}</span>}
             <p className="mt-4 text-xs text-slate-400">Toque para ver o significado</p>
           </>
         ) : (
@@ -343,25 +380,22 @@ function Study({
           </button>
         )}
       </div>
-      <p className="mt-2 text-center text-xs text-slate-400">
-        Passe por todos os verbos e conclua quando se sentir pronto.
-      </p>
     </div>
   );
 }
 
 // ============================================================================
-// Etapa 2 — Significado (inglês → PT), estilo Cram (repete errados)
-function Meaning({ lesson, onDone, onBack }: { lesson: VerbLesson; onDone: () => void; onBack: () => void }) {
-  const verbs = lesson.verbs;
-  const total = verbs.length;
-  const [queue, setQueue] = useState<number[]>(() => shuffle(verbs.map((v) => v.id)));
+// Etapa 2 — Significado (inglês → PT), estilo Cram
+function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; onBack: () => void }) {
+  const items = topic.items;
+  const total = items.length;
+  const [queue, setQueue] = useState<number[]>(() => shuffle(items.map((i) => i.id)));
   const [chosen, setChosen] = useState<string | null>(null);
 
   const currentId = queue[0];
-  const v = verbs.find((x) => x.id === currentId)!;
+  const v = items.find((x) => x.id === currentId)!;
   const options = useMemo(() => {
-    const others = verbs.filter((x) => x.id !== v.id).map((x) => x.pt);
+    const others = items.filter((x) => x.id !== v.id).map((x) => x.pt);
     return shuffle([v.pt, ...shuffle(others).slice(0, 3)]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentId]);
@@ -388,12 +422,14 @@ function Meaning({ lesson, onDone, onBack }: { lesson: VerbLesson; onDone: () =>
       <div className="mt-4 rounded-2xl border border-slate-200/60 bg-white p-5 shadow-xl">
         <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">Qual o significado?</p>
         <p className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
-        <p className="mb-4 text-sm text-slate-400">
-          <span className="text-red-500">{v.past}</span>
-          {v.participle && <> · <span className="text-blue-600">{v.participle}</span></>}
-        </p>
+        {v.past && (
+          <p className="mb-4 text-sm text-slate-400">
+            <span className="text-red-500">{v.past}</span>
+            {v.participle && <> · <span className="text-blue-600">{v.participle}</span></>}
+          </p>
+        )}
 
-        <div className="grid gap-2.5 sm:grid-cols-2">
+        <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
           {options.map((opt) => {
             const isThis = chosen === opt;
             const isCorrect = opt === v.pt;
@@ -416,7 +452,7 @@ function Meaning({ lesson, onDone, onBack }: { lesson: VerbLesson; onDone: () =>
           <div className={`mt-4 rounded-xl border p-3 text-sm animate-fade-in ${isRight ? 'border-emerald-200 bg-emerald-50/80 text-emerald-800' : 'border-amber-200 bg-amber-50/80 text-amber-800'}`}>
             <p className="font-semibold">{isRight ? 'Boa! ✅' : `Resposta: ${v.pt}`}</p>
             <p className="mt-0.5 text-slate-600">{v.tip}</p>
-            {!isRight && <p className="mt-1 text-xs text-slate-500">Este verbo volta no fim para você fixar.</p>}
+            {!isRight && <p className="mt-1 text-xs text-slate-500">Esta palavra volta no fim para você fixar.</p>}
           </div>
         )}
       </div>
@@ -430,25 +466,25 @@ function Meaning({ lesson, onDone, onBack }: { lesson: VerbLesson; onDone: () =>
         Continuar
         <ArrowRight className="h-4 w-4" />
       </button>
-      <p className="mt-2 text-center text-xs text-slate-400">Faltam {queue.length} verbo(s) para dominar.</p>
+      <p className="mt-2 text-center text-xs text-slate-400">Faltam {queue.length} palavra(s) para dominar.</p>
     </div>
   );
 }
 
 // ============================================================================
 // Etapa 3 — Formas (irregulares): passado – particípio
-function Forms({ lesson, onDone, onBack }: { lesson: VerbLesson; onDone: () => void; onBack: () => void }) {
-  const pairLabel = (x: Verb) => `${x.past} – ${x.participle}`;
-  const verbs = useMemo(() => formsVerbs(lesson), [lesson]);
-  const total = verbs.length;
-  const [queue, setQueue] = useState<number[]>(() => shuffle(verbs.map((v) => v.id)));
+function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; onBack: () => void }) {
+  const pairLabel = (x: TopicItem) => `${x.past ?? ''} – ${x.participle ?? ''}`;
+  const items = useMemo(() => formsItems(topic), [topic]);
+  const total = items.length;
+  const [queue, setQueue] = useState<number[]>(() => shuffle(items.map((i) => i.id)));
   const [chosen, setChosen] = useState<string | null>(null);
 
   const currentId = queue[0];
-  const v = verbs.find((x) => x.id === currentId)!;
+  const v = items.find((x) => x.id === currentId)!;
   const correct = pairLabel(v);
   const options = useMemo(() => {
-    const others = verbs.filter((x) => x.id !== v.id).map(pairLabel);
+    const others = items.filter((x) => x.id !== v.id).map(pairLabel);
     return shuffle([correct, ...shuffle([...new Set(others)]).slice(0, 3)]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentId]);
@@ -473,9 +509,7 @@ function Forms({ lesson, onDone, onBack }: { lesson: VerbLesson; onDone: () => v
       <Bar value={mastered} total={total} />
 
       <div className="mt-4 rounded-2xl border border-slate-200/60 bg-white p-5 shadow-xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-          Passado e particípio de:
-        </p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">Passado e particípio de:</p>
         <div className="mt-1 flex items-baseline gap-2">
           <p className="text-2xl font-extrabold tracking-tight text-slate-900">{v.base}</p>
           <span className="text-sm text-slate-400">({v.pt})</span>
