@@ -150,17 +150,17 @@ export function AppHeader() {
 
     const basePill = 'relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200';
 
-    const sectionColor = NAV_COLOR[item.id] ?? 'text-slate-600';
+    const sectionColor = NAV_COLOR[item.id] ?? 'text-secondary';
 
     let pillClass = basePill;
     if (isActive) {
       pillClass += ` bg-gradient-to-r ${item.gradient} text-white shadow-lg`;
     } else if (item.locked) {
-      pillClass += ' text-slate-400 hover:bg-slate-100';
+      pillClass += ' text-faint hover:bg-surface-2';
     } else if (item.inDevelopment) {
       pillClass += ` ${sectionColor} hover:bg-amber-50/80 border border-amber-200/60`;
     } else {
-      pillClass += ` ${sectionColor} hover:bg-slate-100`;
+      pillClass += ` ${sectionColor} hover:bg-surface-2`;
     }
 
     return (
@@ -209,7 +209,7 @@ export function AppHeader() {
   return (
     <>
       {/* Desktop Header */}
-      <header className="hidden lg:flex fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 z-40 items-center px-6 gap-4">
+      <header className="hidden lg:flex fixed top-0 left-0 right-0 h-16 bg-surface backdrop-blur-xl border-b border-line z-40 items-center px-6 gap-4">
         {/* Logo — apenas o círculo da marca */}
         <div className="flex items-center shrink-0 mr-2">
           <button
@@ -240,7 +240,7 @@ export function AppHeader() {
       </header>
 
       {/* Mobile Top Bar */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white/90 backdrop-blur-xl border-b border-slate-200/60 z-40 flex items-center justify-between px-4 gap-2">
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-surface backdrop-blur-xl border-b border-line z-40 flex items-center justify-between px-4 gap-2">
         <button
           type="button"
           onClick={goToHome}
@@ -263,7 +263,7 @@ export function AppHeader() {
             className={`p-2 rounded-xl transition-colors ${
               viewMode === 'cards'
                 ? 'bg-cyan-500 text-white'
-                : 'text-slate-600 hover:bg-slate-100'
+                : 'text-secondary hover:bg-surface-2'
             }`}
             title="Grupos"
           >
@@ -276,7 +276,7 @@ export function AppHeader() {
             className={`p-2 rounded-xl transition-colors ${
               viewMode === 'english-coach'
                 ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
-                : 'text-slate-600 hover:bg-slate-100'
+                : 'text-secondary hover:bg-surface-2'
             }`}
             title="English Coach"
             aria-label="English Coach"
@@ -293,7 +293,7 @@ export function AppHeader() {
               className={`p-2 rounded-xl transition-colors ${
                 viewMode === 'teacher-materials'
                   ? 'bg-violet-500 text-white'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  : 'text-secondary hover:bg-surface-2'
               }`}
               title="Materiais"
             >

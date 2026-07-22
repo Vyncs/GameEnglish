@@ -54,7 +54,7 @@ export function LessonClassify() {
     const pct = Math.round((correctCount / total) * 100);
     return (
       <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="bg-white/80 backdrop-blur rounded-2xl shadow-xl border border-slate-200/60 overflow-hidden">
+        <div className="bg-surface backdrop-blur rounded-2xl shadow-xl border border-line overflow-hidden">
           <div className="bg-gradient-to-br from-cyan-500 to-blue-600 px-6 py-8 text-center text-white">
             <Trophy className="mx-auto mb-3 h-12 w-12" />
             <h2 className="text-2xl font-bold">Aula concluída! 🎉</h2>
@@ -78,7 +78,7 @@ export function LessonClassify() {
           </div>
 
           <div className="p-5">
-            <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-700">
+            <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-secondary">
               <ListChecks className="h-4 w-4 text-cyan-600" />
               Revisão das respostas
             </p>
@@ -102,10 +102,10 @@ export function LessonClassify() {
                         {ok ? <Check className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
                       </span>
                       <div className="min-w-0">
-                        <p className="text-sm text-slate-700">
-                          <span className="font-semibold tabular-nums text-slate-400">{q.id}.</span> {q.pt}
+                        <p className="text-sm text-secondary">
+                          <span className="font-semibold tabular-nums text-faint">{q.id}.</span> {q.pt}
                         </p>
-                        <p className="mt-0.5 text-xs text-slate-500">
+                        <p className="mt-0.5 text-xs text-tertiary">
                           {ok ? (
                             <>Você acertou: <strong className="text-emerald-700">{CATEGORY_LABEL[q.answer]}</strong></>
                           ) : (
@@ -126,7 +126,7 @@ export function LessonClassify() {
               <button
                 type="button"
                 onClick={() => setShowResults(false)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-line bg-surface backdrop-blur-md px-4 py-3 font-medium text-secondary transition-colors hover:bg-surface-2"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Rever frases
@@ -134,7 +134,7 @@ export function LessonClassify() {
               <button
                 type="button"
                 onClick={handleReset}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 font-medium text-slate-700 transition-colors hover:bg-slate-50"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-line bg-surface backdrop-blur-md px-4 py-3 font-medium text-secondary transition-colors hover:bg-surface-2"
               >
                 <RotateCcw className="h-4 w-4" />
                 Refazer aula
@@ -161,14 +161,14 @@ export function LessonClassify() {
         <button
           type="button"
           onClick={goToHome}
-          className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-700"
+          className="mb-3 inline-flex items-center gap-1 text-sm font-medium text-tertiary hover:text-secondary"
         >
           <ChevronLeft className="h-4 w-4" />
           Início
         </button>
 
         <div className="flex items-center justify-between gap-3">
-          <h1 className="text-lg font-bold text-slate-800">{lesson.title}</h1>
+          <h1 className="text-lg font-bold text-primary">{lesson.title}</h1>
           <span className="shrink-0 rounded-full bg-cyan-100 px-3 py-1 text-xs font-bold tabular-nums text-cyan-700">
             {answeredCount}/{total}
           </span>
@@ -181,7 +181,7 @@ export function LessonClassify() {
             style={{ width: `${(answeredCount / total) * 100}%` }}
           />
         </div>
-        <div className="mt-1.5 flex items-center justify-between text-xs text-slate-500">
+        <div className="mt-1.5 flex items-center justify-between text-xs text-tertiary">
           <span className="inline-flex items-center gap-1 text-emerald-600">
             <Check className="h-3.5 w-3.5" /> {correctCount} acertos
           </span>
@@ -192,17 +192,17 @@ export function LessonClassify() {
       </div>
 
       {/* Card da pergunta */}
-      <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-5 shadow-xl backdrop-blur">
+      <div className="rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-xl backdrop-blur">
         <div className="mb-1 flex items-center justify-between">
           <span className="text-xs font-semibold uppercase tracking-wide text-cyan-600">
             Frase {index + 1} de {total}
           </span>
         </div>
-        <p className="mb-5 text-lg font-semibold leading-snug text-slate-800">{current.pt}</p>
+        <p className="mb-5 text-lg font-semibold leading-snug text-primary">{current.pt}</p>
 
         {/* Cabeçalho das opções + botão de dica */}
         <div className="mb-2.5 flex items-center justify-between">
-          <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <span className="text-xs font-semibold uppercase tracking-wide text-faint">
             Classifique a frase
           </span>
           <button
@@ -212,7 +212,7 @@ export function LessonClassify() {
             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition-colors ${
               showHints
                 ? 'border-amber-300 bg-amber-50 text-amber-700'
-                : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+                : 'border-line bg-surface backdrop-blur-md text-tertiary hover:bg-surface-2'
             }`}
           >
             <Lightbulb className="h-3.5 w-3.5" />
@@ -225,10 +225,10 @@ export function LessonClassify() {
           <div className="mb-3 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50/70 p-3 animate-fade-in">
             {CLASSIFY_CATEGORIES.map((cat) => (
               <div key={cat.id} className="flex items-start gap-2 text-xs">
-                <span className="flex h-5 min-w-[1.75rem] shrink-0 items-center justify-center rounded-md bg-white px-1 font-bold text-slate-700 ring-1 ring-slate-200">
+                <span className="flex h-5 min-w-[1.75rem] shrink-0 items-center justify-center rounded-md bg-surface px-1 font-bold text-secondary ring-1 ring-slate-200">
                   {cat.label}
                 </span>
-                <span className="pt-0.5 text-slate-600">{cat.hint}</span>
+                <span className="pt-0.5 text-secondary">{cat.hint}</span>
               </div>
             ))}
           </div>
@@ -243,13 +243,13 @@ export function LessonClassify() {
             let cls =
               'relative flex flex-col items-center justify-center gap-1 rounded-xl border py-3.5 text-center transition-all ';
             if (!isAnswered) {
-              cls += 'border-slate-200 bg-white hover:border-cyan-300 hover:bg-cyan-50/50 active:scale-[0.97]';
+              cls += 'border-line bg-surface backdrop-blur-md hover:border-cyan-300 hover:bg-cyan-50/50 active:scale-[0.97]';
             } else if (isTheCorrect) {
               cls += 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300';
             } else if (isThisChosen) {
               cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
             } else {
-              cls += 'border-slate-200 bg-white opacity-50';
+              cls += 'border-line bg-surface backdrop-blur-md opacity-50';
             }
 
             return (
@@ -267,7 +267,7 @@ export function LessonClassify() {
                       ? 'text-emerald-600'
                       : isAnswered && isThisChosen
                         ? 'text-red-600'
-                        : 'text-slate-700'
+                        : 'text-secondary'
                   }`}
                 >
                   {cat.label}
@@ -290,8 +290,8 @@ export function LessonClassify() {
               {isCorrect ? <Check className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
               {isCorrect ? 'Correto!' : `Resposta correta: ${CATEGORY_LABEL[current.answer]}`}
             </p>
-            <p className="text-sm italic text-slate-500">{current.en}</p>
-            <p className="mt-1.5 text-sm text-slate-700">{current.explanation}</p>
+            <p className="text-sm italic text-tertiary">{current.en}</p>
+            <p className="mt-1.5 text-sm text-secondary">{current.explanation}</p>
           </div>
         )}
       </div>
@@ -302,7 +302,7 @@ export function LessonClassify() {
           type="button"
           onClick={goPrev}
           disabled={index === 0}
-          className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex items-center gap-1.5 rounded-xl border border-line bg-surface backdrop-blur-md px-4 py-2.5 text-sm font-medium text-secondary transition-colors hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-40"
         >
           <ArrowLeft className="h-4 w-4" />
           Anterior
@@ -331,7 +331,7 @@ export function LessonClassify() {
       </div>
 
       {!allAnswered && index === total - 1 && (
-        <p className="mt-2 text-center text-xs text-slate-400">
+        <p className="mt-2 text-center text-xs text-faint">
           Ainda faltam {total - answeredCount} frase(s). Volte e responda para ver o resultado.
         </p>
       )}

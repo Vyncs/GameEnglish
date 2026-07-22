@@ -79,21 +79,21 @@ export function Account() {
       onClose={() => setShowSubscriptionModal(false)}
     />
     <div className="max-w-xl mx-auto px-4 py-8">
-      <div className="bg-white/80 backdrop-blur rounded-2xl shadow-xl border border-slate-200/60 p-8">
+      <div className="bg-surface backdrop-blur rounded-2xl shadow-xl border border-line p-8">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white">
             <User className="w-7 h-7" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-800">{user.name || 'Usuário'}</h2>
-            <p className="text-slate-500">{user.email}</p>
+            <h2 className="text-xl font-bold text-primary">{user.name || 'Usuário'}</h2>
+            <p className="text-tertiary">{user.email}</p>
           </div>
         </div>
 
-        <div className="border-t border-slate-200 pt-6 space-y-4">
-          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/80 px-4 py-3.5 shadow-sm">
+        <div className="border-t border-line pt-6 space-y-4">
+          <div className="rounded-2xl border border-line bg-surface-2 px-4 py-3.5 shadow-sm">
             <div className="flex items-center justify-between gap-3 w-full min-h-[2rem]">
-              <span className="text-sm font-semibold text-slate-800 shrink-0">Assinatura</span>
+              <span className="text-sm font-semibold text-primary shrink-0">Assinatura</span>
               {isPaying && (
                 <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-md shadow-cyan-500/20 shrink-0">
                   Assinante
@@ -105,7 +105,7 @@ export function Account() {
                 </span>
               )}
               {!isPaying && !isVip && (
-                <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-slate-700 bg-white border border-slate-200 shadow-sm shrink-0">
+                <span className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-semibold text-secondary bg-surface border border-line shadow-sm shrink-0">
                   Free
                 </span>
               )}
@@ -139,13 +139,14 @@ export function Account() {
           </div>
 
           {/* Seletor de tema */}
-          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/80 p-4">
+          <div className="rounded-2xl border border-line bg-surface-2 p-4">
             <div className="mb-1 flex items-center gap-2">
-              <Palette className="h-4 w-4 text-[var(--accent-text)]" />
-              <span className="text-sm font-semibold text-slate-800">Tema</span>
+              <Palette className="h-4 w-4 text-accent-text" />
+              <span className="text-sm font-semibold text-primary">Tema</span>
             </div>
-            <p className="mb-3 text-xs text-slate-500">
-              Muda a cor de destaque do app. As cores de cada seção continuam iguais.
+            <p className="mb-3 text-xs text-tertiary">
+              Muda o cenário de fundo, o modo claro/escuro e a cor de destaque. As cores de cada
+              seção (Início, Bricks, Pairs…) continuam iguais.
             </p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {THEMES.map((t) => {
@@ -157,8 +158,8 @@ export function Account() {
                     onClick={() => setTheme(t.id)}
                     className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition-all ${
                       active
-                        ? 'border-slate-400 bg-white shadow-sm ring-2 ring-slate-300'
-                        : 'border-slate-200 bg-white hover:border-slate-300'
+                        ? 'border-slate-400 bg-surface shadow-sm ring-2 ring-slate-300'
+                        : 'border-line bg-surface backdrop-blur-md hover:border-slate-300'
                     }`}
                     title={t.description}
                   >
@@ -171,8 +172,10 @@ export function Account() {
                       {t.emoji}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-xs font-semibold text-slate-800">{t.name}</span>
-                      {active && <span className="text-[10px] font-medium text-slate-500">em uso</span>}
+                      <span className="block truncate text-xs font-semibold text-primary">{t.name}</span>
+                      <span className="text-[10px] font-medium text-tertiary">
+                        {active ? 'em uso' : t.mode === 'dark' ? 'escuro' : 'claro'}
+                      </span>
                     </span>
                   </button>
                 );
@@ -196,7 +199,7 @@ export function Account() {
               type="button"
               onClick={handleSimulateClearSubscription}
               disabled={simulateLoading}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-300 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 disabled:opacity-60 text-sm"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-300 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 disabled:opacity-60 text-sm"
             >
               {simulateLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               Simular plano gratuito (dev)
@@ -205,7 +208,7 @@ export function Account() {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-50 transition-colors"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-slate-300 text-secondary rounded-xl hover:bg-surface-2 transition-colors"
           >
             <LogOut className="w-5 h-5" />
             Sair da conta

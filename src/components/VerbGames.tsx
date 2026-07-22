@@ -36,13 +36,13 @@ function GameHeader({ onBack, title, best }: { onBack: () => void; title: string
       <button
         type="button"
         onClick={onBack}
-        className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-700"
+        className="inline-flex items-center gap-1 text-sm font-medium text-tertiary hover:text-secondary"
       >
         <ChevronLeft className="h-4 w-4" />
         Etapas
       </button>
       <div className="flex items-center gap-2">
-        <span className="text-sm font-semibold text-slate-700">{title}</span>
+        <span className="text-sm font-semibold text-secondary">{title}</span>
         {best && (
           <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700">
             <Trophy className="h-3 w-3" />
@@ -80,7 +80,7 @@ export function MatchGame({ topic, onBack }: { topic: Topic; onBack: () => void 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <GameHeader onBack={onBack} title="Jogo · Associação" best={best ? fmtTime(best) : undefined} />
-      <p className="mb-3 text-sm text-slate-500">
+      <p className="mb-3 text-sm text-tertiary">
         Toque em um termo e depois no seu significado. Pareie os {MATCH_PAIRS} o mais rápido que conseguir!
       </p>
       <MatchRound key={gameId} topic={topic} onReplay={() => setGameId((g) => g + 1)} />
@@ -144,7 +144,7 @@ function MatchRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
         <button
           type="button"
           onClick={onReplay}
-          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           <RotateCcw className="h-4 w-4" />
           Jogar de novo
@@ -155,8 +155,8 @@ function MatchRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
 
   return (
     <>
-      <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold tabular-nums text-slate-600">
-        <Timer className="h-4 w-4 text-[var(--accent)]" />
+      <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-sm font-semibold tabular-nums text-secondary">
+        <Timer className="h-4 w-4 text-accent" />
         {(elapsed / 1000).toFixed(1)}s
       </div>
       <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
@@ -167,8 +167,8 @@ function MatchRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
             'flex min-h-[64px] items-center justify-center rounded-xl border px-2 py-3 text-center text-sm font-medium transition-all ';
           if (t.matched) cls += 'border-emerald-200 bg-emerald-50 text-emerald-300 opacity-40';
           else if (isWrong) cls += 'border-red-400 bg-red-50 text-red-600 animate-shake';
-          else if (isSel) cls += 'border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent-text)] ring-2 ring-[var(--accent-border)]';
-          else cls += 'border-slate-200 bg-white text-slate-700 hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]';
+          else if (isSel) cls += 'border-[var(--accent)] bg-accent-soft text-accent-text ring-2 ring-accent-line';
+          else cls += 'border-line bg-surface backdrop-blur-md text-secondary hover:border-accent-line hover:bg-accent-soft';
           return (
             <button key={t.key} type="button" disabled={t.matched} onClick={() => handleTap(t)} className={cls}>
               {t.label}
@@ -193,7 +193,7 @@ export function BlitzGame({ topic, onBack }: { topic: Topic; onBack: () => void 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6">
       <GameHeader onBack={onBack} title="Jogo · Blitz" best={best !== undefined ? `${best} pts` : undefined} />
-      <p className="mb-3 text-sm text-slate-500">
+      <p className="mb-3 text-sm text-tertiary">
         Acerte o máximo de significados em {BLITZ_SECONDS} segundos. Cada acerto = 1 ponto.
       </p>
       <BlitzRound key={gameId} topic={topic} onReplay={() => setGameId((g) => g + 1)} />
@@ -236,14 +236,14 @@ function BlitzRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
 
   if (done) {
     return (
-      <div className="rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] p-6 text-center">
-        <Zap className="mx-auto h-12 w-12 text-[var(--accent)]" />
-        <p className="mt-2 text-lg font-bold text-[var(--accent-text)]">Tempo!</p>
-        <p className="text-3xl font-extrabold tabular-nums text-slate-900">{score} pts</p>
+      <div className="rounded-2xl border border-accent-line bg-accent-soft p-6 text-center">
+        <Zap className="mx-auto h-12 w-12 text-accent" />
+        <p className="mt-2 text-lg font-bold text-accent-text">Tempo!</p>
+        <p className="text-3xl font-extrabold tabular-nums text-primary">{score} pts</p>
         <button
           type="button"
           onClick={onReplay}
-          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           <RotateCcw className="h-4 w-4" />
           Jogar de novo
@@ -257,32 +257,32 @@ function BlitzRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
       <div className="mb-3 flex items-center justify-between">
         <span
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold tabular-nums ${
-            timeLeft <= 10 ? 'bg-red-100 text-red-600' : 'bg-slate-100 text-slate-600'
+            timeLeft <= 10 ? 'bg-red-100 text-red-600' : 'bg-surface-2 text-secondary'
           }`}
         >
           <Timer className="h-4 w-4" />
           {timeLeft}s
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-sm font-bold tabular-nums text-[var(--accent-text)]">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-sm font-bold tabular-nums text-accent-text">
           <Zap className="h-4 w-4" />
           {score}
         </span>
       </div>
 
       <div
-        className={`rounded-2xl border bg-white p-5 shadow-xl transition-colors ${
-          flash === 'ok' ? 'border-emerald-300' : flash === 'no' ? 'border-red-300' : 'border-slate-200/60'
+        className={`rounded-2xl border bg-surface p-5 shadow-xl transition-colors ${
+          flash === 'ok' ? 'border-emerald-300' : flash === 'no' ? 'border-red-300' : 'border-line'
         }`}
       >
-        <p className="text-xs font-semibold uppercase tracking-wide text-[var(--accent-text)]">Significado de:</p>
-        <p className="mt-1 mb-4 text-2xl font-extrabold tracking-tight text-slate-900">{item.base}</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Significado de:</p>
+        <p className="mt-1 mb-4 text-2xl font-extrabold tracking-tight text-primary">{item.base}</p>
         <div className="grid gap-2.5 sm:grid-cols-2">
           {options.map((opt) => (
             <button
               key={opt}
               type="button"
               onClick={() => pick(opt)}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-medium text-slate-700 transition-all hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)] active:scale-[0.99]"
+              className="rounded-xl border border-line bg-surface backdrop-blur-md px-4 py-3 text-left text-sm font-medium text-secondary transition-all hover:border-accent-line hover:bg-accent-soft active:scale-[0.99]"
             >
               {opt}
             </button>
@@ -325,7 +325,7 @@ export function MemoryGame({ topic, onBack }: { topic: Topic; onBack: () => void
         title="Jogo · Memória"
         best={best !== undefined ? `${best} jogadas` : undefined}
       />
-      <p className="mb-3 text-sm text-slate-500">
+      <p className="mb-3 text-sm text-tertiary">
         Vire as cartas e ache os pares termo ↔ significado. Quanto menos jogadas, melhor!
       </p>
       <MemoryRound key={gameId} topic={topic} onReplay={() => setGameId((g) => g + 1)} />
@@ -389,7 +389,7 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
         <button
           type="button"
           onClick={onReplay}
-          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
+          className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-5 py-2.5 text-sm font-semibold text-white hover:opacity-90"
         >
           <RotateCcw className="h-4 w-4" />
           Jogar de novo
@@ -402,20 +402,20 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
     <>
       {isPreviewing ? (
         <div className="mb-3 flex flex-col items-start gap-1.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-strong)] px-4 py-1.5 text-sm font-bold text-white shadow-md shadow-slate-900/10">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-accent to-accent-strong px-4 py-1.5 text-sm font-bold text-white shadow-md shadow-slate-900/10">
             <Timer className="h-4 w-4" />
             Memorize! {previewLeft}s
           </span>
-          <div className="h-1.5 w-40 overflow-hidden rounded-full bg-[var(--accent-soft)]">
+          <div className="h-1.5 w-40 overflow-hidden rounded-full bg-accent-soft">
             <div
-              className="h-full rounded-full bg-[var(--accent)] transition-all duration-1000 ease-linear"
+              className="h-full rounded-full bg-accent transition-all duration-1000 ease-linear"
               style={{ width: `${(previewLeft / MEMORY_PREVIEW_SECONDS) * 100}%` }}
             />
           </div>
         </div>
       ) : (
-        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-sm font-semibold tabular-nums text-slate-600">
-          <Timer className="h-4 w-4 text-[var(--accent)]" />
+        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-sm font-semibold tabular-nums text-secondary">
+          <Timer className="h-4 w-4 text-accent" />
           {moves} jogadas
         </div>
       )}
@@ -433,8 +433,8 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
                 isMatched
                   ? 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
                   : isUp
-                    ? 'border-[var(--accent-border)] bg-white text-slate-800 ring-2 ring-[var(--accent-border)]'
-                    : 'border-transparent bg-gradient-to-br from-[var(--accent)] to-[var(--accent-strong)] text-lg text-white hover:opacity-90'
+                    ? 'border-accent-line bg-surface text-primary ring-2 ring-accent-line'
+                    : 'border-transparent bg-gradient-to-br from-accent to-accent-strong text-lg text-white hover:opacity-90'
               }`}
             >
               {!isUp ? (

@@ -1,20 +1,38 @@
-// Temas de acento do app (estilo RPG).
+// Temas do app (estilo RPG), com modo claro e escuro.
 //
-// A cor de ACENTO é a "cor da marca": aparece em botões principais, barras de
-// progresso, destaques e na Sessão de hoje. As cores de SEÇÃO (Início ciano,
-// Bricks âmbar, Pairs rosa, Readers índigo) NÃO mudam — elas identificam cada
-// área do app e continuam iguais em todos os temas.
+// Cada tema define TRÊS coisas:
+//   1. scene    — o wallpaper animado (gradientes + partículas)
+//   2. colors   — a cor de acento (botões, progresso, destaques)
+//   3. surfaces — cards, textos e bordas (é o que permite o modo escuro)
+//
+// As cores de SEÇÃO (Início ciano, Bricks âmbar, Pairs rosa, Readers índigo)
+// e as semânticas (acerto verde, erro vermelho) NÃO mudam com o tema.
 
-/** Cenário de fundo animado de cada tema. */
+export type ThemeMode = 'light' | 'dark';
+
 export interface ThemeScene {
-  /** Camadas de gradiente que formam o "wallpaper" (claro, para o texto seguir legível). */
   background: string;
-  /** Direção das partículas: sobem (brasa, fagulha) ou caem (neve, folha). */
   motion: 'rise' | 'fall';
-  /** Cor das partículas. */
   particle: string;
-  /** Brilho decorativo no topo da tela. */
   glow: string;
+}
+
+/** Superfícies e textos — trocá-las é o que faz o modo escuro funcionar. */
+export interface ThemeSurfaces {
+  /** Fundo dos cards. */
+  surface: string;
+  /** Fundo de blocos internos / insets. */
+  surface2: string;
+  /** Bordas. */
+  border: string;
+  /** Texto principal (títulos). */
+  text1: string;
+  /** Texto secundário (corpo). */
+  text2: string;
+  /** Texto terciário (legendas). */
+  text3: string;
+  /** Texto apagado (placeholders). */
+  text4: string;
 }
 
 export interface AppTheme {
@@ -22,36 +40,55 @@ export interface AppTheme {
   name: string;
   emoji: string;
   description: string;
+  mode: ThemeMode;
   scene: ThemeScene;
   colors: {
-    /** Cor principal do acento. */
     accent: string;
-    /** Tom mais fechado — usado no fim dos gradientes e em hover. */
     accentStrong: string;
-    /** Fundo suave (tint) para blocos e selos. */
     accentSoft: string;
-    /** Borda suave. */
     accentBorder: string;
-    /** Texto de acento sobre fundo claro (precisa de contraste). */
     accentText: string;
   };
+  surfaces: ThemeSurfaces;
 }
+
+/** Superfícies claras — o visual "caderno" original. */
+const LIGHT_SURFACES: ThemeSurfaces = {
+  surface: 'rgba(255, 255, 255, 0.88)',
+  surface2: 'rgba(248, 250, 252, 0.9)',
+  border: 'rgba(226, 232, 240, 0.9)',
+  text1: '#0f172a',
+  text2: '#334155',
+  text3: '#64748b',
+  text4: '#94a3b8',
+};
+
+/** Superfícies escuras — vidro fosco sobre o cenário. */
+const DARK_SURFACES: ThemeSurfaces = {
+  surface: 'rgba(15, 23, 42, 0.62)',
+  surface2: 'rgba(15, 23, 42, 0.42)',
+  border: 'rgba(148, 163, 184, 0.20)',
+  text1: '#f1f5f9',
+  text2: '#cbd5e1',
+  text3: '#94a3b8',
+  text4: '#64748b',
+};
 
 export const THEMES: AppTheme[] = [
   {
-    id: 'arcano',
-    name: 'Arcano',
-    emoji: '🔮',
-    description: 'Violeta místico — o tema clássico',
+    id: 'classico',
+    name: 'Clássico',
+    emoji: '📓',
+    description: 'Claro e limpo — o visual de caderno',
+    mode: 'light',
     scene: {
       background:
         'radial-gradient(1100px 620px at 12% -12%, #ede9fe 0%, transparent 62%),' +
         'radial-gradient(900px 520px at 96% -4%, #e0e7ff 0%, transparent 58%),' +
-        'radial-gradient(700px 480px at 50% 108%, #f3e8ff 0%, transparent 60%),' +
         'linear-gradient(180deg, #fbfaff 0%, #f4f1fe 100%)',
       motion: 'rise',
-      particle: 'rgba(139, 92, 246, 0.55)',
-      glow: 'rgba(139, 92, 246, 0.18)',
+      particle: 'rgba(139, 92, 246, 0.45)',
+      glow: 'rgba(139, 92, 246, 0.16)',
     },
     colors: {
       accent: '#8b5cf6',
@@ -60,90 +97,122 @@ export const THEMES: AppTheme[] = [
       accentBorder: '#ddd6fe',
       accentText: '#6d28d9',
     },
+    surfaces: LIGHT_SURFACES,
+  },
+  {
+    id: 'arcano',
+    name: 'Arcano',
+    emoji: '🔮',
+    description: 'Noite mística e fagulhas de magia',
+    mode: 'dark',
+    scene: {
+      background:
+        'radial-gradient(1100px 620px at 15% -10%, rgba(139, 92, 246, 0.28) 0%, transparent 62%),' +
+        'radial-gradient(900px 520px at 92% 4%, rgba(79, 70, 229, 0.22) 0%, transparent 58%),' +
+        'radial-gradient(760px 520px at 50% 108%, rgba(168, 85, 247, 0.18) 0%, transparent 62%),' +
+        'linear-gradient(180deg, #0e0b1a 0%, #080611 100%)',
+      motion: 'rise',
+      particle: 'rgba(196, 181, 253, 0.9)',
+      glow: 'rgba(139, 92, 246, 0.30)',
+    },
+    colors: {
+      accent: '#a78bfa',
+      accentStrong: '#6d28d9',
+      accentSoft: 'rgba(139, 92, 246, 0.16)',
+      accentBorder: 'rgba(167, 139, 250, 0.38)',
+      accentText: '#c4b5fd',
+    },
+    surfaces: DARK_SURFACES,
   },
   {
     id: 'floresta',
     name: 'Floresta Élfica',
     emoji: '🌿',
-    description: 'Verde esmeralda da mata antiga',
+    description: 'Mata noturna com vaga-lumes',
+    mode: 'dark',
     scene: {
       background:
-        'radial-gradient(1100px 620px at 10% -12%, #d1fae5 0%, transparent 62%),' +
-        'radial-gradient(900px 520px at 98% 2%, #ccfbf1 0%, transparent 58%),' +
-        'radial-gradient(760px 500px at 45% 110%, #ecfccb 0%, transparent 62%),' +
-        'linear-gradient(180deg, #f7fdfa 0%, #eefaf3 100%)',
+        'radial-gradient(1100px 620px at 12% -10%, rgba(16, 185, 129, 0.24) 0%, transparent 62%),' +
+        'radial-gradient(900px 520px at 95% 6%, rgba(20, 184, 166, 0.20) 0%, transparent 58%),' +
+        'radial-gradient(780px 520px at 45% 110%, rgba(132, 204, 22, 0.16) 0%, transparent 62%),' +
+        'linear-gradient(180deg, #071410 0%, #040c0a 100%)',
       motion: 'rise',
-      particle: 'rgba(16, 185, 129, 0.5)',
-      glow: 'rgba(16, 185, 129, 0.16)',
+      particle: 'rgba(190, 242, 100, 0.95)',
+      glow: 'rgba(16, 185, 129, 0.28)',
     },
     colors: {
-      accent: '#10b981',
-      accentStrong: '#0f766e',
-      accentSoft: '#ecfdf5',
-      accentBorder: '#a7f3d0',
-      accentText: '#047857',
+      accent: '#34d399',
+      accentStrong: '#047857',
+      accentSoft: 'rgba(16, 185, 129, 0.16)',
+      accentBorder: 'rgba(52, 211, 153, 0.38)',
+      accentText: '#6ee7b7',
     },
+    surfaces: DARK_SURFACES,
   },
   {
     id: 'gelo',
     name: 'Reino de Gelo',
     emoji: '❄️',
-    description: 'Azul glacial das terras do norte',
+    description: 'Noite glacial e nevasca',
+    mode: 'dark',
     scene: {
       background:
-        'radial-gradient(1100px 620px at 14% -12%, #cffafe 0%, transparent 62%),' +
-        'radial-gradient(900px 520px at 96% 0%, #dbeafe 0%, transparent 58%),' +
-        'radial-gradient(720px 480px at 55% 108%, #e0f2fe 0%, transparent 60%),' +
-        'linear-gradient(180deg, #f8fdff 0%, #eef7fd 100%)',
+        'radial-gradient(1100px 620px at 18% -10%, rgba(56, 189, 248, 0.26) 0%, transparent 62%),' +
+        'radial-gradient(900px 520px at 92% 2%, rgba(59, 130, 246, 0.22) 0%, transparent 58%),' +
+        'radial-gradient(760px 520px at 55% 108%, rgba(165, 243, 252, 0.14) 0%, transparent 62%),' +
+        'linear-gradient(180deg, #071523 0%, #040c15 100%)',
       motion: 'fall',
       particle: 'rgba(255, 255, 255, 0.95)',
-      glow: 'rgba(6, 182, 212, 0.16)',
+      glow: 'rgba(56, 189, 248, 0.30)',
     },
     colors: {
-      accent: '#06b6d4',
+      accent: '#38bdf8',
       accentStrong: '#1d4ed8',
-      accentSoft: '#ecfeff',
-      accentBorder: '#a5f3fc',
-      accentText: '#0e7490',
+      accentSoft: 'rgba(56, 189, 248, 0.16)',
+      accentBorder: 'rgba(56, 189, 248, 0.38)',
+      accentText: '#7dd3fc',
     },
+    surfaces: DARK_SURFACES,
   },
   {
     id: 'masmorra',
     name: 'Masmorra',
     emoji: '🔥',
-    description: 'Brasa e ferro das profundezas',
+    description: 'Pedra, tocha e brasa',
+    mode: 'dark',
     scene: {
       background:
-        'radial-gradient(1000px 600px at 50% -14%, #fee2e2 0%, transparent 60%),' +
-        'radial-gradient(880px 520px at 6% 4%, #ffedd5 0%, transparent 58%),' +
-        'radial-gradient(760px 500px at 96% 106%, #fef3c7 0%, transparent 62%),' +
-        'linear-gradient(180deg, #fdf9f7 0%, #f7efec 100%)',
+        'radial-gradient(1000px 600px at 50% -12%, rgba(249, 115, 22, 0.26) 0%, transparent 60%),' +
+        'radial-gradient(860px 520px at 6% 8%, rgba(239, 68, 68, 0.20) 0%, transparent 58%),' +
+        'radial-gradient(780px 520px at 96% 104%, rgba(217, 119, 6, 0.18) 0%, transparent 62%),' +
+        'linear-gradient(180deg, #180f0b 0%, #0c0705 100%)',
       motion: 'rise',
-      particle: 'rgba(239, 68, 68, 0.5)',
-      glow: 'rgba(239, 68, 68, 0.16)',
+      particle: 'rgba(253, 186, 116, 0.95)',
+      glow: 'rgba(249, 115, 22, 0.30)',
     },
     colors: {
-      accent: '#ef4444',
-      accentStrong: '#991b1b',
-      accentSoft: '#fef2f2',
-      accentBorder: '#fecaca',
-      accentText: '#b91c1c',
+      accent: '#fb923c',
+      accentStrong: '#b91c1c',
+      accentSoft: 'rgba(249, 115, 22, 0.16)',
+      accentBorder: 'rgba(251, 146, 60, 0.38)',
+      accentText: '#fdba74',
     },
+    surfaces: DARK_SURFACES,
   },
   {
     id: 'pergaminho',
     name: 'Pergaminho',
     emoji: '📜',
-    description: 'Ouro velho dos grimórios',
+    description: 'Ouro velho dos grimórios (claro)',
+    mode: 'light',
     scene: {
       background:
         'radial-gradient(1000px 600px at 16% -10%, #fef3c7 0%, transparent 60%),' +
         'radial-gradient(880px 520px at 98% 6%, #fde68a 0%, transparent 52%),' +
-        'radial-gradient(760px 500px at 48% 110%, #fef9c3 0%, transparent 60%),' +
-        'linear-gradient(180deg, #fdfaf1 0%, #f8f1de 100%)',
+        'linear-gradient(180deg, #fdfaf1 0%, #f4e9d0 100%)',
       motion: 'rise',
-      particle: 'rgba(180, 83, 9, 0.35)',
-      glow: 'rgba(217, 119, 6, 0.16)',
+      particle: 'rgba(180, 83, 9, 0.4)',
+      glow: 'rgba(217, 119, 6, 0.18)',
     },
     colors: {
       accent: '#d97706',
@@ -152,10 +221,16 @@ export const THEMES: AppTheme[] = [
       accentBorder: '#fde68a',
       accentText: '#b45309',
     },
+    surfaces: {
+      ...LIGHT_SURFACES,
+      surface: 'rgba(255, 253, 246, 0.9)',
+      surface2: 'rgba(253, 246, 227, 0.9)',
+      border: 'rgba(217, 180, 120, 0.35)',
+    },
   },
 ];
 
-export const DEFAULT_THEME_ID = 'arcano';
+export const DEFAULT_THEME_ID = 'classico';
 
 export const findTheme = (id: string | null | undefined): AppTheme =>
   THEMES.find((t) => t.id === id) ?? THEMES[0];
@@ -163,9 +238,22 @@ export const findTheme = (id: string | null | undefined): AppTheme =>
 /** Aplica as variáveis CSS do tema no elemento raiz. */
 export function applyTheme(theme: AppTheme) {
   const root = document.documentElement;
-  root.style.setProperty('--accent', theme.colors.accent);
-  root.style.setProperty('--accent-strong', theme.colors.accentStrong);
-  root.style.setProperty('--accent-soft', theme.colors.accentSoft);
-  root.style.setProperty('--accent-border', theme.colors.accentBorder);
-  root.style.setProperty('--accent-text', theme.colors.accentText);
+  const { colors: c, surfaces: s } = theme;
+
+  root.style.setProperty('--accent', c.accent);
+  root.style.setProperty('--accent-strong', c.accentStrong);
+  root.style.setProperty('--accent-soft', c.accentSoft);
+  root.style.setProperty('--accent-border', c.accentBorder);
+  root.style.setProperty('--accent-text', c.accentText);
+
+  root.style.setProperty('--surface', s.surface);
+  root.style.setProperty('--surface-2', s.surface2);
+  root.style.setProperty('--surface-border', s.border);
+  root.style.setProperty('--text-1', s.text1);
+  root.style.setProperty('--text-2', s.text2);
+  root.style.setProperty('--text-3', s.text3);
+  root.style.setProperty('--text-4', s.text4);
+
+  // Permite ajustes finos em CSS (ex.: barra de rolagem, sombras).
+  root.dataset.mode = theme.mode;
 }

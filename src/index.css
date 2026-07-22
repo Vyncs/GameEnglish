@@ -60,14 +60,43 @@
   --motion-card:  420ms cubic-bezier(0.2, 0.8, 0.2, 1);
   --motion-panel: 320ms cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Acento do tema (tema "Arcano" por padrão).
-     Sobrescrito em runtime pelo seletor de temas — ver data/themes.ts.
-     As cores de SEÇÃO (Início, Bricks, Pairs, Readers) não usam estas vars. */
+  /* ---- Tokens do tema (valores padrão = tema "Clássico", claro) ----
+     Todos são sobrescritos em runtime pelo seletor de temas (data/themes.ts).
+     As cores de SEÇÃO (Início, Bricks, Pairs, Readers) e as semânticas
+     (acerto verde / erro vermelho) NÃO usam estas vars de propósito. */
+
+  /* Acento — botões, progresso, destaques */
   --accent:        #8b5cf6;
   --accent-strong: #4f46e5;
   --accent-soft:   #f5f3ff;
   --accent-border: #ddd6fe;
   --accent-text:   #6d28d9;
+
+  /* Superfícies e texto — é o que permite o modo escuro */
+  --surface:        rgba(255, 255, 255, 0.88);
+  --surface-2:      rgba(248, 250, 252, 0.9);
+  --surface-border: rgba(226, 232, 240, 0.9);
+  --text-1:         #0f172a;
+  --text-2:         #334155;
+  --text-3:         #64748b;
+  --text-4:         #94a3b8;
+}
+
+/* Expõe os tokens como utilitários do Tailwind v4:
+   bg-surface, text-primary, border-line, bg-accent, text-accent… */
+@theme inline {
+  --color-surface:    var(--surface);
+  --color-surface-2:  var(--surface-2);
+  --color-line:       var(--surface-border);
+  --color-primary:    var(--text-1);
+  --color-secondary:  var(--text-2);
+  --color-tertiary:   var(--text-3);
+  --color-faint:      var(--text-4);
+  --color-accent:        var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft:   var(--accent-soft);
+  --color-accent-line:   var(--accent-border);
+  --color-accent-text:   var(--accent-text);
 }
 
 /* ==========================================

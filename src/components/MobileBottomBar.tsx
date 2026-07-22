@@ -55,7 +55,7 @@ export function MobileBottomBar() {
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-xl border-t border-slate-200/60 safe-area-bottom">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface backdrop-blur-xl border-t border-line safe-area-bottom">
       <div className="flex items-stretch justify-around px-2 h-16">
         {items.map((item) => {
           const isActive = item.viewModes.includes(viewMode);

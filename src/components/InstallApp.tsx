@@ -9,13 +9,13 @@ import logoMark from '../assets/logotipo-educacional-raio-tablet.png';
 
 function Benefit({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/70 px-4 py-3">
+    <div className="flex items-start gap-3 rounded-2xl border border-line bg-surface-2/70 px-4 py-3">
       <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white">
         {icon}
       </div>
       <div>
-        <p className="text-sm font-semibold text-slate-800">{title}</p>
-        <p className="text-xs text-slate-500">{desc}</p>
+        <p className="text-sm font-semibold text-primary">{title}</p>
+        <p className="text-xs text-tertiary">{desc}</p>
       </div>
     </div>
   );
@@ -27,7 +27,7 @@ function Step({ n, children }: { n: number; children: React.ReactNode }) {
       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-sm font-bold text-white">
         {n}
       </span>
-      <span className="pt-0.5 text-sm text-slate-700">{children}</span>
+      <span className="pt-0.5 text-sm text-secondary">{children}</span>
     </li>
   );
 }
@@ -52,7 +52,7 @@ export function InstallApp() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-8">
-      <div className="bg-white/80 backdrop-blur rounded-2xl shadow-xl border border-slate-200/60 overflow-hidden">
+      <div className="bg-surface backdrop-blur rounded-2xl shadow-xl border border-line overflow-hidden">
         {/* Cabeçalho */}
         <div className="relative bg-gradient-to-br from-cyan-500 to-blue-600 px-6 py-7 text-white">
           <div className="flex items-center gap-4">
@@ -114,8 +114,8 @@ export function InstallApp() {
 
               {/* iOS Safari — passo a passo manual */}
               {platform === 'ios' && (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
-                  <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-800">
+                <div className="rounded-2xl border border-line bg-surface-2 p-5">
+                  <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-primary">
                     <Share className="h-4 w-4 text-cyan-600" />
                     No iPhone/iPad (Safari):
                   </p>
@@ -143,8 +143,8 @@ export function InstallApp() {
 
               {/* Android sem prompt disponível ainda — instruções pelo menu do Chrome */}
               {platform === 'android' && !canPrompt && (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
-                  <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-800">
+                <div className="rounded-2xl border border-line bg-surface-2 p-5">
+                  <p className="mb-4 flex items-center gap-2 text-sm font-semibold text-primary">
                     <Chrome className="h-4 w-4 text-cyan-600" />
                     No Android (Chrome):
                   </p>
@@ -163,12 +163,12 @@ export function InstallApp() {
 
               {/* Desktop / outros navegadores sem prompt */}
               {platform !== 'ios' && platform !== 'android' && !canPrompt && (
-                <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5">
-                  <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-800">
+                <div className="rounded-2xl border border-line bg-surface-2 p-5">
+                  <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-primary">
                     <Sparkles className="h-4 w-4 text-cyan-600" />
                     Como instalar
                   </p>
-                  <p className="text-sm text-slate-600">
+                  <p className="text-sm text-secondary">
                     Abra este site no <strong>Chrome</strong> ou <strong>Edge</strong> e procure o ícone de
                     instalar <Download className="inline h-4 w-4 text-cyan-600 align-text-bottom" /> na barra de
                     endereço, ou acesse pelo celular para adicionar à tela inicial.
