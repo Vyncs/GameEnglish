@@ -148,15 +148,12 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Cenário do tema aplicado no próprio body — assim ele SEMPRE pinta.
-   (Antes ficava num elemento com z-index negativo, que era coberto.) */
+/* Cor de base sólida por trás do cenário — evita flash claro enquanto a
+   imagem do wallpaper carrega. O cenário em si é desenhado pelo
+   ThemeBackground (fixed, z-0), e não aqui, porque background-attachment:
+   fixed é problemático no Safari do iOS. */
 body {
-  background-color: var(--paper);
-  background-image: var(--scene-bg, none);
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
+  background-color: var(--scene-base, var(--paper));
   min-height: 100vh;
 }
 
