@@ -1,27 +1,47 @@
 # Wallpapers dos temas
 
-Coloque aqui **uma imagem por tema**, com estes nomes exatos:
+Cada tema usa **duas** imagens: uma larga (desktop) e uma em pé (celular).
+Sem a versão de celular, a larga é usada — mas o `cover` corta **~74% da
+largura**, e a composição (pilares nas bordas, etc.) desaparece.
 
-| Arquivo | Tema |
-|---|---|
-| `masmorra.jpg` (ou `.png`) | 🔥 Masmorra |
-| `floresta.jpg` | 🌿 Floresta Élfica |
-| `gelo.jpg` | ❄️ Reino de Gelo |
-| `arcano.jpg` | 🔮 Arcano |
-| `pergaminho.jpg` | 📜 Pergaminho |
+## Nomes dos arquivos
 
-Depois de colocar, avise para eu converter para **WebP otimizado** e ligar em
-`src/data/themes.ts` (campo `scene.image`).
+| Tema | Desktop (16:9) | Celular (9:16) |
+|---|---|---|
+| 🔥 Masmorra | `masmorra.jpg` | `masmorra-mobile.jpg` |
+| 🌿 Floresta | `floresta.jpg` | `floresta-mobile.jpg` |
+| ❄️ Gelo | `gelo.jpg` | `gelo-mobile.jpg` |
+| 🔮 Arcano | `arcano.jpg` | `arcano-mobile.jpg` |
 
-## O que faz uma boa imagem aqui
+## Especificações
 
-- **Horizontal** (16:9 ou mais largo). Ela é cortada com `cover`.
-- **Escura e de baixo contraste no centro** — o conteúdo do app fica por cima.
-  Cenas com o "assunto" nas bordas funcionam melhor que com foco no meio.
-- **Sem texto** na imagem.
-- Resolução ~1920×1080 já basta; eu comprimo depois (alvo: 150–300 KB).
+|  | Desktop | Celular |
+|---|---|---|
+| Proporção | **16:9** | **9:16** (vertical) |
+| Tamanho | 1920×1080 | **1080×1920** |
+| Peso alvo | 150–300 KB | 150–250 KB |
+
+## Composição (é o que mais importa)
+
+Na versão **de celular**, lembre que o conteúdo do app ocupa o meio da tela:
+
+- **Interesse na parte de cima** — arcos, teto, tochas, copa das árvores.
+  É a faixa que fica visível atrás do cabeçalho.
+- **Meio escuro e vazio** — é onde ficam os cards. Detalhe aqui vira poluição.
+- **Nada importante nas laterais** — o corte lateral ainda existe, só que menor.
+- **Escura no geral** e sem texto na imagem.
+
+Composições que funcionam muito bem em retrato: corredor com ponto de fuga,
+floresta vista de baixo (troncos subindo), torre/castelo ao fundo.
+
+## Ao gerar por IA
+
+Peça explicitamente o enquadramento vertical, por exemplo:
+
+> vertical portrait 9:16 phone wallpaper, dark dungeon corridor, torches near
+> the top, empty dark floor in the middle, cinematic, no text
 
 ## Licença
 
-Se o app é pago, use imagens que você gerou (IA) ou de banco com licença
-comercial. Imagem achada em busca de imagens é risco jurídico real.
+Se o app é pago, use imagens que você gerou ou de banco com licença
+comercial. Imagem achada em busca é risco jurídico real.
