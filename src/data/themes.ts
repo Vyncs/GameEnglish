@@ -21,6 +21,11 @@ export interface ThemeScene {
    * para o texto continuar legível.
    */
   image?: string;
+  /**
+   * Versão RETRATO (9:16) para celular. Sem ela, a imagem larga é usada e
+   * o `cover` corta ~74% da largura — as bordas da composição somem.
+   */
+  imageMobile?: string;
 }
 
 /** Superfícies e textos — trocá-las é o que faz o modo escuro funcionar. */
@@ -259,10 +264,15 @@ export function applyTheme(theme: AppTheme) {
 
   // Cenário aplicado no <body> (e não num elemento com z-index negativo, que
   // era pintado atrás do fundo do body e não aparecia).
-  const layers = theme.scene.image
-    ? `${theme.scene.background}, url("${theme.scene.image}")`
-    : theme.scene.background;
-  root.style.setProperty('--scene-bg', layers);
+  const withImage = (img?: string) =>
+    img ? `${theme.scene.background}, url("${img}")` : theme.scene.background;
+
+  root.style.setProperty('--scene-bg', withImage(theme.scene.image));
+  // Se não houver versão retrato, cai na larga (melhor que nada).
+  root.style.setProperty(
+    '--scene-bg-mobile',
+    withImage(theme.scene.imageMobile ?? theme.scene.image),
+  );
   root.style.setProperty('--scene-base', theme.mode === 'dark' ? '#07060a' : '#faf7f2');
 
   // Permite ajustes finos em CSS (ex.: barra de rolagem, contraste no escuro).

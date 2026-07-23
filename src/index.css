@@ -82,6 +82,13 @@
   --text-4:         #94a3b8;
 }
 
+/* Cenário efetivo: no celular usa a versão retrato (se existir), porque a
+   imagem larga perde ~74% da composição no corte do `cover`. */
+:root { --scene-active: var(--scene-bg); }
+@media (max-width: 768px) {
+  :root { --scene-active: var(--scene-bg-mobile, var(--scene-bg)); }
+}
+
 /* Expõe os tokens como utilitários do Tailwind v4:
    bg-surface, text-primary, border-line, bg-accent, text-accent… */
 @theme inline {
