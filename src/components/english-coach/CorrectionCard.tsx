@@ -15,7 +15,7 @@ export function CorrectionCard({ correction, explanation, naturalExample }: Corr
   if (!hasAny) return null;
 
   return (
-    <div className="mt-2 rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50 via-yellow-50/60 to-amber-50/40 p-3 sm:p-4 shadow-sm animate-fade-in">
+    <div className="mt-2 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 via-yellow-50/60 to-amber-50/40 p-3 sm:p-4 shadow-sm animate-fade-in">
       {correction && (
         <div className="flex items-start gap-2 text-amber-900">
           <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />

@@ -50,7 +50,7 @@ export function VoiceConversationPanel({
 }: VoiceConversationPanelProps) {
   if (!isSupported) {
     return (
-      <div className="rounded-3xl border border-amber-200 bg-amber-50/60 p-4 text-sm text-amber-900">
+      <div className="rounded-3xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
         <div className="font-semibold mb-1">Modo voz indisponível</div>
         <p className="m-0 text-amber-800/80 text-xs leading-relaxed">
           Seu navegador não suporta reconhecimento de voz nativo. Use Chrome ou Edge no desktop, ou
@@ -61,7 +61,7 @@ export function VoiceConversationPanel({
   }
 
   return (
-    <div className="rounded-3xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/60 via-teal-50/40 to-cyan-50/40 p-4 shadow-sm">
+    <div className="rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50/60 via-teal-50/40 to-cyan-50/40 p-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div>
           <div className="text-xs font-semibold uppercase tracking-wider text-emerald-800">
@@ -119,7 +119,7 @@ export function VoiceConversationPanel({
 
       {/* Interim transcript */}
       {status === 'listening' && interimTranscript && (
-        <div className="mt-3 rounded-2xl bg-surface border border-cyan-200/60 px-3 py-2 text-sm text-secondary">
+        <div className="mt-3 rounded-2xl bg-surface border border-cyan-200 px-3 py-2 text-sm text-secondary">
           <div className="text-[10px] uppercase tracking-wider font-semibold text-cyan-700 mb-0.5">
             Você está dizendo
           </div>

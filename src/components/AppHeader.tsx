@@ -163,7 +163,7 @@ export function AppHeader() {
     } else if (item.locked) {
       pillClass += ' text-faint hover:bg-surface-2';
     } else if (item.inDevelopment) {
-      pillClass += ` ${sectionColor} hover:bg-amber-50/80 border border-amber-200/60`;
+      pillClass += ` ${sectionColor} hover:bg-amber-50 border border-amber-200`;
     } else {
       pillClass += ` ${sectionColor} hover:bg-surface-2`;
     }

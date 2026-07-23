@@ -90,7 +90,7 @@ export function LessonClassify() {
                   <div
                     key={q.id}
                     className={`rounded-xl border px-3 py-2.5 ${
-                      ok ? 'border-emerald-200 bg-emerald-50/70' : 'border-red-200 bg-red-50/70'
+                      ok ? 'border-emerald-200 bg-emerald-50' : 'border-red-200 bg-red-50'
                     }`}
                   >
                     <div className="flex items-start gap-2">
@@ -222,7 +222,7 @@ export function LessonClassify() {
 
         {/* Legenda das regras (revelada pela dica) */}
         {showHints && (
-          <div className="mb-3 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50/70 p-3 animate-fade-in">
+          <div className="mb-3 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50 p-3 animate-fade-in">
             {CLASSIFY_CATEGORIES.map((cat) => (
               <div key={cat.id} className="flex items-start gap-2 text-xs">
                 <span className="flex h-5 min-w-[1.75rem] shrink-0 items-center justify-center rounded-md bg-surface px-1 font-bold text-secondary ring-1 ring-line">
@@ -243,7 +243,7 @@ export function LessonClassify() {
             let cls =
               'relative flex flex-col items-center justify-center gap-1 rounded-xl border py-3.5 text-center transition-all ';
             if (!isAnswered) {
-              cls += 'border-line bg-surface backdrop-blur-md hover:border-cyan-300 hover:bg-cyan-50/50 active:scale-[0.97]';
+              cls += 'border-line bg-surface backdrop-blur-md hover:border-cyan-300 hover:bg-cyan-50 active:scale-[0.97]';
             } else if (isTheCorrect) {
               cls += 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300';
             } else if (isThisChosen) {
@@ -283,7 +283,7 @@ export function LessonClassify() {
         {isAnswered && (
           <div
             className={`mt-4 rounded-xl border p-4 animate-fade-in ${
-              isCorrect ? 'border-emerald-200 bg-emerald-50/80' : 'border-amber-200 bg-amber-50/80'
+              isCorrect ? 'border-emerald-200 bg-emerald-50' : 'border-amber-200 bg-amber-50'
             }`}
           >
             <p className={`mb-1 flex items-center gap-2 text-sm font-bold ${isCorrect ? 'text-emerald-700' : 'text-amber-700'}`}>

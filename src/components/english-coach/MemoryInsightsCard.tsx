@@ -61,7 +61,7 @@ export function MemoryInsightsCard({
     memory.lastSessionInsights;
 
   return (
-    <div className="rounded-3xl border border-violet-200/70 bg-gradient-to-br from-violet-50/60 via-fuchsia-50/30 to-violet-50/40 p-4 shadow-sm">
+    <div className="rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50/60 via-fuchsia-50/30 to-violet-50/40 p-4 shadow-sm">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <Brain className="w-4 h-4 text-violet-700" />
@@ -112,7 +112,7 @@ export function MemoryInsightsCard({
 
       {/* Insight da última sessão (sempre visível se houver) */}
       {memory.lastSessionInsights && (
-        <div className="mt-3 rounded-2xl bg-surface border border-violet-200/60 px-3 py-2">
+        <div className="mt-3 rounded-2xl bg-surface border border-violet-200 px-3 py-2">
           <div className="text-[10px] uppercase tracking-wider font-semibold text-violet-700 mb-0.5">
             Próximo passo
           </div>

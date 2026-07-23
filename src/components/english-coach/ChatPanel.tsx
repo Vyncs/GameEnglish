@@ -54,7 +54,7 @@ export function ChatPanel({ messages, isSending, onSend, onClear, onPickStarter 
           <div className="text-[13px] font-semibold tracking-tight text-primary truncate">
             Conversa com Coach
           </div>
-          <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">
+          <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
             <Wifi className="w-2.5 h-2.5" strokeWidth={2.6} />
             HD Voice
           </span>

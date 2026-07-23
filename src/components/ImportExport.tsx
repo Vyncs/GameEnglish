@@ -283,7 +283,7 @@ export function ImportExport({ onClose }: ImportExportProps) {
               <button
                 onClick={() => canSyncImportExport && fileInputRef.current?.click()}
                 disabled={!canSyncImportExport}
-                className="w-full p-6 border-2 border-dashed border-blue-200 rounded-xl hover:border-blue-400 hover:bg-blue-50/50 transition-colors text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full p-6 border-2 border-dashed border-blue-200 rounded-xl hover:border-blue-400 hover:bg-blue-50 transition-colors text-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Upload className="w-8 h-8 text-blue-400 mx-auto mb-2" />
                 <span className="text-blue-600 font-medium">Clique para selecionar arquivo</span>

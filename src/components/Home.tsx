@@ -233,7 +233,7 @@ export function Home() {
               className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
             >
               {lessonDone && (
-                <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Concluída
                 </span>
@@ -316,7 +316,7 @@ export function Home() {
                   className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
                 >
                   {complete && (
-                    <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                    <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       Concluído
                     </span>
@@ -529,7 +529,7 @@ export function Home() {
                             {reviewCount} para revisar
                           </span>
                         ) : gTotal > 0 ? (
-                          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                             <Check className="h-3 w-3" />
                             Em dia
                           </span>

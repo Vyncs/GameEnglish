@@ -204,10 +204,19 @@ body {
 [data-mode='dark'] .hover\:border-slate-300:hover { border-color: rgba(148, 163, 184, 0.40); }
 
 /* Bordas de selo mais discretas no escuro */
-[data-mode='dark'] .border-emerald-200 { border-color: rgba(16, 185, 129, 0.35); }
+[data-mode='dark'] .border-emerald-200,
+[data-mode='dark'] .border-emerald-300 { border-color: rgba(16, 185, 129, 0.35); }
 [data-mode='dark'] .border-amber-200   { border-color: rgba(245, 158, 11, 0.35); }
 [data-mode='dark'] .border-red-200,
 [data-mode='dark'] .border-red-300     { border-color: rgba(239, 68, 68, 0.35); }
+[data-mode='dark'] .border-cyan-200    { border-color: rgba(6, 182, 212, 0.35); }
+[data-mode='dark'] .border-blue-200    { border-color: rgba(59, 130, 246, 0.35); }
+[data-mode='dark'] .border-indigo-200  { border-color: rgba(99, 102, 241, 0.35); }
+[data-mode='dark'] .border-violet-200  { border-color: rgba(139, 92, 246, 0.35); }
+
+/* Selos que usam tons -200 de fundo */
+[data-mode='dark'] .bg-amber-200   { background-color: rgba(245, 158, 11, 0.22); }
+[data-mode='dark'] .bg-emerald-200 { background-color: rgba(16, 185, 129, 0.22); }
 
 /* A textura de papel pautado que existia aqui foi removida: ela definia
    background-image no body e sobrescrevia o cenário do tema. */

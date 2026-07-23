@@ -20,7 +20,7 @@ export function LevelSelector({ value, onChange, compact }: LevelSelectorProps) 
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                 active
                   ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
-                  : 'bg-surface text-secondary border-line hover:border-emerald-300 hover:bg-emerald-50/40'
+                  : 'bg-surface text-secondary border-line hover:border-emerald-300 hover:bg-emerald-50'
               }`}
               aria-pressed={active}
             >

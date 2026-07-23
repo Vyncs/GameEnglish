@@ -311,7 +311,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
               value={editTips}
               onChange={(e) => setEditTips(e.target.value)}
               placeholder="Ex: Verbo irregular - Past: went, Past Participle: gone"
-              className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+              className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
               rows={2}
             />
           </div>

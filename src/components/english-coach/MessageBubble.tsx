@@ -114,7 +114,7 @@ function AssistantBubble({ message }: { message: CoachMessage }) {
         />
 
         {message.nextQuestion && (
-          <div className="mt-2 flex items-start gap-2 text-sm text-emerald-800 bg-emerald-50/70 border border-emerald-200/60 rounded-2xl px-3 py-2">
+          <div className="mt-2 flex items-start gap-2 text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-2xl px-3 py-2">
             <MessageCircle className="w-4 h-4 mt-0.5 shrink-0 text-emerald-600" />
             <p className="m-0 italic">{message.nextQuestion}</p>
           </div>

@@ -20,7 +20,7 @@ export function LearningModeSelector({ value, onChange, compact }: LearningModeS
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                 active
                   ? 'bg-cyan-500 text-white border-cyan-500 shadow-sm'
-                  : 'bg-surface text-secondary border-line hover:border-cyan-300 hover:bg-cyan-50/40'
+                  : 'bg-surface text-secondary border-line hover:border-cyan-300 hover:bg-cyan-50'
               }`}
               aria-pressed={active}
             >
