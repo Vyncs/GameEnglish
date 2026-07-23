@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   Home, RefreshCw, Blocks, Puzzle, Mic, Library, Lock,
-  GraduationCap, BookOpen, MessagesSquare,
+  GraduationCap, BookOpen, MessagesSquare, Moon, Sun,
 } from 'lucide-react';
+import { useThemeStore } from '../store/useThemeStore';
+import { findTheme } from '../data/themes';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../api/client';
 import { AccountMenu } from './AccountMenu';
-import logoMark from '../assets/logotipo-educacional-raio-tablet.png';
 
 interface NavItem {
   id: string;
@@ -43,6 +44,10 @@ export function AppHeader() {
     viewMode, setViewMode, goToHome, startMemoryGame,
     startReaders, getTotalCardsForReview,
   } = useStore();
+
+  const themeId = useThemeStore((s) => s.themeId);
+  const toggleMode = useThemeStore((s) => s.toggleMode);
+  const isDark = findTheme(themeId).mode === 'dark';
 
   const [hasTeacher, setHasTeacher] = useState(false);
 
@@ -210,24 +215,6 @@ export function AppHeader() {
     <>
       {/* Desktop Header */}
       <header className="hidden lg:flex fixed top-0 left-0 right-0 h-16 bg-surface backdrop-blur-xl border-b border-line z-40 items-center px-6 gap-4">
-        {/* Logo — apenas o círculo da marca */}
-        <div className="flex items-center shrink-0 mr-2">
-          <button
-            type="button"
-            onClick={goToHome}
-            className="h-10 w-10 rounded-full overflow-hidden ring-1 ring-slate-200/80 shadow-sm shrink-0 cursor-pointer hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2"
-            title="Ir para o início"
-            aria-label="Ir para o início"
-          >
-            <img
-              src={logoMark}
-              alt=""
-              className="h-full w-full object-cover object-center pointer-events-none"
-              draggable={false}
-            />
-          </button>
-        </div>
-
         {/* Center Nav */}
         <nav className="flex-1 flex items-center justify-center gap-1 overflow-x-auto">
           {visibleNavItems.map((item) => renderNavPill(item))}
@@ -235,6 +222,16 @@ export function AppHeader() {
 
         {/* Right Side */}
         <div className="flex items-center gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={toggleMode}
+            className="grid h-9 w-9 place-items-center rounded-xl text-secondary transition-colors hover:bg-surface-2"
+            title={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+            aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          </button>
+
           <AccountMenu />
         </div>
       </header>
@@ -244,16 +241,12 @@ export function AppHeader() {
         <button
           type="button"
           onClick={goToHome}
-          className="h-9 w-9 rounded-full overflow-hidden ring-1 ring-slate-200/80 shadow-sm shrink-0 cursor-pointer hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2"
+          className="flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-semibold text-secondary transition-colors hover:bg-surface-2"
           title="Ir para o início"
           aria-label="Ir para o início"
         >
-          <img
-            src={logoMark}
-            alt=""
-            className="h-full w-full object-cover object-center pointer-events-none"
-            draggable={false}
-          />
+          <Home className="h-5 w-5 text-cyan-600" />
+          Início
         </button>
 
         <div className="flex items-center gap-1 shrink-0">
@@ -282,6 +275,16 @@ export function AppHeader() {
             aria-label="English Coach"
           >
             <MessagesSquare className="w-5 h-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleMode}
+            className="grid h-9 w-9 place-items-center rounded-xl text-secondary transition-colors hover:bg-surface-2"
+            title={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+            aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+          >
+            {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
 
           <AccountMenu />

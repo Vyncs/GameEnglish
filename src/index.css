@@ -187,6 +187,15 @@ body {
 [data-mode='dark'] .bg-blue-100     { background-color: rgba(59, 130, 246, 0.16); }
 [data-mode='dark'] .bg-indigo-100   { background-color: rgba(99, 102, 241, 0.16); }
 
+/* Trilhas de barra de progresso e anéis neutros no escuro */
+[data-mode='dark'] .bg-slate-200   { background-color: rgba(148, 163, 184, 0.22); }
+[data-mode='dark'] .bg-slate-700   { background-color: rgba(51, 65, 85, 0.75); }
+[data-mode='dark'] .ring-slate-200 { --tw-ring-color: rgba(148, 163, 184, 0.25); }
+[data-mode='dark'] .ring-slate-300 { --tw-ring-color: rgba(148, 163, 184, 0.35); }
+[data-mode='dark'] .border-slate-300,
+[data-mode='dark'] .border-slate-400 { border-color: rgba(148, 163, 184, 0.30); }
+[data-mode='dark'] .hover\:border-slate-300:hover { border-color: rgba(148, 163, 184, 0.40); }
+
 /* Bordas de selo mais discretas no escuro */
 [data-mode='dark'] .border-emerald-200 { border-color: rgba(16, 185, 129, 0.35); }
 [data-mode='dark'] .border-amber-200   { border-color: rgba(245, 158, 11, 0.35); }

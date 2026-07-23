@@ -4,16 +4,34 @@ import { DEFAULT_THEME_ID, applyTheme, findTheme } from '../data/themes';
 
 interface ThemeState {
   themeId: string;
+  /** Último tema claro usado — para o botão de modo noturno voltar nele. */
+  lastLightId: string;
+  /** Último tema escuro usado. */
+  lastDarkId: string;
   setTheme: (id: string) => void;
+  /** Alterna claro ⇄ escuro, lembrando o último tema de cada modo. */
+  toggleMode: () => void;
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       themeId: DEFAULT_THEME_ID,
+      lastLightId: 'classico',
+      lastDarkId: 'masmorra',
       setTheme: (id) => {
-        applyTheme(findTheme(id));
-        set({ themeId: id });
+        const theme = findTheme(id);
+        applyTheme(theme);
+        set(
+          theme.mode === 'dark'
+            ? { themeId: theme.id, lastDarkId: theme.id }
+            : { themeId: theme.id, lastLightId: theme.id },
+        );
+      },
+      toggleMode: () => {
+        const { themeId, lastLightId, lastDarkId } = get();
+        const isDark = findTheme(themeId).mode === 'dark';
+        get().setTheme(isDark ? lastLightId : lastDarkId);
       },
     }),
     {

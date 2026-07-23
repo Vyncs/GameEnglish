@@ -120,7 +120,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
       <div className="mt-4 space-y-3 animate-fade-in">
         {/* Resposta do usuário */}
         <div className={`p-3 rounded-xl ${isCorrect ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'}`}>
-          <p className="text-xs font-medium text-slate-500 mb-1">Sua resposta:</p>
+          <p className="text-xs font-medium text-tertiary mb-1">Sua resposta:</p>
           <p className={`font-medium ${isCorrect ? 'text-emerald-700' : 'text-red-700'}`}>
             {userWords.map((word, i) => {
               const isWrong = word.toLowerCase() !== (correctWords[i]?.toLowerCase() || '');
@@ -137,22 +137,22 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
         </div>
 
         {/* Resposta correta */}
-        <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
-          <p className="text-xs font-medium text-slate-500 mb-1">Resposta correta ({answerFlag} {answerLang}):</p>
-          <p className="font-medium text-slate-700">{answerPhrase}</p>
+        <div className="p-3 rounded-xl bg-surface-2 border border-line">
+          <p className="text-xs font-medium text-tertiary mb-1">Resposta correta ({answerFlag} {answerLang}):</p>
+          <p className="font-medium text-secondary">{answerPhrase}</p>
         </div>
 
         {/* Imagem associada */}
         {card.imageUrl && (
-          <div className="rounded-xl overflow-hidden border border-slate-200">
-            <div className="p-2 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
-              <ImageIcon className="w-4 h-4 text-slate-400" />
-              <span className="text-xs font-medium text-slate-500">Imagem associada</span>
+          <div className="rounded-xl overflow-hidden border border-line">
+            <div className="p-2 bg-surface-2 border-b border-line flex items-center gap-2">
+              <ImageIcon className="w-4 h-4 text-faint" />
+              <span className="text-xs font-medium text-tertiary">Imagem associada</span>
             </div>
             <img
               src={card.imageUrl}
               alt={card.englishPhrase}
-              className="w-full max-h-40 object-contain bg-white"
+              className="w-full max-h-40 object-contain bg-surface"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = 'none';
               }}
@@ -176,11 +176,11 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
 
   if (isEditing) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 animate-fade-in">
+      <div className="bg-surface rounded-2xl shadow-lg border border-line p-6 animate-fade-in">
         <div className="space-y-4">
           {/* Toggle de direção */}
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-2">
               <Languages className="w-4 h-4" />
               Direção da Tradução
             </label>
@@ -191,7 +191,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl border-2 transition-all text-sm ${
                   editDirection === 'pt-en'
                     ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                    : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300'
+                    : 'border-line bg-surface-2 text-secondary hover:border-slate-300'
                 }`}
               >
                 <span className="font-medium">🇧🇷 PT</span>
@@ -204,7 +204,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl border-2 transition-all text-sm ${
                   editDirection === 'en-pt'
                     ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                    : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300'
+                    : 'border-line bg-surface-2 text-secondary hover:border-slate-300'
                 }`}
               >
                 <span className="font-medium">🇺🇸 EN</span>
@@ -219,26 +219,26 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
             <>
               {/* PT primeiro (pergunta) */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">
+                <label className="block text-sm font-medium text-secondary mb-2">
                   🇧🇷 Frase em Português <span className="text-amber-600">(pergunta)</span>
                 </label>
                 <textarea
                   value={editPortuguese}
                   onChange={(e) => setEditPortuguese(e.target.value)}
-                  className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+                  className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
                   rows={2}
                   autoFocus
                 />
               </div>
               {/* EN segundo (resposta) */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">
+                <label className="block text-sm font-medium text-secondary mb-2">
                   🇺🇸 Frase em Inglês <span className="text-cyan-600">(resposta)</span>
                 </label>
                 <textarea
                   value={editEnglish}
                   onChange={(e) => setEditEnglish(e.target.value)}
-                  className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
+                  className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
                   rows={2}
                 />
               </div>
@@ -247,52 +247,52 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
             <>
               {/* EN primeiro (pergunta) */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">
+                <label className="block text-sm font-medium text-secondary mb-2">
                   🇺🇸 Frase em Inglês <span className="text-amber-600">(pergunta)</span>
                 </label>
                 <textarea
                   value={editEnglish}
                   onChange={(e) => setEditEnglish(e.target.value)}
-                  className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+                  className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
                   rows={2}
                   autoFocus
                 />
               </div>
               {/* PT segundo (resposta) */}
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">
+                <label className="block text-sm font-medium text-secondary mb-2">
                   🇧🇷 Frase em Português <span className="text-cyan-600">(resposta)</span>
                 </label>
                 <textarea
                   value={editPortuguese}
                   onChange={(e) => setEditPortuguese(e.target.value)}
-                  className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
+                  className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
                   rows={2}
                 />
               </div>
             </>
           )}
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-2">
               <ImageIcon className="w-4 h-4" />
               URL da Imagem (opcional)
             </label>
             <div className="relative">
-              <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-faint" />
               <input
                 type="url"
                 value={editImageUrl}
                 onChange={(e) => setEditImageUrl(e.target.value)}
                 placeholder="https://exemplo.com/imagem.jpg"
-                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                className="w-full pl-10 pr-4 py-3 bg-surface-2 border border-line rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
               />
             </div>
             {editImageUrl && (
-              <div className="mt-2 rounded-lg overflow-hidden border border-slate-200">
+              <div className="mt-2 rounded-lg overflow-hidden border border-line">
                 <img
                   src={editImageUrl}
                   alt="Preview"
-                  className="w-full max-h-32 object-contain bg-slate-100"
+                  className="w-full max-h-32 object-contain bg-surface-2"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = '';
                     (e.target as HTMLImageElement).alt = 'Imagem inválida';
@@ -303,7 +303,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           </div>
           {/* Campo de Dicas */}
           <div>
-            <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+            <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-2">
               <Lightbulb className="w-4 h-4 text-amber-500" />
               Dicas (opcional)
             </label>
@@ -311,14 +311,14 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
               value={editTips}
               onChange={(e) => setEditTips(e.target.value)}
               placeholder="Ex: Verbo irregular - Past: went, Past Participle: gone"
-              className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+              className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
               rows={2}
             />
           </div>
           <div className="flex gap-3 justify-end">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2"
             >
               <X className="w-4 h-4" />
               Cancelar
@@ -338,21 +338,21 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
 
   return (
     <div
-      className={`bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${
+      className={`bg-surface rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${
         hasSubmitted
           ? isCorrect
             ? 'border-emerald-300 animate-pulse-success'
             : 'border-red-300 animate-pulse-error'
-          : 'border-slate-100 hover:border-cyan-200'
+          : 'border-line hover:border-cyan-200'
       }`}
     >
       {/* Header do card */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-line">
         <div className="flex items-center gap-3">
           {/* Nível do card */}
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-lg">
-            <Target className="w-3.5 h-3.5 text-slate-500" />
-            <span className="text-xs font-medium text-slate-600">Nv.{card.level}</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-surface-2 rounded-lg">
+            <Target className="w-3.5 h-3.5 text-tertiary" />
+            <span className="text-xs font-medium text-secondary">Nv.{card.level}</span>
           </div>
           
           {/* Ícone de áudio */}
@@ -363,7 +363,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
               className={`p-2 rounded-xl transition-all ${
                 isSpeaking
                   ? 'bg-cyan-100 text-cyan-600'
-                  : 'bg-slate-100 text-slate-500 hover:bg-cyan-50 hover:text-cyan-600'
+                  : 'bg-surface-2 text-tertiary hover:bg-cyan-50 hover:text-cyan-600'
               }`}
               title="Ouvir pronúncia"
             >
@@ -375,7 +375,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
             </button>
           )}
           {!isSupported && (
-            <div className="p-2 rounded-xl bg-slate-100 text-slate-400" title="Áudio não suportado">
+            <div className="p-2 rounded-xl bg-surface-2 text-faint" title="Áudio não suportado">
               <VolumeX className="w-5 h-5" />
             </div>
           )}
@@ -392,14 +392,14 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
         <div className="flex gap-2">
           <button
             onClick={() => setIsEditing(true)}
-            className="p-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+            className="p-2 rounded-xl bg-surface-2 text-tertiary hover:bg-blue-50 hover:text-blue-600 transition-colors"
             title="Editar"
           >
             <Pencil className="w-4 h-4" />
           </button>
           <button
             onClick={handleDelete}
-            className="p-2 rounded-xl bg-slate-100 text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+            className="p-2 rounded-xl bg-surface-2 text-tertiary hover:bg-red-50 hover:text-red-600 transition-colors"
             title="Excluir"
           >
             <Trash2 className="w-4 h-4" />
@@ -410,7 +410,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
       {/* Conteúdo do card */}
       <div className="p-6">
         {/* Indicador de direção */}
-        <div className="flex items-center gap-2 mb-4 text-xs text-slate-500">
+        <div className="flex items-center gap-2 mb-4 text-xs text-tertiary">
           <Languages className="w-3.5 h-3.5" />
           <span>{questionFlag} {questionLang}</span>
           <ArrowRight className="w-3 h-3" />
@@ -422,7 +422,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-lg mb-2">
             {questionFlag} {questionLang}
           </span>
-          <p className="text-lg text-slate-800 font-medium leading-relaxed">
+          <p className="text-lg text-primary font-medium leading-relaxed">
             {questionPhrase}
           </p>
         </div>
@@ -444,7 +444,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
                   }
                 }}
                 placeholder="Digite sua resposta..."
-                className="w-full px-4 py-3 pr-12 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                className="w-full px-4 py-3 pr-12 bg-surface-2 border border-line rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
               />
               <button
                 onClick={handleSubmitAnswer}
@@ -462,7 +462,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
 
         {/* Info de próxima revisão - só mostra no modo Jogar */}
         {hasSubmitted && enableSpacedRepetition && (
-          <div className="mt-3 text-xs text-slate-500 text-center">
+          <div className="mt-3 text-xs text-tertiary text-center">
             Próxima revisão em {LEITNER_INTERVALS[isCorrect ? Math.min(card.level + 1, 5) : 1]} dia{LEITNER_INTERVALS[isCorrect ? Math.min(card.level + 1, 5) : 1] !== 1 ? 's' : ''}
           </div>
         )}
@@ -472,7 +472,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           {!hasSubmitted && (
             <button
               onClick={() => setShowAnswer(!showAnswer)}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
             >
               {showAnswer ? (
                 <>
@@ -491,7 +491,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           {hasSubmitted && (
             <button
               onClick={handleReset}
-              className="flex-1 px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors"
+              className="flex-1 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
             >
               Tentar novamente
             </button>
@@ -505,16 +505,16 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
               <span className="inline-block px-2 py-1 bg-cyan-100 text-cyan-700 text-xs font-medium rounded-lg mb-2">
                 {answerFlag} {answerLang}
               </span>
-              <p className="text-lg text-slate-800 font-medium">{answerPhrase}</p>
+              <p className="text-lg text-primary font-medium">{answerPhrase}</p>
             </div>
             
             {/* Imagem quando visualiza resposta */}
             {card.imageUrl && (
-              <div className="rounded-xl overflow-hidden border border-slate-200">
+              <div className="rounded-xl overflow-hidden border border-line">
                 <img
                   src={card.imageUrl}
                   alt={card.englishPhrase}
-                  className="w-full max-h-40 object-contain bg-white"
+                  className="w-full max-h-40 object-contain bg-surface"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
                   }}
