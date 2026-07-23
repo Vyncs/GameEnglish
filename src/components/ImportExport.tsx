@@ -199,20 +199,20 @@ export function ImportExport({ onClose }: ImportExportProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-fade-in">
+      <div className="bg-surface rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto animate-fade-in">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-100">
+        <div className="flex items-center justify-between p-6 border-b border-line">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-cyan-100 rounded-xl">
               <FileJson className="w-6 h-6 text-cyan-600" />
             </div>
-            <h2 className="text-xl font-bold text-slate-800">Importar / Exportar</h2>
+            <h2 className="text-xl font-bold text-primary">Importar / Exportar</h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-surface-2 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-slate-500" />
+            <X className="w-5 h-5 text-tertiary" />
           </button>
         </div>
 
@@ -264,7 +264,7 @@ export function ImportExport({ onClose }: ImportExportProps) {
             {/* Botão baixar exemplo */}
             <button
               onClick={handleDownloadExample}
-              className="w-full mb-4 px-4 py-2.5 bg-white border border-blue-200 text-blue-700 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
+              className="w-full mb-4 px-4 py-2.5 bg-surface border border-blue-200 text-blue-700 rounded-xl hover:bg-blue-50 transition-colors flex items-center justify-center gap-2 text-sm font-medium"
             >
               <FileDown className="w-4 h-4" />
               Baixar JSON de exemplo
@@ -292,23 +292,23 @@ export function ImportExport({ onClose }: ImportExportProps) {
             ) : (
               <div className="space-y-4">
                 {/* Arquivo selecionado */}
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-blue-200">
+                <div className="flex items-center justify-between p-3 bg-surface rounded-lg border border-blue-200">
                   <div className="flex items-center gap-3">
                     <FileJson className="w-8 h-8 text-blue-500" />
                     <div>
-                      <p className="font-medium text-slate-700 text-sm truncate max-w-[200px]">
+                      <p className="font-medium text-secondary text-sm truncate max-w-[200px]">
                         {selectedFile.name}
                       </p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-faint">
                         {(selectedFile.size / 1024).toFixed(1)} KB
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={handleReset}
-                    className="p-1.5 hover:bg-slate-100 rounded-lg"
+                    className="p-1.5 hover:bg-surface-2 rounded-lg"
                   >
-                    <X className="w-4 h-4 text-slate-400" />
+                    <X className="w-4 h-4 text-faint" />
                   </button>
                 </div>
 
@@ -338,39 +338,39 @@ export function ImportExport({ onClose }: ImportExportProps) {
                 {/* Modo de importação */}
                 {validationResult?.valid && (
                   <div className="space-y-3">
-                    <p className="text-sm font-medium text-slate-700">Modo de importação:</p>
+                    <p className="text-sm font-medium text-secondary">Modo de importação:</p>
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         onClick={() => setImportMode('merge')}
                         className={`p-3 rounded-xl border-2 transition-all text-left ${
                           importMode === 'merge'
                             ? 'border-blue-500 bg-blue-50'
-                            : 'border-slate-200 hover:border-slate-300'
+                            : 'border-line hover:border-slate-300'
                         }`}
                       >
                         <Merge className={`w-5 h-5 mb-1 ${
-                          importMode === 'merge' ? 'text-blue-600' : 'text-slate-400'
+                          importMode === 'merge' ? 'text-blue-600' : 'text-faint'
                         }`} />
                         <p className={`font-medium text-sm ${
-                          importMode === 'merge' ? 'text-blue-700' : 'text-slate-600'
+                          importMode === 'merge' ? 'text-blue-700' : 'text-secondary'
                         }`}>Mesclar</p>
-                        <p className="text-xs text-slate-400">Adiciona novos dados</p>
+                        <p className="text-xs text-faint">Adiciona novos dados</p>
                       </button>
                       <button
                         onClick={() => setImportMode('replace')}
                         className={`p-3 rounded-xl border-2 transition-all text-left ${
                           importMode === 'replace'
                             ? 'border-amber-500 bg-amber-50'
-                            : 'border-slate-200 hover:border-slate-300'
+                            : 'border-line hover:border-slate-300'
                         }`}
                       >
                         <Replace className={`w-5 h-5 mb-1 ${
-                          importMode === 'replace' ? 'text-amber-600' : 'text-slate-400'
+                          importMode === 'replace' ? 'text-amber-600' : 'text-faint'
                         }`} />
                         <p className={`font-medium text-sm ${
-                          importMode === 'replace' ? 'text-amber-700' : 'text-slate-600'
+                          importMode === 'replace' ? 'text-amber-700' : 'text-secondary'
                         }`}>Substituir</p>
-                        <p className="text-xs text-slate-400">Substitui todos os dados</p>
+                        <p className="text-xs text-faint">Substitui todos os dados</p>
                       </button>
                     </div>
                     
@@ -417,9 +417,9 @@ export function ImportExport({ onClose }: ImportExportProps) {
           </div>
 
           {/* Formato esperado */}
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <h4 className="text-sm font-semibold text-slate-700 mb-2">Formato do JSON</h4>
-            <pre className="text-xs text-slate-500 bg-white p-3 rounded-lg border border-slate-100 overflow-x-auto">
+          <div className="p-4 bg-surface-2 rounded-xl border border-line">
+            <h4 className="text-sm font-semibold text-secondary mb-2">Formato do JSON</h4>
+            <pre className="text-xs text-tertiary bg-surface p-3 rounded-lg border border-line overflow-x-auto">
 {`{
   "groups": [
     {

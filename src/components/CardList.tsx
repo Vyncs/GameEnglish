@@ -68,10 +68,10 @@ export function CardList() {
             <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-cyan-100 to-blue-100 rounded-full flex items-center justify-center">
               <Inbox className="w-12 h-12 text-cyan-500" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-3">
+            <h2 className="text-2xl font-bold text-primary mb-3">
               Selecione um grupo
             </h2>
-            <p className="text-slate-500 leading-relaxed">
+            <p className="text-tertiary leading-relaxed">
               Escolha um grupo acima ou crie um novo para ver e gerenciar seus flash cards.
             </p>
           </div>
@@ -80,10 +80,10 @@ export function CardList() {
         <>
       {/* Header */}
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-slate-800 mb-2">
+        <h2 className="text-3xl font-bold text-primary mb-2">
           {selectedGroup?.name}
         </h2>
-        <p className="text-slate-500">
+        <p className="text-tertiary">
           {groupCards.length} card{groupCards.length !== 1 ? 's' : ''} neste grupo
         </p>
       </div>
@@ -92,34 +92,34 @@ export function CardList() {
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
         {/* Busca */}
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Buscar cards..."
-            className="w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+            className="w-full pl-12 pr-4 py-3 bg-surface border border-line rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
           />
         </div>
 
         {/* Filtro de direção */}
-        <div className="flex rounded-xl border border-slate-200 bg-white overflow-hidden">
+        <div className="flex rounded-xl border border-line bg-surface overflow-hidden">
           <button
             onClick={() => setDirectionFilter('all')}
             className={`px-4 py-3 text-sm font-medium transition-colors ${
               directionFilter === 'all'
                 ? 'bg-slate-800 text-white'
-                : 'text-slate-600 hover:bg-slate-50'
+                : 'text-secondary hover:bg-surface-2'
             }`}
           >
             Todos ({groupCards.length})
           </button>
           <button
             onClick={() => setDirectionFilter('pt-en')}
-            className={`px-4 py-3 text-sm font-medium transition-colors border-l border-slate-200 flex items-center gap-1.5 ${
+            className={`px-4 py-3 text-sm font-medium transition-colors border-l border-line flex items-center gap-1.5 ${
               directionFilter === 'pt-en'
                 ? 'bg-green-500 text-white'
-                : 'text-slate-600 hover:bg-slate-50'
+                : 'text-secondary hover:bg-surface-2'
             }`}
           >
             <span>🇧🇷→🇺🇸</span>
@@ -127,10 +127,10 @@ export function CardList() {
           </button>
           <button
             onClick={() => setDirectionFilter('en-pt')}
-            className={`px-4 py-3 text-sm font-medium transition-colors border-l border-slate-200 flex items-center gap-1.5 ${
+            className={`px-4 py-3 text-sm font-medium transition-colors border-l border-line flex items-center gap-1.5 ${
               directionFilter === 'en-pt'
                 ? 'bg-blue-500 text-white'
-                : 'text-slate-600 hover:bg-slate-50'
+                : 'text-secondary hover:bg-surface-2'
             }`}
           >
             <span>🇺🇸→🇧🇷</span>
@@ -141,7 +141,7 @@ export function CardList() {
         {/* Ordenação */}
         <button
           onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-          className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors"
+          className="flex items-center gap-2 px-4 py-3 bg-surface border border-line rounded-xl text-secondary hover:bg-surface-2 transition-colors"
         >
           {sortOrder === 'asc' ? (
             <>
@@ -182,12 +182,12 @@ export function CardList() {
 
       {/* Formulário de novo card */}
       {isAdding && (
-        <div className="mb-6 p-6 bg-white rounded-2xl shadow-lg border border-slate-200 animate-fade-in">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Novo Flash Card</h3>
+        <div className="mb-6 p-6 bg-surface rounded-2xl shadow-lg border border-line animate-fade-in">
+          <h3 className="text-lg font-semibold text-primary mb-4">Novo Flash Card</h3>
           <div className="space-y-4">
             {/* Toggle de direção */}
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-2">
                 <Languages className="w-4 h-4" />
                 Direção da Tradução
               </label>
@@ -198,7 +198,7 @@ export function CardList() {
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all ${
                     newDirection === 'pt-en'
                       ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                      : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300'
+                      : 'border-line bg-surface-2 text-secondary hover:border-slate-300'
                   }`}
                 >
                   <span className="font-medium">🇧🇷 PT</span>
@@ -211,7 +211,7 @@ export function CardList() {
                   className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 transition-all ${
                     newDirection === 'en-pt'
                       ? 'border-cyan-500 bg-cyan-50 text-cyan-700'
-                      : 'border-slate-200 bg-slate-50 text-slate-600 hover:border-slate-300'
+                      : 'border-line bg-surface-2 text-secondary hover:border-slate-300'
                   }`}
                 >
                   <span className="font-medium">🇺🇸 EN</span>
@@ -219,7 +219,7 @@ export function CardList() {
                   <span className="font-medium">🇧🇷 PT</span>
                 </button>
               </div>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-faint">
                 {newDirection === 'pt-en' 
                   ? 'Você verá a frase em Português e responderá em Inglês'
                   : 'Você verá a frase em Inglês e responderá em Português'}
@@ -231,28 +231,28 @@ export function CardList() {
               <>
                 {/* PT primeiro (pergunta) */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-600 mb-2">
+                  <label className="block text-sm font-medium text-secondary mb-2">
                     🇧🇷 Frase em Português <span className="text-amber-600">(pergunta)</span>
                   </label>
                   <textarea
                     value={newPortuguese}
                     onChange={(e) => setNewPortuguese(e.target.value)}
                     placeholder="Ex: Eu preciso estudar todos os dias."
-                    className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+                    className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
                     rows={2}
                     autoFocus
                   />
                 </div>
                 {/* EN segundo (resposta) */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-600 mb-2">
+                  <label className="block text-sm font-medium text-secondary mb-2">
                     🇺🇸 Frase em Inglês <span className="text-cyan-600">(resposta)</span>
                   </label>
                   <textarea
                     value={newEnglish}
                     onChange={(e) => setNewEnglish(e.target.value)}
                     placeholder="Ex: I need to study every day."
-                    className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
+                    className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
                     rows={2}
                   />
                 </div>
@@ -261,54 +261,54 @@ export function CardList() {
               <>
                 {/* EN primeiro (pergunta) */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-600 mb-2">
+                  <label className="block text-sm font-medium text-secondary mb-2">
                     🇺🇸 Frase em Inglês <span className="text-amber-600">(pergunta)</span>
                   </label>
                   <textarea
                     value={newEnglish}
                     onChange={(e) => setNewEnglish(e.target.value)}
                     placeholder="Ex: I need to study every day."
-                    className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+                    className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
                     rows={2}
                     autoFocus
                   />
                 </div>
                 {/* PT segundo (resposta) */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-600 mb-2">
+                  <label className="block text-sm font-medium text-secondary mb-2">
                     🇧🇷 Frase em Português <span className="text-cyan-600">(resposta)</span>
                   </label>
                   <textarea
                     value={newPortuguese}
                     onChange={(e) => setNewPortuguese(e.target.value)}
                     placeholder="Ex: Eu preciso estudar todos os dias."
-                    className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
+                    className="w-full px-4 py-3 bg-cyan-50 border border-cyan-200 rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none"
                     rows={2}
                   />
                 </div>
               </>
             )}
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-2">
                 <ImageIcon className="w-4 h-4" />
                 URL da Imagem (opcional)
               </label>
               <div className="relative">
-                <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-faint" />
                 <input
                   type="url"
                   value={newImageUrl}
                   onChange={(e) => setNewImageUrl(e.target.value)}
                   placeholder="https://exemplo.com/imagem.jpg"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                  className="w-full pl-10 pr-4 py-3 bg-surface-2 border border-line rounded-xl text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
                 />
               </div>
               {newImageUrl && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-slate-200">
+                <div className="mt-2 rounded-lg overflow-hidden border border-line">
                   <img
                     src={newImageUrl}
                     alt="Preview"
-                    className="w-full max-h-32 object-contain bg-slate-100"
+                    className="w-full max-h-32 object-contain bg-surface-2"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '';
                       (e.target as HTMLImageElement).alt = 'URL inválida';
@@ -316,13 +316,13 @@ export function CardList() {
                   />
                 </div>
               )}
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-faint">
                 Cole a URL de uma imagem que represente a palavra/frase em inglês
               </p>
             </div>
             {/* Campo de Dicas */}
             <div>
-              <label className="block text-sm font-medium text-slate-600 mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-secondary mb-2 flex items-center gap-2">
                 <Lightbulb className="w-4 h-4 text-amber-500" />
                 Dicas (opcional)
               </label>
@@ -330,10 +330,10 @@ export function CardList() {
                 value={newTips}
                 onChange={(e) => setNewTips(e.target.value)}
                 placeholder="Ex: Verbo irregular - Past: went, Past Participle: gone"
-                className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+                className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
                 rows={2}
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-faint">
                 Adicione dicas, regras gramaticais ou informações úteis sobre esta palavra/frase
               </p>
             </div>
@@ -347,7 +347,7 @@ export function CardList() {
                   setNewTips('');
                   setNewDirection('pt-en');
                 }}
-                className="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors"
+                className="px-5 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
               >
                 Cancelar
               </button>
@@ -366,13 +366,13 @@ export function CardList() {
       {/* Lista de cards */}
       {filteredCards.length === 0 ? (
         <div className="text-center py-16">
-          <div className="w-20 h-20 mx-auto mb-4 bg-slate-100 rounded-full flex items-center justify-center">
-            <Inbox className="w-10 h-10 text-slate-400" />
+          <div className="w-20 h-20 mx-auto mb-4 bg-surface-2 rounded-full flex items-center justify-center">
+            <Inbox className="w-10 h-10 text-faint" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-700 mb-2">
+          <h3 className="text-xl font-semibold text-secondary mb-2">
             {searchTerm ? 'Nenhum card encontrado' : 'Nenhum card ainda'}
           </h3>
-          <p className="text-slate-500">
+          <p className="text-tertiary">
             {searchTerm
               ? 'Tente uma busca diferente'
               : 'Clique em "Novo Card" para começar'}

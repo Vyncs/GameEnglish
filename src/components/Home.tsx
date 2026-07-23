@@ -99,7 +99,7 @@ export function Home() {
               </div>
             </div>
 
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-[var(--surface-border)]">
               {/* 1. Revisar */}
               <TodayStep
                 n={1}
@@ -155,7 +155,7 @@ export function Home() {
         >
           <KpiCard
             icon={<BookOpen className="h-4 w-4" strokeWidth={2.4} />}
-            iconTint="bg-cyan-50 text-cyan-600 ring-cyan-100"
+            iconTint="bg-cyan-50 text-cyan-600 ring-line"
             label="Total de Cards"
             value={totalCards}
             visual={
@@ -644,15 +644,7 @@ export function Home() {
           </div>
 
           {/* Dica do dia */}
-          <div
-            className="relative overflow-hidden rounded-2xl p-5"
-            style={{
-              background:
-                'linear-gradient(135deg, #ecfeff 0%, #f0f9ff 60%, #faf5ff 100%)',
-              boxShadow:
-                '0 1px 2px rgba(15, 23, 42, 0.04), inset 0 0 0 1px rgba(8, 145, 178, 0.10)',
-            }}
-          >
+          <div className="relative overflow-hidden rounded-2xl border border-line bg-surface p-5 shadow-sm backdrop-blur-md">
             <div
               aria-hidden
               className="pointer-events-none absolute -top-12 -right-8 h-32 w-32 rounded-full opacity-50"
@@ -664,14 +656,14 @@ export function Home() {
             />
             <div className="relative">
               <div className="mb-3 flex items-center gap-3">
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-surface shadow-sm ring-1 ring-cyan-100">
+                <div className="grid h-10 w-10 place-items-center rounded-xl bg-surface shadow-sm ring-1 ring-line">
                   <Calendar className="h-5 w-5 text-cyan-600" strokeWidth={2.2} />
                 </div>
-                <h3 className="text-[15px] font-semibold tracking-tight text-cyan-950">
+                <h3 className="text-[15px] font-semibold tracking-tight text-primary">
                   Dica de Estudo
                 </h3>
               </div>
-              <p className="text-sm leading-relaxed text-cyan-900/80">
+              <p className="text-sm leading-relaxed text-secondary">
                 A revisão espaçada é mais eficiente que estudar muitas horas seguidas.{' '}
                 <span className="font-semibold text-cyan-900">
                   Revise alguns minutos todo dia

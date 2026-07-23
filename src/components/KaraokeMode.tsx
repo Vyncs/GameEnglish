@@ -137,7 +137,7 @@ export function KaraokeMode() {
           <button
             type="button"
             onClick={goToHome}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-line text-secondary hover:bg-surface-2 shadow-sm"
           >
             <Home className="w-4 h-4" />
             Voltar ao início
@@ -148,8 +148,8 @@ export function KaraokeMode() {
           <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-violet-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
             <Mic className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Karaoke Mode</h1>
-          <p className="text-slate-500">Train pronunciation with speaking practice</p>
+          <h1 className="text-3xl font-bold text-primary mb-2">Karaoke Mode</h1>
+          <p className="text-tertiary">Train pronunciation with speaking practice</p>
           
           {!isSupported && (
             <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-700">
@@ -167,7 +167,7 @@ export function KaraokeMode() {
               className={`px-4 py-2 rounded-xl transition-all ${
                 filterDifficulty === 'all'
                   ? 'bg-violet-500 text-white'
-                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                  : 'bg-surface border border-line text-secondary hover:bg-surface-2'
               }`}
             >
               All
@@ -181,7 +181,7 @@ export function KaraokeMode() {
                   className={`px-4 py-2 rounded-xl transition-all flex items-center gap-2 ${
                     filterDifficulty === diff
                       ? 'bg-violet-500 text-white'
-                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                      : 'bg-surface border border-line text-secondary hover:bg-surface-2'
                   }`}
                 >
                   {config.emoji} {config.label}
@@ -193,13 +193,13 @@ export function KaraokeMode() {
 
         {/* Lista de músicas */}
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-lg font-semibold text-slate-700 mb-2">
+          <h2 className="text-lg font-semibold text-secondary mb-2">
             Choose a lesson ({filteredSongs.length})
           </h2>
           {!isPremium && (
-            <p className="text-sm text-slate-500 mb-4">
-              Plano free: <span className="font-medium text-slate-600">English Basics</span> e{' '}
-              <span className="font-medium text-slate-600">Daily Routines</span> liberados. Nas demais
+            <p className="text-sm text-tertiary mb-4">
+              Plano free: <span className="font-medium text-secondary">English Basics</span> e{' '}
+              <span className="font-medium text-secondary">Daily Routines</span> liberados. Nas demais
               aulas o cadeado indica conteúdo premium — toque no card para assinar e jogar todas.
             </p>
           )}
@@ -225,7 +225,7 @@ export function KaraokeMode() {
         <div className="max-w-4xl mx-auto mt-8">
           <button
             onClick={goToHome}
-            className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Home
@@ -448,39 +448,39 @@ export function KaraokeMode() {
                 <Mic className="w-12 h-12 text-white" />
               )}
             </div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">
+            <h1 className="text-3xl font-bold text-primary mb-2">
               {overallAccuracy >= 70 ? 'Great Job!' : overallAccuracy >= 50 ? 'Good Effort!' : 'Keep Practicing!'}
             </h1>
-            <p className="text-slate-500">{karaokeSong?.title}</p>
+            <p className="text-tertiary">{karaokeSong?.title}</p>
           </div>
 
           {/* Stats */}
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 mb-6">
+          <div className="bg-surface rounded-3xl shadow-xl border border-line p-6 mb-6">
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center">
                 <CheckCircle className="w-6 h-6 text-emerald-500 mx-auto mb-1" />
                 <p className="text-2xl font-bold text-emerald-500">{correctLines}</p>
-                <p className="text-sm text-slate-500">Correct</p>
+                <p className="text-sm text-tertiary">Correct</p>
               </div>
               <div className="text-center">
                 <AlertCircle className="w-6 h-6 text-amber-500 mx-auto mb-1" />
                 <p className="text-2xl font-bold text-amber-500">{approximateLines}</p>
-                <p className="text-sm text-slate-500">Approximate</p>
+                <p className="text-sm text-tertiary">Approximate</p>
               </div>
               <div className="text-center">
                 <XCircle className="w-6 h-6 text-red-500 mx-auto mb-1" />
                 <p className="text-2xl font-bold text-red-500">{missedLines}</p>
-                <p className="text-sm text-slate-500">Needs Work</p>
+                <p className="text-sm text-tertiary">Needs Work</p>
               </div>
             </div>
 
             {/* Accuracy bar */}
             <div className="mb-4">
-              <div className="flex justify-between text-sm text-slate-600 mb-1">
+              <div className="flex justify-between text-sm text-secondary mb-1">
                 <span>Overall Accuracy</span>
                 <span className="font-semibold">{overallAccuracy}%</span>
               </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-surface-2 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-500 ${
                     overallAccuracy >= 70 ? 'bg-emerald-500' : overallAccuracy >= 50 ? 'bg-amber-500' : 'bg-violet-500'
@@ -493,7 +493,7 @@ export function KaraokeMode() {
             {/* Lines to review */}
             {missedLines > 0 && (
               <div className="mt-6">
-                <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-secondary mb-3 flex items-center gap-2">
                   <Target className="w-4 h-4" />
                   Lines to Practice
                 </h3>
@@ -502,8 +502,8 @@ export function KaraokeMode() {
                     .filter(r => r.accuracy < 50)
                     .map((result, i) => (
                       <div key={i} className="p-3 bg-red-50 rounded-xl border border-red-100">
-                        <p className="font-medium text-slate-700">{result.expectedText}</p>
-                        <p className="text-sm text-slate-500 mt-1">You said: "{result.spokenText || '(nothing)'}"</p>
+                        <p className="font-medium text-secondary">{result.expectedText}</p>
+                        <p className="text-sm text-tertiary mt-1">You said: "{result.spokenText || '(nothing)'}"</p>
                       </div>
                     ))}
                 </div>
@@ -515,7 +515,7 @@ export function KaraokeMode() {
           <div className="flex gap-3">
             <button
               onClick={resetKaraoke}
-              className="flex-1 py-3 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-surface border-2 border-line text-secondary font-semibold rounded-xl hover:bg-surface-2 transition-all flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-4 h-4" />
               Try Again
@@ -559,7 +559,7 @@ function SongCard({
           ? `${song.title} — exclusivo para assinantes, toque para ver planos`
           : `Abrir lição ${song.title}`
       }
-      className={`relative overflow-hidden p-6 bg-white rounded-2xl shadow-lg border border-slate-200 transition-all text-left group ${
+      className={`relative overflow-hidden p-6 bg-surface rounded-2xl shadow-lg border border-line transition-all text-left group ${
         locked ? 'cursor-pointer' : 'hover:border-violet-300 hover:shadow-xl'
       }`}
     >
@@ -573,8 +573,8 @@ function SongCard({
           )}
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-slate-800 mb-1">{song.title}</h3>
-          <p className="text-sm text-slate-500 mb-2">{song.artist}</p>
+          <h3 className="font-semibold text-primary mb-1">{song.title}</h3>
+          <p className="text-sm text-tertiary mb-2">{song.artist}</p>
           <div className="flex items-center gap-2">
             <span className={`px-2 py-0.5 text-xs font-medium rounded-full ${
               song.difficulty === 'easy' ? 'bg-emerald-100 text-emerald-600' :
@@ -583,7 +583,7 @@ function SongCard({
             }`}>
               {config.emoji} {config.label}
             </span>
-            <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs font-medium rounded-full">
+            <span className="px-2 py-0.5 bg-surface-2 text-secondary text-xs font-medium rounded-full">
               {song.lyrics.length} lines
             </span>
           </div>

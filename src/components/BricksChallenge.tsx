@@ -35,25 +35,25 @@ export function BricksChallenge() {
             <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl shadow-lg shadow-orange-500/30 mb-6">
               <Blocks className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-slate-800 mb-3">
+            <h1 className="text-4xl font-bold text-primary mb-3">
               Bricks Challenge
             </h1>
-            <p className="text-lg text-slate-500 max-w-xl mx-auto">
+            <p className="text-lg text-tertiary max-w-xl mx-auto">
               Escolha um verbo e pratique 10 estruturas gramaticais diferentes.
               Domine os "tijolos" fundamentais do inglês!
             </p>
           </div>
 
           {/* Card de seleção */}
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8">
-            <h2 className="text-xl font-semibold text-slate-800 mb-6 flex items-center gap-2">
+          <div className="bg-surface rounded-3xl shadow-xl border border-line p-8">
+            <h2 className="text-xl font-semibold text-primary mb-6 flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
               Escolha um verbo
             </h2>
 
             {/* Verbos populares */}
             <div className="mb-8">
-              <p className="text-sm font-medium text-slate-500 mb-3">Verbos populares:</p>
+              <p className="text-sm font-medium text-tertiary mb-3">Verbos populares:</p>
               <div className="flex flex-wrap gap-2">
                 {availableVerbs.slice(0, 15).map((verb) => (
                   <button
@@ -65,7 +65,7 @@ export function BricksChallenge() {
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                       selectedVerb === verb
                         ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg shadow-orange-500/25'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        : 'bg-surface-2 text-secondary hover:bg-slate-200'
                     }`}
                   >
                     {verb}
@@ -76,7 +76,7 @@ export function BricksChallenge() {
 
             {/* Verbo customizado */}
             <div className="mb-8">
-              <p className="text-sm font-medium text-slate-500 mb-3">Ou digite um verbo:</p>
+              <p className="text-sm font-medium text-tertiary mb-3">Ou digite um verbo:</p>
               <input
                 type="text"
                 value={customVerb}
@@ -85,18 +85,18 @@ export function BricksChallenge() {
                   setSelectedVerb('');
                 }}
                 placeholder="Ex: sleep, dance, travel..."
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
+                className="w-full px-4 py-3 bg-surface-2 border border-line rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
               />
             </div>
 
             {/* Estruturas que serão praticadas */}
-            <div className="mb-8 p-4 bg-slate-50 rounded-xl">
-              <p className="text-sm font-medium text-slate-600 mb-3">Você vai praticar:</p>
+            <div className="mb-8 p-4 bg-surface-2 rounded-xl">
+              <p className="text-sm font-medium text-secondary mb-3">Você vai praticar:</p>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-xs">
                 {BRICK_TYPES.map((brick, index) => (
                   <div
                     key={brick.type}
-                    className="flex items-center gap-2 text-slate-500"
+                    className="flex items-center gap-2 text-tertiary"
                   >
                     <span className="w-5 h-5 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-bold">
                       {index + 1}
@@ -146,27 +146,27 @@ export function BricksChallenge() {
             }`}>
               <Trophy className="w-12 h-12 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-slate-800 mb-2">
+            <h1 className="text-4xl font-bold text-primary mb-2">
               Desafio Completo!
             </h1>
-            <p className="text-lg text-slate-500">
-              Verbo: <span className="font-semibold text-slate-700">{bricksChallenge.verb}</span>
+            <p className="text-lg text-tertiary">
+              Verbo: <span className="font-semibold text-secondary">{bricksChallenge.verb}</span>
             </p>
           </div>
 
           {/* Score */}
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-8 mb-8">
+          <div className="bg-surface rounded-3xl shadow-xl border border-line p-8 mb-8">
             <div className="flex items-center justify-center gap-8 mb-8">
               <div className="text-center">
                 <p className="text-5xl font-bold text-emerald-500">{correctCount}</p>
-                <p className="text-slate-500">Acertos</p>
+                <p className="text-tertiary">Acertos</p>
               </div>
               <div className="w-px h-16 bg-slate-200" />
               <div className="text-center">
                 <p className="text-5xl font-bold text-red-500">
                   {bricksChallenge.results.length - correctCount}
                 </p>
-                <p className="text-slate-500">Erros</p>
+                <p className="text-tertiary">Erros</p>
               </div>
               <div className="w-px h-16 bg-slate-200" />
               <div className="text-center">
@@ -175,7 +175,7 @@ export function BricksChallenge() {
                 }`}>
                   {percentage}%
                 </p>
-                <p className="text-slate-500">Aproveitamento</p>
+                <p className="text-tertiary">Aproveitamento</p>
               </div>
             </div>
 
@@ -201,10 +201,10 @@ export function BricksChallenge() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs font-medium text-slate-500 mb-1">
+                      <p className="text-xs font-medium text-tertiary mb-1">
                         {BRICK_TYPES[index].label}
                       </p>
-                      <p className="text-sm text-slate-600 mb-2">
+                      <p className="text-sm text-secondary mb-2">
                         {result.phrase.portuguese}
                       </p>
                       {!result.isCorrect && (
@@ -226,7 +226,7 @@ export function BricksChallenge() {
                     {isSupported && (
                       <button
                         onClick={() => speak(result.phrase.english)}
-                        className="p-2 rounded-lg hover:bg-white/50 text-slate-500 hover:text-cyan-600 transition-colors"
+                        className="p-2 rounded-lg hover:bg-white/50 text-tertiary hover:text-cyan-600 transition-colors"
                       >
                         <Volume2 className="w-4 h-4" />
                       </button>
@@ -273,14 +273,14 @@ export function BricksChallenge() {
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-500">
+            <span className="text-sm font-medium text-tertiary">
               Progresso
             </span>
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-secondary">
               {bricksChallenge.currentIndex + 1} / {bricksChallenge.phrases.length}
             </span>
           </div>
-          <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-surface-2 rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-300"
               style={{
@@ -291,7 +291,7 @@ export function BricksChallenge() {
         </div>
 
         {/* Card do desafio */}
-        <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
+        <div className="bg-surface rounded-3xl shadow-xl border border-line overflow-hidden">
           {/* Header */}
           <div className="bg-gradient-to-r from-amber-400 to-orange-500 p-6 text-white">
             <div className="flex items-center justify-between">
@@ -312,7 +312,7 @@ export function BricksChallenge() {
               <span className="inline-block px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-lg mb-3">
                 Traduza para o inglês
               </span>
-              <p className="text-xl text-slate-800 font-medium leading-relaxed">
+              <p className="text-xl text-primary font-medium leading-relaxed">
                 {currentPhrase.portuguese}
               </p>
             </div>
@@ -320,7 +320,7 @@ export function BricksChallenge() {
             {/* Input de resposta */}
             {!showingResult && (
               <div className="mb-6">
-                <p className="text-sm text-slate-500 mb-2">Respostas aproximadas são aceitas.</p>
+                <p className="text-sm text-tertiary mb-2">Respostas aproximadas são aceitas.</p>
                 <div className="relative">
                   <input
                     type="text"
@@ -332,7 +332,7 @@ export function BricksChallenge() {
                       }
                     }}
                     placeholder="Digite sua resposta em inglês..."
-                    className="w-full px-4 py-4 pr-14 bg-slate-50 border-2 border-slate-200 rounded-xl text-lg text-slate-800 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
+                    className="w-full px-4 py-4 pr-14 bg-surface-2 border-2 border-line rounded-xl text-lg text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100"
                     autoFocus
                   />
                   <button
@@ -380,7 +380,7 @@ export function BricksChallenge() {
                 <div className={`p-4 rounded-xl ${
                   lastResult.isCorrect ? 'bg-emerald-50' : 'bg-red-50'
                 }`}>
-                  <p className="text-xs font-medium text-slate-500 mb-1">Sua resposta:</p>
+                  <p className="text-xs font-medium text-tertiary mb-1">Sua resposta:</p>
                   <p className={`font-medium ${
                     lastResult.isCorrect ? 'text-emerald-700' : 'text-red-700'
                   }`}>
@@ -389,11 +389,11 @@ export function BricksChallenge() {
                 </div>
 
                 {/* Resposta correta */}
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="p-4 rounded-xl bg-surface-2 border border-line">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-medium text-slate-500 mb-1">Resposta correta:</p>
-                      <p className="font-medium text-slate-800">{currentPhrase.english}</p>
+                      <p className="text-xs font-medium text-tertiary mb-1">Resposta correta:</p>
+                      <p className="font-medium text-primary">{currentPhrase.english}</p>
                     </div>
                     {isSupported && (
                       <button
@@ -402,7 +402,7 @@ export function BricksChallenge() {
                         className={`p-3 rounded-xl transition-all ${
                           isSpeaking
                             ? 'bg-cyan-100 text-cyan-600'
-                            : 'bg-slate-100 text-slate-500 hover:bg-cyan-50 hover:text-cyan-600'
+                            : 'bg-surface-2 text-tertiary hover:bg-cyan-50 hover:text-cyan-600'
                         }`}
                       >
                         <Volume2 className="w-5 h-5" />
@@ -436,7 +436,7 @@ export function BricksChallenge() {
         {/* Botão cancelar */}
         <button
           onClick={resetBricksChallenge}
-          className="w-full mt-4 py-3 text-slate-500 hover:text-slate-700 transition-colors"
+          className="w-full mt-4 py-3 text-tertiary hover:text-secondary transition-colors"
         >
           Cancelar desafio
         </button>

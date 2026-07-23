@@ -112,10 +112,10 @@ export function ReviewSession() {
           <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full flex items-center justify-center">
             <Trophy className="w-12 h-12 text-emerald-500" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-3">
+          <h2 className="text-2xl font-bold text-primary mb-3">
             Parabéns! 🎉
           </h2>
-          <p className="text-slate-500 mb-6 leading-relaxed">
+          <p className="text-tertiary mb-6 leading-relaxed">
             {selectedGroup 
               ? `Você revisou todos os cards de "${selectedGroup.name}" por hoje!`
               : 'Você não tem cards para revisar agora!'
@@ -151,24 +151,24 @@ export function ReviewSession() {
             }`}>
               <Trophy className="w-12 h-12 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">
+            <h1 className="text-3xl font-bold text-primary mb-2">
               Sessão Completa!
             </h1>
-            <p className="text-slate-500">
+            <p className="text-tertiary">
               {selectedGroup ? `Grupo: ${selectedGroup.name}` : 'Todos os grupos'}
             </p>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 mb-6">
+          <div className="bg-surface rounded-2xl shadow-lg border border-line p-8 mb-6">
             <div className="flex items-center justify-center gap-8 mb-6">
               <div className="text-center">
                 <p className="text-4xl font-bold text-emerald-500">{sessionResults.correct}</p>
-                <p className="text-slate-500">Acertos</p>
+                <p className="text-tertiary">Acertos</p>
               </div>
               <div className="w-px h-16 bg-slate-200" />
               <div className="text-center">
                 <p className="text-4xl font-bold text-red-500">{sessionResults.incorrect}</p>
-                <p className="text-slate-500">Erros</p>
+                <p className="text-tertiary">Erros</p>
               </div>
               <div className="w-px h-16 bg-slate-200" />
               <div className="text-center">
@@ -177,12 +177,12 @@ export function ReviewSession() {
                 }`}>
                   {percentage}%
                 </p>
-                <p className="text-slate-500">Aproveitamento</p>
+                <p className="text-tertiary">Aproveitamento</p>
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 rounded-xl">
-              <p className="text-sm text-slate-600 text-center">
+            <div className="p-4 bg-surface-2 rounded-xl">
+              <p className="text-sm text-secondary text-center">
                 {percentage >= 70 
                   ? '🎉 Excelente! Continue assim!' 
                   : percentage >= 40 
@@ -195,7 +195,7 @@ export function ReviewSession() {
           <div className="flex gap-4">
             <button
               onClick={handleRestart}
-              className="flex-1 py-3 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-5 h-5" />
               Revisar Novamente
@@ -220,17 +220,17 @@ export function ReviewSession() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
               <Flame className="w-6 h-6 text-orange-500" />
               Sessão de Revisão
             </h1>
-            <p className="text-slate-500">
+            <p className="text-tertiary">
               {selectedGroup ? selectedGroup.name : 'Todos os grupos'}
             </p>
           </div>
           <button
             onClick={goToHome}
-            className="px-4 py-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors"
+            className="px-4 py-2 text-tertiary hover:text-secondary hover:bg-surface-2 rounded-xl transition-colors"
           >
             Sair
           </button>
@@ -239,12 +239,12 @@ export function ReviewSession() {
         {/* Progress */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2 text-sm">
-            <span className="text-slate-500">Progresso</span>
-            <span className="font-medium text-slate-700">
+            <span className="text-tertiary">Progresso</span>
+            <span className="font-medium text-secondary">
               {currentIndex + 1} / {cardsToReview.length}
             </span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-2 bg-surface-2 rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300"
               style={{ width: `${((currentIndex + (showResult ? 1 : 0)) / cardsToReview.length) * 100}%` }}
@@ -254,7 +254,7 @@ export function ReviewSession() {
 
         {/* Card atual */}
         {currentCard && (
-          <div className="bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden animate-fade-in">
+          <div className="bg-surface rounded-2xl shadow-lg border border-line overflow-hidden animate-fade-in">
             {/* Header do card */}
             <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-4 text-white">
               <div className="flex items-center justify-between">
@@ -271,7 +271,7 @@ export function ReviewSession() {
             {/* Conteúdo */}
             <div className="p-6">
               {/* Indicador de direção */}
-              <div className="flex items-center gap-2 mb-4 text-xs text-slate-500">
+              <div className="flex items-center gap-2 mb-4 text-xs text-tertiary">
                 <Languages className="w-3.5 h-3.5" />
                 <span>{questionFlag} {questionLang}</span>
                 <ArrowRight className="w-3 h-3" />
@@ -283,7 +283,7 @@ export function ReviewSession() {
                 <span className="inline-block px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-lg mb-3">
                   Traduza para {answerLang.toLowerCase()} {answerFlag}
                 </span>
-                <p className="text-xl text-slate-800 font-medium leading-relaxed">
+                <p className="text-xl text-primary font-medium leading-relaxed">
                   {questionPhrase}
                 </p>
               </div>
@@ -302,7 +302,7 @@ export function ReviewSession() {
                         }
                       }}
                       placeholder="Digite sua resposta em inglês..."
-                      className="w-full px-4 py-4 pr-14 bg-slate-50 border-2 border-slate-200 rounded-xl text-lg text-slate-800 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+                      className="w-full px-4 py-4 pr-14 bg-surface-2 border-2 border-line rounded-xl text-lg text-primary focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
                       autoFocus
                     />
                     <button
@@ -349,17 +349,17 @@ export function ReviewSession() {
                   {/* Sua resposta */}
                   {!isCorrect && (
                     <div className="p-4 rounded-xl bg-red-50">
-                      <p className="text-xs font-medium text-slate-500 mb-1">Sua resposta:</p>
+                      <p className="text-xs font-medium text-tertiary mb-1">Sua resposta:</p>
                       <p className="font-medium text-red-700">{userAnswer || '(vazio)'}</p>
                     </div>
                   )}
 
                   {/* Resposta correta */}
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="p-4 rounded-xl bg-surface-2 border border-line">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-xs font-medium text-slate-500 mb-1">Resposta correta ({answerFlag} {answerLang}):</p>
-                        <p className="font-medium text-slate-800 text-lg">{answerPhrase}</p>
+                        <p className="text-xs font-medium text-tertiary mb-1">Resposta correta ({answerFlag} {answerLang}):</p>
+                        <p className="font-medium text-primary text-lg">{answerPhrase}</p>
                       </div>
                       {isSupported && (
                         <button
@@ -368,7 +368,7 @@ export function ReviewSession() {
                           className={`p-3 rounded-xl transition-all ${
                             isSpeaking
                               ? 'bg-cyan-100 text-cyan-600'
-                              : 'bg-slate-100 text-slate-500 hover:bg-cyan-50 hover:text-cyan-600'
+                              : 'bg-surface-2 text-tertiary hover:bg-cyan-50 hover:text-cyan-600'
                           }`}
                           title="Ouvir em inglês"
                         >
@@ -380,15 +380,15 @@ export function ReviewSession() {
 
                   {/* Imagem associada */}
                   {currentCard.imageUrl && (
-                    <div className="rounded-xl overflow-hidden border border-slate-200">
-                      <div className="p-2 bg-slate-50 border-b border-slate-200 flex items-center gap-2">
-                        <ImageIcon className="w-4 h-4 text-slate-400" />
-                        <span className="text-xs font-medium text-slate-500">Imagem associada</span>
+                    <div className="rounded-xl overflow-hidden border border-line">
+                      <div className="p-2 bg-surface-2 border-b border-line flex items-center gap-2">
+                        <ImageIcon className="w-4 h-4 text-faint" />
+                        <span className="text-xs font-medium text-tertiary">Imagem associada</span>
                       </div>
                       <img
                         src={currentCard.imageUrl}
                         alt={currentCard.englishPhrase}
-                        className="w-full max-h-48 object-contain bg-white"
+                        className="w-full max-h-48 object-contain bg-surface"
                         onError={(e) => {
                           (e.target as HTMLImageElement).style.display = 'none';
                         }}

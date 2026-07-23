@@ -306,8 +306,8 @@ export function MemoryGame() {
           <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-pink-400 to-rose-500 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-500/30">
             <Puzzle className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-slate-800 mb-2">Pairs Challenge</h1>
-          <p className="text-slate-500">Train your memory and English at the same time</p>
+          <h1 className="text-3xl font-bold text-primary mb-2">Pairs Challenge</h1>
+          <p className="text-tertiary">Train your memory and English at the same time</p>
         </div>
 
         {/* Mensagem de importação */}
@@ -328,7 +328,7 @@ export function MemoryGame() {
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
                   showManageMode
                     ? 'bg-pink-500 text-white'
-                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                    : 'bg-surface border border-line text-secondary hover:bg-surface-2'
                 }`}
               >
                 <Settings className="w-4 h-4" />
@@ -337,7 +337,7 @@ export function MemoryGame() {
 
               <button
                 onClick={handleExport}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-surface border border-line text-secondary rounded-xl hover:bg-surface-2 transition-all"
               >
                 <Download className="w-4 h-4" />
                 Exportar Decks
@@ -345,7 +345,7 @@ export function MemoryGame() {
 
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all"
+                className="flex items-center gap-2 px-4 py-2 bg-surface border border-line text-secondary rounded-xl hover:bg-surface-2 transition-all"
               >
                 <Upload className="w-4 h-4" />
                 Importar Decks
@@ -360,7 +360,7 @@ export function MemoryGame() {
             </>
           )}
           {!isPremium && (
-            <p className="text-sm text-slate-600 w-full">
+            <p className="text-sm text-secondary w-full">
               Plano free: jogue nos temas Common Verbs, Adjectives e Body Parts. Assine para todos os
               temas e para gerenciar decks.
             </p>
@@ -391,16 +391,16 @@ export function MemoryGame() {
         {/* Modal: Criar Novo Deck */}
         {showNewDeck && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl p-6 max-w-md w-full animate-fade-in">
+            <div className="bg-surface rounded-2xl p-6 max-w-md w-full animate-fade-in">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-slate-800">Criar Novo Deck</h2>
-                <button onClick={() => setShowNewDeck(false)} className="p-2 hover:bg-slate-100 rounded-lg">
+                <h2 className="text-xl font-bold text-primary">Criar Novo Deck</h2>
+                <button onClick={() => setShowNewDeck(false)} className="p-2 hover:bg-surface-2 rounded-lg">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Título</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Título</label>
                   <input
                     type="text"
                     value={newDeckForm.title}
@@ -411,7 +411,7 @@ export function MemoryGame() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Emoji</label>
+                    <label className="block text-sm font-medium text-secondary mb-1">Emoji</label>
                     <input
                       type="text"
                       value={newDeckForm.emoji}
@@ -421,7 +421,7 @@ export function MemoryGame() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Categoria</label>
+                    <label className="block text-sm font-medium text-secondary mb-1">Categoria</label>
                     <input
                       type="text"
                       value={newDeckForm.category}
@@ -432,7 +432,7 @@ export function MemoryGame() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Descrição</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Descrição</label>
                   <input
                     type="text"
                     value={newDeckForm.description}
@@ -456,10 +456,10 @@ export function MemoryGame() {
         {/* Modal: Editar Deck */}
         {editingDeck && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fade-in">
+            <div className="bg-surface rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-fade-in">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-slate-800">Editar Deck: {editingDeck.title}</h2>
-                <button onClick={() => setEditingDeck(null)} className="p-2 hover:bg-slate-100 rounded-lg">
+                <h2 className="text-xl font-bold text-primary">Editar Deck: {editingDeck.title}</h2>
+                <button onClick={() => setEditingDeck(null)} className="p-2 hover:bg-surface-2 rounded-lg">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -468,7 +468,7 @@ export function MemoryGame() {
               <div className="space-y-4 mb-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Título</label>
+                    <label className="block text-sm font-medium text-secondary mb-1">Título</label>
                     <input
                       type="text"
                       value={deckForm.title}
@@ -477,7 +477,7 @@ export function MemoryGame() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Emoji</label>
+                    <label className="block text-sm font-medium text-secondary mb-1">Emoji</label>
                     <input
                       type="text"
                       value={deckForm.emoji}
@@ -488,7 +488,7 @@ export function MemoryGame() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Categoria</label>
+                    <label className="block text-sm font-medium text-secondary mb-1">Categoria</label>
                     <input
                       type="text"
                       value={deckForm.category}
@@ -497,7 +497,7 @@ export function MemoryGame() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Descrição</label>
+                    <label className="block text-sm font-medium text-secondary mb-1">Descrição</label>
                     <input
                       type="text"
                       value={deckForm.description}
@@ -518,7 +518,7 @@ export function MemoryGame() {
               {/* Lista de pares */}
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-slate-800">Pares ({editingDeck.pairs.length})</h3>
+                  <h3 className="font-semibold text-primary">Pares ({editingDeck.pairs.length})</h3>
                   <button
                     onClick={() => {
                       setNewPairMode(editingDeck.id);
@@ -536,7 +536,7 @@ export function MemoryGame() {
                   <div className="mb-4 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
                     <div className="grid grid-cols-2 gap-4 mb-3">
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Palavra</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">Palavra</label>
                         <input
                           type="text"
                           value={pairForm.word}
@@ -546,7 +546,7 @@ export function MemoryGame() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">URL da Imagem</label>
+                        <label className="block text-sm font-medium text-secondary mb-1">URL da Imagem</label>
                         <input
                           type="text"
                           value={pairForm.imageUrl}
@@ -554,7 +554,7 @@ export function MemoryGame() {
                           className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                           placeholder="https://images.unsplash.com/... ou link da página Unsplash"
                         />
-                        <p className="text-xs text-slate-500 mt-1">
+                        <p className="text-xs text-tertiary mt-1">
                           Pode colar o link da página do Unsplash; convertemos automaticamente. Ou: na foto, botão direito → Copiar endereço da imagem.
                         </p>
                       </div>
@@ -569,7 +569,7 @@ export function MemoryGame() {
                       </button>
                       <button
                         onClick={() => setNewPairMode(null)}
-                        className="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-all"
+                        className="px-4 py-2 bg-slate-200 text-secondary rounded-lg hover:bg-slate-300 transition-all"
                       >
                         Cancelar
                       </button>
@@ -580,7 +580,7 @@ export function MemoryGame() {
                 {/* Lista de pares existentes */}
                 <div className="space-y-2 max-h-64 overflow-y-auto">
                   {editingDeck.pairs.map((pair) => (
-                    <div key={pair.pairId} className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl">
+                    <div key={pair.pairId} className="flex items-center gap-3 p-3 bg-surface-2 rounded-xl">
                       <img
                         src={normalizeImageUrl(pair.imageUrl)}
                         alt={pair.word}
@@ -589,7 +589,7 @@ export function MemoryGame() {
                           (e.target as HTMLImageElement).src = 'https://via.placeholder.com/48?text=?';
                         }}
                       />
-                      <span className="flex-1 font-medium text-slate-700">{pair.word}</span>
+                      <span className="flex-1 font-medium text-secondary">{pair.word}</span>
                       <button
                         onClick={() => startEditPair(editingDeck, pair)}
                         className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
@@ -613,16 +613,16 @@ export function MemoryGame() {
         {/* Modal: Editar Par */}
         {editingPair && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl p-6 max-w-md w-full animate-fade-in">
+            <div className="bg-surface rounded-2xl p-6 max-w-md w-full animate-fade-in">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-slate-800">Editar Par</h2>
-                <button onClick={() => setEditingPair(null)} className="p-2 hover:bg-slate-100 rounded-lg">
+                <h2 className="text-xl font-bold text-primary">Editar Par</h2>
+                <button onClick={() => setEditingPair(null)} className="p-2 hover:bg-surface-2 rounded-lg">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Palavra</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">Palavra</label>
                   <input
                     type="text"
                     value={pairForm.word}
@@ -631,7 +631,7 @@ export function MemoryGame() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">URL da Imagem</label>
+                  <label className="block text-sm font-medium text-secondary mb-1">URL da Imagem</label>
                   <input
                     type="text"
                     value={pairForm.imageUrl}
@@ -639,7 +639,7 @@ export function MemoryGame() {
                     className="w-full px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
                     placeholder="https://images.unsplash.com/... ou link da página Unsplash"
                   />
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-tertiary mt-1">
                     Pode colar o link da página do Unsplash; convertemos automaticamente. Ou: na foto, botão direito → Copiar endereço da imagem.
                   </p>
                 </div>
@@ -668,7 +668,7 @@ export function MemoryGame() {
 
         {/* Grid de Decks */}
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-lg font-semibold text-slate-700 mb-4">
+          <h2 className="text-lg font-semibold text-secondary mb-4">
             {showManageMode ? 'Gerenciar Decks' : 'Choose a deck'}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -697,7 +697,7 @@ export function MemoryGame() {
         <div className="max-w-4xl mx-auto mt-8">
           <button
             onClick={goToHome}
-            className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Home
@@ -719,10 +719,10 @@ export function MemoryGame() {
             <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-pink-400 to-rose-500 rounded-2xl flex items-center justify-center shadow-lg">
               <span className="text-3xl">{memoryGame.selectedDeck?.emoji}</span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-800 mb-1">
+            <h1 className="text-2xl font-bold text-primary mb-1">
               {memoryGame.selectedDeck?.title}
             </h1>
-            <p className="text-slate-500">{memoryGame.selectedDeck?.description}</p>
+            <p className="text-tertiary">{memoryGame.selectedDeck?.description}</p>
           </div>
 
           {/* Opções de Dificuldade */}
@@ -741,14 +741,14 @@ export function MemoryGame() {
                     isSelected
                       ? 'border-pink-500 bg-pink-50'
                       : hasEnoughPairs
-                      ? 'border-slate-200 bg-white hover:border-slate-300'
-                      : 'border-slate-100 bg-slate-50 opacity-50 cursor-not-allowed'
+                      ? 'border-line bg-surface hover:border-slate-300'
+                      : 'border-line bg-surface-2 opacity-50 cursor-not-allowed'
                   }`}
                 >
                   <span className="text-2xl">{config.emoji}</span>
                   <div className="flex-1 text-left">
-                    <p className="font-semibold text-slate-800">{config.label}</p>
-                    <p className="text-sm text-slate-500">{config.pairs} pairs</p>
+                    <p className="font-semibold text-primary">{config.label}</p>
+                    <p className="text-sm text-tertiary">{config.pairs} pairs</p>
                   </div>
                   {isSelected && (
                     <CheckCircle className="w-5 h-5 text-pink-500" />
@@ -762,7 +762,7 @@ export function MemoryGame() {
           <div className="flex gap-3">
             <button
               onClick={resetMemoryGame}
-              className="flex-1 py-3 bg-slate-100 text-slate-700 font-semibold rounded-xl hover:bg-slate-200 transition-all flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-surface-2 text-secondary font-semibold rounded-xl hover:bg-slate-200 transition-all flex items-center justify-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -793,21 +793,21 @@ export function MemoryGame() {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={resetMemoryGame}
-            className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-colors"
+            className="p-2 bg-surface-2 hover:bg-slate-200 text-secondary rounded-xl transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-sm border border-slate-200">
+            <div className="flex items-center gap-2 px-4 py-2 bg-surface rounded-xl shadow-sm border border-line">
               <Target className="w-4 h-4 text-pink-500" />
-              <span className="font-semibold text-slate-700">
+              <span className="font-semibold text-secondary">
                 {memoryGame.matches} / {totalPairs}
               </span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl shadow-sm border border-slate-200">
+            <div className="flex items-center gap-2 px-4 py-2 bg-surface rounded-xl shadow-sm border border-line">
               <Zap className="w-4 h-4 text-amber-500" />
-              <span className="font-semibold text-slate-700">
+              <span className="font-semibold text-secondary">
                 {memoryGame.attempts} tries
               </span>
             </div>
@@ -881,45 +881,45 @@ export function MemoryGame() {
                 <Puzzle className="w-12 h-12 text-white" />
               )}
             </div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">
+            <h1 className="text-3xl font-bold text-primary mb-2">
               {accuracy >= 70 ? 'Excellent! 🎉' : accuracy >= 50 ? 'Good Job! 💪' : 'Keep Practicing! 📚'}
             </h1>
-            <p className="text-slate-500">{memoryGame.selectedDeck?.title}</p>
+            <p className="text-tertiary">{memoryGame.selectedDeck?.title}</p>
           </div>
 
           {/* Card de estatísticas */}
-          <div className="bg-white rounded-3xl shadow-xl border border-slate-200 p-6 mb-6">
+          <div className="bg-surface rounded-3xl shadow-xl border border-line p-6 mb-6">
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <CheckCircle className="w-5 h-5 text-emerald-500" />
                 </div>
                 <p className="text-3xl font-bold text-emerald-500">{memoryGame.matches}</p>
-                <p className="text-sm text-slate-500">Correct</p>
+                <p className="text-sm text-tertiary">Correct</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <XCircle className="w-5 h-5 text-red-500" />
                 </div>
                 <p className="text-3xl font-bold text-red-500">{mistakes}</p>
-                <p className="text-sm text-slate-500">Mistakes</p>
+                <p className="text-sm text-tertiary">Mistakes</p>
               </div>
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 mb-1">
                   <Clock className="w-5 h-5 text-blue-500" />
                 </div>
                 <p className="text-3xl font-bold text-blue-500">{duration}s</p>
-                <p className="text-sm text-slate-500">Time</p>
+                <p className="text-sm text-tertiary">Time</p>
               </div>
             </div>
 
             {/* Barra de progresso */}
             <div className="mb-4">
-              <div className="flex justify-between text-sm text-slate-600 mb-1">
+              <div className="flex justify-between text-sm text-secondary mb-1">
                 <span>Accuracy</span>
                 <span className="font-semibold">{accuracy}%</span>
               </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-3 bg-surface-2 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-500 ${
                     accuracy >= 70 ? 'bg-emerald-500' : accuracy >= 50 ? 'bg-amber-500' : 'bg-rose-500'
@@ -932,7 +932,7 @@ export function MemoryGame() {
             {/* Review de erros */}
             {memoryGame.mistakes.length > 0 && (
               <div className="mt-6">
-                <h3 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-secondary mb-3 flex items-center gap-2">
                   <XCircle className="w-4 h-4 text-red-500" />
                   Review Mistakes
                 </h3>
@@ -947,7 +947,7 @@ export function MemoryGame() {
                         alt={pair.word}
                         className="w-12 h-12 rounded-lg object-cover"
                       />
-                      <span className="font-medium text-slate-700">{pair.word}</span>
+                      <span className="font-medium text-secondary">{pair.word}</span>
                     </div>
                   ))}
                 </div>
@@ -959,7 +959,7 @@ export function MemoryGame() {
           <div className="flex gap-3">
             <button
               onClick={resetMemoryGame}
-              className="flex-1 py-3 bg-white border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-all flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-surface border-2 border-line text-secondary font-semibold rounded-xl hover:bg-surface-2 transition-all flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-4 h-4" />
               Play Again
@@ -1002,7 +1002,7 @@ function DeckCard({
 }) {
   return (
     <div
-      className={`relative overflow-hidden p-6 bg-white rounded-2xl shadow-lg border border-slate-200 transition-all text-left group ${
+      className={`relative overflow-hidden p-6 bg-surface rounded-2xl shadow-lg border border-line transition-all text-left group ${
         showManageMode ? '' : locked ? 'cursor-pointer' : 'hover:border-pink-300 hover:shadow-xl cursor-pointer'
       }`}
       onClick={onClick}
@@ -1018,10 +1018,10 @@ function DeckCard({
           {deck.emoji}
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-slate-800 mb-1">{deck.title}</h3>
-          <p className="text-sm text-slate-500 mb-2">{deck.description}</p>
+          <h3 className="font-semibold text-primary mb-1">{deck.title}</h3>
+          <p className="text-sm text-tertiary mb-2">{deck.description}</p>
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs font-medium rounded-full">
+            <span className="px-2 py-0.5 bg-surface-2 text-secondary text-xs font-medium rounded-full">
               {deck.pairs.length} pairs
             </span>
             <span className="px-2 py-0.5 bg-pink-100 text-pink-600 text-xs font-medium rounded-full">
@@ -1038,7 +1038,7 @@ function DeckCard({
       
       {/* Botões de gerenciamento */}
       {showManageMode && (
-        <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
+        <div className="flex gap-2 mt-4 pt-4 border-t border-line">
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -1114,7 +1114,7 @@ function MemoryCard({
           className={`absolute inset-0 backface-hidden rotate-y-180 rounded-xl flex items-center justify-center p-2 ${
             card.isMatched
               ? 'bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-300'
-              : 'bg-white border-2 border-pink-200'
+              : 'bg-surface border-2 border-pink-200'
           } shadow-lg`}
         >
           {card.type === 'image' ? (
@@ -1129,7 +1129,7 @@ function MemoryCard({
           ) : (
             <span className={`text-center font-bold ${
               card.content.length > 10 ? 'text-sm' : 'text-lg'
-            } ${card.isMatched ? 'text-emerald-700' : 'text-slate-700'}`}>
+            } ${card.isMatched ? 'text-emerald-700' : 'text-secondary'}`}>
               {card.content}
             </span>
           )}

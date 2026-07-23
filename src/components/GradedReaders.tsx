@@ -90,7 +90,7 @@ export function GradedReaders() {
       case 'sepia':
         return 'bg-[#F4ECD8] text-zinc-800';
       default:
-        return 'bg-white text-zinc-800';
+        return 'bg-surface text-zinc-800';
     }
   };
 
@@ -102,7 +102,7 @@ export function GradedReaders() {
       case 'sepia':
         return 'bg-[#E8DCC8] border-amber-300 text-zinc-800';
       default:
-        return 'bg-white border-slate-200 text-zinc-800';
+        return 'bg-surface border-line text-zinc-800';
     }
   };
 
@@ -165,7 +165,7 @@ export function GradedReaders() {
             <div className="flex items-center justify-between mb-8">
               <button
                 onClick={() => setShowQuestions(false)}
-                className="flex items-center gap-2 text-slate-500 hover:text-slate-700"
+                className="flex items-center gap-2 text-tertiary hover:text-secondary"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Back to reading
@@ -180,7 +180,7 @@ export function GradedReaders() {
                   <div key={question.id} className={`p-6 rounded-2xl border ${
                     readerTheme === 'dark' ? 'border-zinc-700 bg-zinc-800' : 
                     readerTheme === 'sepia' ? 'border-amber-200 bg-[#EDE4D3]' : 
-                    'border-slate-200 bg-slate-50'
+                    'border-line bg-surface-2'
                   }`}>
                     <p className="font-semibold mb-4">{qIndex + 1}. {question.question}</p>
                     <div className="space-y-2">
@@ -193,7 +193,7 @@ export function GradedReaders() {
                               ? 'border-blue-500 bg-blue-50 text-blue-700'
                               : readerTheme === 'dark'
                               ? 'border-zinc-600 hover:border-zinc-500'
-                              : 'border-slate-200 hover:border-slate-300'
+                              : 'border-line hover:border-slate-300'
                           }`}
                         >
                           {option}
@@ -230,7 +230,7 @@ export function GradedReaders() {
                 <h3 className="text-2xl font-bold mb-2">
                   {score.correct === score.total ? 'Perfect!' : score.correct >= score.total / 2 ? 'Good job!' : 'Keep practicing!'}
                 </h3>
-                <p className="text-slate-500 mb-8">
+                <p className="text-tertiary mb-8">
                   You got {score.correct} out of {score.total} questions correct.
                 </p>
 
@@ -268,7 +268,7 @@ export function GradedReaders() {
                       setShowResults(false);
                       setQuestionAnswers({});
                     }}
-                    className="flex-1 py-3 border-2 border-slate-200 rounded-xl font-semibold hover:bg-slate-50 flex items-center justify-center gap-2"
+                    className="flex-1 py-3 border-2 border-line rounded-xl font-semibold hover:bg-surface-2 flex items-center justify-center gap-2"
                   >
                     <RotateCcw className="w-4 h-4" />
                     Try Again
@@ -300,17 +300,17 @@ export function GradedReaders() {
         <div className={`sticky top-0 z-10 backdrop-blur-lg ${
           readerTheme === 'dark' ? 'bg-zinc-900/90' : 
           readerTheme === 'sepia' ? 'bg-[#F4ECD8]/90' : 
-          'bg-white/90'
+          'bg-surface'
         } border-b ${
           readerTheme === 'dark' ? 'border-zinc-800' : 
           readerTheme === 'sepia' ? 'border-amber-200' : 
-          'border-slate-200'
+          'border-line'
         }`}>
           <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <button
                 onClick={closeBook}
-                className="flex items-center gap-2 text-slate-500 hover:text-slate-700"
+                className="flex items-center gap-2 text-tertiary hover:text-secondary"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="hidden sm:inline">Back</span>
@@ -335,17 +335,17 @@ export function GradedReaders() {
 
             <div className="text-center">
               <h1 className="font-semibold truncate max-w-[200px] sm:max-w-none">{selectedBook.title}</h1>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-tertiary">
                 {selectedBook.totalWords} words • {selectedBook.estimatedMinutes} min read
               </p>
             </div>
 
             {/* Theme Switcher */}
-            <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-surface-2 rounded-lg p-1">
               <button
                 onClick={() => setReaderTheme('light')}
                 className={`p-2 rounded-md transition-colors ${
-                  readerTheme === 'light' ? 'bg-white shadow-sm' : 'hover:bg-slate-200'
+                  readerTheme === 'light' ? 'bg-surface shadow-sm' : 'hover:bg-slate-200'
                 }`}
                 title="Light"
               >
@@ -354,7 +354,7 @@ export function GradedReaders() {
               <button
                 onClick={() => setReaderTheme('sepia')}
                 className={`p-2 rounded-md transition-colors ${
-                  readerTheme === 'sepia' ? 'bg-white shadow-sm' : 'hover:bg-slate-200'
+                  readerTheme === 'sepia' ? 'bg-surface shadow-sm' : 'hover:bg-slate-200'
                 }`}
                 title="Sepia"
               >
@@ -378,12 +378,12 @@ export function GradedReaders() {
           {/* Book Title */}
           <div className="text-center mb-12">
             <h1 className={`text-3xl font-serif font-bold mb-2 ${
-              readerTheme === 'dark' ? 'text-white' : 'text-slate-800'
+              readerTheme === 'dark' ? 'text-white' : 'text-primary'
             }`}>
               {selectedBook.title}
             </h1>
             <p className={`text-sm ${
-              readerTheme === 'dark' ? 'text-slate-400' : 'text-slate-500'
+              readerTheme === 'dark' ? 'text-faint' : 'text-tertiary'
             }`}>
               by {selectedBook.author}
             </p>
@@ -411,7 +411,7 @@ export function GradedReaders() {
                         ? 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
                         : readerTheme === 'sepia'
                         ? 'bg-amber-200/80 text-amber-800 hover:bg-amber-300'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        : 'bg-surface-2 text-secondary hover:bg-slate-200'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                     title="Reproduzir frase"
                     aria-label="Reproduzir áudio da frase"
@@ -451,7 +451,7 @@ export function GradedReaders() {
               'bg-slate-300'
             }`} />
             <p className={`mt-4 text-sm italic ${
-              readerTheme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+              readerTheme === 'dark' ? 'text-tertiary' : 'text-faint'
             }`}>
               ~ The End ~
             </p>
@@ -463,11 +463,11 @@ export function GradedReaders() {
           <div className={`fixed bottom-0 left-0 right-0 ${
             readerTheme === 'dark' ? 'bg-zinc-900/90' : 
             readerTheme === 'sepia' ? 'bg-[#F4ECD8]/90' : 
-            'bg-white/90'
+            'bg-surface'
           } backdrop-blur-lg border-t ${
             readerTheme === 'dark' ? 'border-zinc-800' : 
             readerTheme === 'sepia' ? 'border-amber-200' : 
-            'border-slate-200'
+            'border-line'
           }`}>
             <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-center">
               <button
@@ -495,12 +495,12 @@ export function GradedReaders() {
               <span className="text-lg font-bold">{activeWord.word.replace(/[.,!?;:"'()]/g, '')}</span>
               <button
                 onClick={closePopover}
-                className="p-1 hover:bg-slate-100 rounded-lg"
+                className="p-1 hover:bg-surface-2 rounded-lg"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-slate-500 mb-3">{activeWord.translation}</p>
+            <p className="text-tertiary mb-3">{activeWord.translation}</p>
             <button
               onClick={() => speakWord(activeWord.word.replace(/[.,!?;:"'()]/g, ''))}
               disabled={isSpeaking}
@@ -524,7 +524,7 @@ export function GradedReaders() {
       <div className="max-w-4xl mx-auto mb-4">
         <button
           onClick={goToHome}
-          className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-slate-800 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 text-secondary hover:text-primary transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
@@ -536,8 +536,8 @@ export function GradedReaders() {
         <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/30">
           <BookOpen className="w-10 h-10 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-slate-800 mb-2">Graded Readers</h1>
-        <p className="text-slate-500">Learn English through reading.</p>
+        <h1 className="text-3xl font-bold text-primary mb-2">Graded Readers</h1>
+        <p className="text-tertiary">Learn English through reading.</p>
       </div>
 
       {/* Level Tabs */}
@@ -553,7 +553,7 @@ export function GradedReaders() {
                 className={`px-6 py-3 rounded-xl font-semibold transition-all ${
                   readerLevel === level
                     ? `bg-${config.color}-500 text-white shadow-lg`
-                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                    : 'bg-surface border border-line text-secondary hover:bg-surface-2'
                 }`}
                 style={{
                   backgroundColor: readerLevel === level 
@@ -572,7 +572,7 @@ export function GradedReaders() {
         </div>
         
         {/* Level info */}
-        <div className="mt-4 text-center text-sm text-slate-500">
+        <div className="mt-4 text-center text-sm text-tertiary">
           <span className="font-medium">{READER_LEVEL_CONFIG[readerLevel].label}</span>
           {' • '}
           {READER_LEVEL_CONFIG[readerLevel].vocabularyRange}
@@ -583,13 +583,13 @@ export function GradedReaders() {
 
       {/* Sub Tabs */}
       <div className="max-w-4xl mx-auto mb-6">
-        <div className="flex gap-2 justify-center border-b border-slate-200 pb-2">
+        <div className="flex gap-2 justify-center border-b border-line pb-2">
           <button
             onClick={() => setReaderSubTab('library')}
             className={`flex items-center gap-2 px-4 py-2 rounded-t-xl font-medium transition-all ${
               readerSubTab === 'library'
-                ? 'bg-white border border-b-0 border-slate-200 text-blue-600'
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-surface border border-b-0 border-line text-blue-600'
+                : 'text-tertiary hover:text-secondary'
             }`}
           >
             <Library className="w-4 h-4" />
@@ -599,8 +599,8 @@ export function GradedReaders() {
             onClick={() => setReaderSubTab('create')}
             className={`flex items-center gap-2 px-4 py-2 rounded-t-xl font-medium transition-all ${
               readerSubTab === 'create'
-                ? 'bg-white border border-b-0 border-slate-200 text-blue-600'
-                : 'text-slate-500 hover:text-slate-700'
+                ? 'bg-surface border border-b-0 border-line text-blue-600'
+                : 'text-tertiary hover:text-secondary'
             }`}
           >
             <Sparkles className="w-4 h-4" />
@@ -616,22 +616,22 @@ export function GradedReaders() {
             {/* Search and Filter */}
             <div className="flex flex-col sm:flex-row gap-4 mb-6">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-faint" />
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Search books..."
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                  className="w-full pl-10 pr-4 py-3 bg-surface border border-line rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
                 />
               </div>
               
               <div className="flex items-center gap-2">
-                <Filter className="w-5 h-5 text-slate-400" />
+                <Filter className="w-5 h-5 text-faint" />
                 <select
                   value={selectedTag}
                   onChange={(e) => setSelectedTag(e.target.value as BookTag | 'all')}
-                  className="px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400"
+                  className="px-4 py-3 bg-surface border border-line rounded-xl focus:outline-none focus:border-blue-400"
                 >
                   <option value="all">All Topics</option>
                   {BOOK_TAGS.map(tag => (
@@ -647,8 +647,8 @@ export function GradedReaders() {
             {filteredBooks.length === 0 ? (
               <div className="text-center py-16">
                 <BookOpen className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-                <h3 className="text-xl font-semibold text-slate-700 mb-2">No books found</h3>
-                <p className="text-slate-500">Try a different search or filter</p>
+                <h3 className="text-xl font-semibold text-secondary mb-2">No books found</h3>
+                <p className="text-tertiary">Try a different search or filter</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -706,7 +706,7 @@ function BookCard({
   }, [book.id, book.coverUrl, fallbackCover]);
 
   return (
-    <div className="relative bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all text-left group">
+    <div className="relative bg-surface rounded-2xl shadow-lg border border-line overflow-hidden hover:shadow-xl hover:border-blue-200 transition-all text-left group">
       <button
         type="button"
         onClick={() => onOpen(book)}
@@ -728,7 +728,7 @@ function BookCard({
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <BookOpen className="w-16 h-16 text-slate-400" />
+              <BookOpen className="w-16 h-16 text-faint" />
             </div>
           )}
 
@@ -762,10 +762,10 @@ function BookCard({
 
         {/* Info */}
         <div className="p-4">
-          <h3 className="font-semibold text-slate-800 mb-1 line-clamp-1">{book.title}</h3>
-          <p className="text-sm text-slate-500 mb-3 line-clamp-2">{book.description}</p>
+          <h3 className="font-semibold text-primary mb-1 line-clamp-1">{book.title}</h3>
+          <p className="text-sm text-tertiary mb-3 line-clamp-2">{book.description}</p>
 
-          <div className="flex items-center gap-4 text-xs text-slate-400">
+          <div className="flex items-center gap-4 text-xs text-faint">
             <span className="flex items-center gap-1">
               <FileText className="w-3 h-3" />
               {book.totalWords} words
@@ -783,7 +783,7 @@ function BookCard({
               return (
                 <span
                   key={tag}
-                  className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded-full"
+                  className="px-2 py-0.5 bg-surface-2 text-secondary text-xs rounded-full"
                 >
                   {tagInfo?.emoji} {tagInfo?.label}
                 </span>
@@ -1016,16 +1016,16 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+    <div className="bg-surface rounded-2xl shadow-lg border border-line p-6">
       <SubscriptionModal
         open={showSubscriptionModal}
         onClose={() => setShowSubscriptionModal(false)}
       />
-      <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+      <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
         <Sparkles className="w-5 h-5 text-purple-500" />
         Criar história com IA (Groq – grátis)
       </h3>
-      <p className="text-sm text-slate-500 mb-6">
+      <p className="text-sm text-tertiary mb-6">
         Crie diversas histórias divertidas com a IA de acordo com seu nível. Use uma chave gratuita do
         Groq; a resposta vem em JSON com texto e quiz de múltipla escolha para o modo Take Quiz.
         {!isPremium && (
@@ -1038,7 +1038,7 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
       <div className="space-y-4">
         {/* API Key */}
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-2">
+          <label className="block text-sm font-medium text-secondary mb-2">
             <Key className="w-4 h-4 inline mr-1" />
             API Key Groq (obrigatório para gerar aqui)
           </label>
@@ -1048,19 +1048,19 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
               value={apiKey}
               onChange={(e) => saveApiKey(e.target.value)}
               placeholder="gsk_..."
-              className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 font-mono text-sm"
+              className="flex-1 px-4 py-3 bg-surface-2 border border-line rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 font-mono text-sm"
             />
             <a
               href="https://console.groq.com/keys"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-4 py-3 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 text-sm"
+              className="inline-flex items-center gap-1 px-4 py-3 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 text-sm"
             >
               <ExternalLink className="w-4 h-4" />
               Obter chave
             </a>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-faint mt-1">
             Grátis em{' '}
             <a
               href="https://console.groq.com"
@@ -1076,23 +1076,23 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
 
         {/* Title */}
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-2">Título (opcional)</label>
+          <label className="block text-sm font-medium text-secondary mb-2">Título (opcional)</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="ex.: A Day at the Beach"
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+            className="w-full px-4 py-3 bg-surface-2 border border-line rounded-xl focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
           />
         </div>
 
         {/* Theme */}
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-2">Tema</label>
+          <label className="block text-sm font-medium text-secondary mb-2">Tema</label>
           <select
             value={theme}
             onChange={(e) => setTheme(e.target.value as BookTag)}
-            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-blue-400"
+            className="w-full px-4 py-3 bg-surface-2 border border-line rounded-xl focus:outline-none focus:border-blue-400"
           >
             {BOOK_TAGS.map((tag) => (
               <option key={tag.tag} value={tag.tag}>
@@ -1104,7 +1104,7 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
 
         {/* Size */}
         <div>
-          <label className="block text-sm font-medium text-slate-600 mb-2">Tamanho</label>
+          <label className="block text-sm font-medium text-secondary mb-2">Tamanho</label>
           <div className="flex gap-2">
             {[
               { value: 'short', label: 'Curto', words: '150-200' },
@@ -1117,11 +1117,11 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
                 className={`flex-1 py-3 rounded-xl border-2 transition-all ${
                   size === option.value
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-slate-200 hover:border-slate-300'
+                    : 'border-line hover:border-slate-300'
                 }`}
               >
                 <span className="font-medium">{option.label}</span>
-                <span className="block text-xs text-slate-500">{option.words} palavras</span>
+                <span className="block text-xs text-tertiary">{option.words} palavras</span>
               </button>
             ))}
           </div>
@@ -1152,16 +1152,16 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
           )}
         </button>
 
-        <div className="border-t border-slate-200 pt-4 mt-4">
-          <p className="text-sm font-medium text-slate-600 mb-2">Ou copie o prompt e use em outro lugar</p>
+        <div className="border-t border-line pt-4 mt-4">
+          <p className="text-sm font-medium text-secondary mb-2">Ou copie o prompt e use em outro lugar</p>
           <textarea
             value={generatePrompt()}
             readOnly
-            className="w-full min-h-[200px] px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-mono resize-y"
+            className="w-full min-h-[200px] px-4 py-3 bg-surface-2 border border-line rounded-xl text-sm font-mono resize-y"
           />
           <button
             onClick={copyPrompt}
-            className="mt-2 w-full py-2 border-2 border-slate-200 rounded-xl font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+            className="mt-2 w-full py-2 border-2 border-line rounded-xl font-medium text-secondary hover:bg-surface-2 transition-colors"
           >
             Copiar prompt
           </button>

@@ -38,16 +38,16 @@ export function StudentMaterials() {
           <GraduationCap className="w-6 h-6 text-violet-600" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Materiais do Professor</h2>
-          <p className="text-sm text-slate-500">Conteudo disponibilizado pelo seu professor</p>
+          <h2 className="text-xl font-bold text-primary">Materiais do Professor</h2>
+          <p className="text-sm text-tertiary">Conteudo disponibilizado pelo seu professor</p>
         </div>
       </div>
 
       {materials.length === 0 ? (
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-12 shadow-sm border border-slate-100 text-center">
+        <div className="bg-surface backdrop-blur-sm rounded-2xl p-12 shadow-sm border border-line text-center">
           <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 mb-1">Nenhum material disponivel</p>
-          <p className="text-xs text-slate-400">Seu professor ainda nao atribuiu materiais para voce</p>
+          <p className="text-tertiary mb-1">Nenhum material disponivel</p>
+          <p className="text-xs text-faint">Seu professor ainda nao atribuiu materiais para voce</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -55,16 +55,16 @@ export function StudentMaterials() {
             const meta = TYPE_META[m.type] || TYPE_META.text;
             const Icon = meta.icon;
             return (
-              <div key={`${m.id}-${m.assignedAt}`} className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+              <div key={`${m.id}-${m.assignedAt}`} className="bg-surface backdrop-blur-sm rounded-2xl p-5 shadow-sm border border-line hover:shadow-md transition-shadow">
                 <div className="flex items-start gap-4">
                   <div className={`p-2.5 rounded-xl ${meta.color} shrink-0`}>
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-slate-800">{m.title}</h3>
-                    {m.description && <p className="text-sm text-slate-500 mt-0.5">{m.description}</p>}
+                    <h3 className="font-semibold text-primary">{m.title}</h3>
+                    {m.description && <p className="text-sm text-tertiary mt-0.5">{m.description}</p>}
                     {m.content && (
-                      <div className="mt-2 p-3 bg-slate-50 rounded-xl text-sm text-slate-700 whitespace-pre-wrap">
+                      <div className="mt-2 p-3 bg-surface-2 rounded-xl text-sm text-secondary whitespace-pre-wrap">
                         {m.content}
                       </div>
                     )}
@@ -83,11 +83,11 @@ export function StudentMaterials() {
                         {meta.label}
                       </span>
                       {m.teacher.name && (
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-faint">
                           Prof. {m.teacher.name}
                         </span>
                       )}
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-faint">
                         {new Date(m.assignedAt).toLocaleDateString('pt-BR')}
                       </span>
                     </div>
