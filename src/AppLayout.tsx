@@ -58,7 +58,7 @@ export function AppLayout() {
       {!isFullscreen && <MobileBottomBar />}
 
       <main className="min-h-screen">
-        <div className={`relative ${isFullscreen ? '' : 'pt-16 lg:pt-16 pb-20 lg:pb-4'}`}>
+        <div className={`relative z-10 ${isFullscreen ? '' : 'pt-16 lg:pt-16 pb-20 lg:pb-4'}`}>
           {viewMode === 'home' && <Home />}
           {viewMode === 'cards' && <CardList />}
           {viewMode === 'review' && <ReviewSession />}

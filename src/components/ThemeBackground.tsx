@@ -34,10 +34,19 @@ export function ThemeBackground() {
   const animation = scene.motion === 'rise' ? 'rpg-rise' : 'rpg-fall';
 
   return (
+    // z-0 (e NÃO z-index negativo, que era pintado atrás do fundo do body e
+    // não aparecia). O conteúdo do app fica acima por ter z-10.
+    // O cenário fica aqui em vez de background-attachment:fixed no body,
+    // que é problemático no Safari do iOS.
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
-      style={{ background: scene.background }}
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      style={{
+        backgroundImage: 'var(--scene-bg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
     >
       {/* Brilho superior que "respira" */}
       <div

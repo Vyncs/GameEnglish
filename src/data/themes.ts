@@ -15,6 +15,12 @@ export interface ThemeScene {
   motion: 'rise' | 'fall';
   particle: string;
   glow: string;
+  /**
+   * Imagem de wallpaper (opcional), servida de /themes/.
+   * Fica ATRÁS dos gradientes, que funcionam como vinheta/escurecimento
+   * para o texto continuar legível.
+   */
+  image?: string;
 }
 
 /** Superfícies e textos — trocá-las é o que faz o modo escuro funcionar. */
@@ -132,10 +138,9 @@ export const THEMES: AppTheme[] = [
     mode: 'dark',
     scene: {
       background:
-        'radial-gradient(1100px 620px at 12% -10%, rgba(16, 185, 129, 0.24) 0%, transparent 62%),' +
-        'radial-gradient(900px 520px at 95% 6%, rgba(20, 184, 166, 0.20) 0%, transparent 58%),' +
-        'radial-gradient(780px 520px at 45% 110%, rgba(132, 204, 22, 0.16) 0%, transparent 62%),' +
-        'linear-gradient(180deg, #071410 0%, #040c0a 100%)',
+        'radial-gradient(1200px 700px at 50% 0%, rgba(16, 185, 129, 0.14) 0%, transparent 60%),' +
+        'linear-gradient(180deg, rgba(5, 14, 11, 0.68) 0%, rgba(4, 10, 8, 0.90) 100%)',
+      image: '/themes/floresta.jpg',
       motion: 'rise',
       particle: 'rgba(190, 242, 100, 0.95)',
       glow: 'rgba(16, 185, 129, 0.28)',
@@ -157,10 +162,9 @@ export const THEMES: AppTheme[] = [
     mode: 'dark',
     scene: {
       background:
-        'radial-gradient(1100px 620px at 18% -10%, rgba(56, 189, 248, 0.26) 0%, transparent 62%),' +
-        'radial-gradient(900px 520px at 92% 2%, rgba(59, 130, 246, 0.22) 0%, transparent 58%),' +
-        'radial-gradient(760px 520px at 55% 108%, rgba(165, 243, 252, 0.14) 0%, transparent 62%),' +
-        'linear-gradient(180deg, #071523 0%, #040c15 100%)',
+        'radial-gradient(1200px 700px at 50% 0%, rgba(56, 189, 248, 0.14) 0%, transparent 60%),' +
+        'linear-gradient(180deg, rgba(6, 15, 28, 0.55) 0%, rgba(4, 10, 20, 0.88) 100%)',
+      image: '/themes/gelo.jpg',
       motion: 'fall',
       particle: 'rgba(255, 255, 255, 0.95)',
       glow: 'rgba(56, 189, 248, 0.30)',
@@ -182,10 +186,9 @@ export const THEMES: AppTheme[] = [
     mode: 'dark',
     scene: {
       background:
-        'radial-gradient(1000px 600px at 50% -12%, rgba(249, 115, 22, 0.26) 0%, transparent 60%),' +
-        'radial-gradient(860px 520px at 6% 8%, rgba(239, 68, 68, 0.20) 0%, transparent 58%),' +
-        'radial-gradient(780px 520px at 96% 104%, rgba(217, 119, 6, 0.18) 0%, transparent 62%),' +
-        'linear-gradient(180deg, #180f0b 0%, #0c0705 100%)',
+        'radial-gradient(1200px 700px at 50% 0%, rgba(249, 115, 22, 0.16) 0%, transparent 60%),' +
+        'linear-gradient(180deg, rgba(14, 8, 6, 0.52) 0%, rgba(10, 6, 4, 0.86) 100%)',
+      image: '/themes/masmorra.jpg',
       motion: 'rise',
       particle: 'rgba(253, 186, 116, 0.95)',
       glow: 'rgba(249, 115, 22, 0.30)',
@@ -254,6 +257,14 @@ export function applyTheme(theme: AppTheme) {
   root.style.setProperty('--text-3', s.text3);
   root.style.setProperty('--text-4', s.text4);
 
-  // Permite ajustes finos em CSS (ex.: barra de rolagem, sombras).
+  // Cenário aplicado no <body> (e não num elemento com z-index negativo, que
+  // era pintado atrás do fundo do body e não aparecia).
+  const layers = theme.scene.image
+    ? `${theme.scene.background}, url("${theme.scene.image}")`
+    : theme.scene.background;
+  root.style.setProperty('--scene-bg', layers);
+  root.style.setProperty('--scene-base', theme.mode === 'dark' ? '#07060a' : '#faf7f2');
+
+  // Permite ajustes finos em CSS (ex.: barra de rolagem, contraste no escuro).
   root.dataset.mode = theme.mode;
 }
