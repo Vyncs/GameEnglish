@@ -141,7 +141,6 @@
 
 html, body {
   margin: 0;
-  background-color: var(--paper);
   color: var(--graphite);
   font-family: var(--font-ui);
   font-feature-settings: 'cv11', 'ss01', 'tnum';
@@ -149,17 +148,56 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Textura sutil de papel pautado (linhas a 3% opacidade, 32px de altura) */
+/* Cenário do tema aplicado no próprio body — assim ele SEMPRE pinta.
+   (Antes ficava num elemento com z-index negativo, que era coberto.) */
 body {
-  background-image:
-    linear-gradient(to bottom,
-      transparent 0,
-      transparent 31px,
-      rgba(15, 63, 170, 0.04) 31px,
-      rgba(15, 63, 170, 0.04) 32px
-    );
-  background-size: 100% 32px;
+  background-color: var(--paper);
+  background-image: var(--scene-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
+
+/* ---- Contraste no modo escuro ----
+   As cores de SEÇÃO (cyan/âmbar/rosa…) são tons -600, feitos para fundo
+   claro. Sobre superfícies escuras elas somem, então clareamos. */
+[data-mode='dark'] .text-cyan-600    { color: #67e8f9; }
+[data-mode='dark'] .text-teal-600    { color: #5eead4; }
+[data-mode='dark'] .text-indigo-600  { color: #a5b4fc; }
+[data-mode='dark'] .text-violet-600  { color: #c4b5fd; }
+[data-mode='dark'] .text-amber-600   { color: #fcd34d; }
+[data-mode='dark'] .text-pink-600    { color: #f9a8d4; }
+[data-mode='dark'] .text-fuchsia-600 { color: #f0abfc; }
+[data-mode='dark'] .text-emerald-600 { color: #6ee7b7; }
+[data-mode='dark'] .text-emerald-700 { color: #6ee7b7; }
+[data-mode='dark'] .text-emerald-800 { color: #a7f3d0; }
+[data-mode='dark'] .text-amber-700   { color: #fcd34d; }
+[data-mode='dark'] .text-amber-800   { color: #fde68a; }
+[data-mode='dark'] .text-red-600     { color: #fca5a5; }
+[data-mode='dark'] .text-cyan-700    { color: #67e8f9; }
+[data-mode='dark'] .text-blue-700    { color: #93c5fd; }
+[data-mode='dark'] .text-slate-300   { color: #cbd5e1; }
+
+/* Fundos de selo (-50/-100) viram tintas translúcidas no escuro */
+[data-mode='dark'] .bg-emerald-50,
+[data-mode='dark'] .bg-emerald-100  { background-color: rgba(16, 185, 129, 0.16); }
+[data-mode='dark'] .bg-amber-50,
+[data-mode='dark'] .bg-amber-100    { background-color: rgba(245, 158, 11, 0.16); }
+[data-mode='dark'] .bg-red-50       { background-color: rgba(239, 68, 68, 0.16); }
+[data-mode='dark'] .bg-cyan-100     { background-color: rgba(6, 182, 212, 0.16); }
+[data-mode='dark'] .bg-blue-100     { background-color: rgba(59, 130, 246, 0.16); }
+[data-mode='dark'] .bg-indigo-100   { background-color: rgba(99, 102, 241, 0.16); }
+
+/* Bordas de selo mais discretas no escuro */
+[data-mode='dark'] .border-emerald-200 { border-color: rgba(16, 185, 129, 0.35); }
+[data-mode='dark'] .border-amber-200   { border-color: rgba(245, 158, 11, 0.35); }
+[data-mode='dark'] .border-red-200,
+[data-mode='dark'] .border-red-300     { border-color: rgba(239, 68, 68, 0.35); }
+
+/* A textura de papel pautado que existia aqui foi removida: ela definia
+   background-image no body e sobrescrevia o cenário do tema. */
 
 /* Utility classes específicas do design system */
 .font-hand {

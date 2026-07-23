@@ -15,6 +15,12 @@ export interface ThemeScene {
   motion: 'rise' | 'fall';
   particle: string;
   glow: string;
+  /**
+   * Imagem de wallpaper (opcional), servida de /themes/.
+   * Fica ATRÁS dos gradientes, que funcionam como vinheta/escurecimento
+   * para o texto continuar legível.
+   */
+  image?: string;
 }
 
 /** Superfícies e textos — trocá-las é o que faz o modo escuro funcionar. */
@@ -254,6 +260,13 @@ export function applyTheme(theme: AppTheme) {
   root.style.setProperty('--text-3', s.text3);
   root.style.setProperty('--text-4', s.text4);
 
-  // Permite ajustes finos em CSS (ex.: barra de rolagem, sombras).
+  // Cenário aplicado no <body> (e não num elemento com z-index negativo, que
+  // era pintado atrás do fundo do body e não aparecia).
+  const layers = theme.scene.image
+    ? `${theme.scene.background}, url("${theme.scene.image}")`
+    : theme.scene.background;
+  root.style.setProperty('--scene-bg', layers);
+
+  // Permite ajustes finos em CSS (ex.: barra de rolagem, contraste no escuro).
   root.dataset.mode = theme.mode;
 }

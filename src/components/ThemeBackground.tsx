@@ -34,10 +34,13 @@ export function ThemeBackground() {
   const animation = scene.motion === 'rise' ? 'rpg-rise' : 'rpg-fall';
 
   return (
+    // Sem background aqui: o cenário vive no <body> (via --scene-bg), porque
+    // um elemento com z-index negativo era pintado atrás do fundo do body.
+    // Este overlay carrega só o brilho e as partículas; o conteúdo do app
+    // fica acima dele por ter z-10.
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
-      style={{ background: scene.background }}
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
     >
       {/* Brilho superior que "respira" */}
       <div
