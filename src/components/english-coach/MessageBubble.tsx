@@ -63,8 +63,8 @@ function AssistantBubble({ message }: { message: CoachMessage }) {
     <div className="flex items-start gap-2 sm:gap-3 animate-fade-in">
       <TutorAvatar size={36} reactive={false} />
       <div className="max-w-[85%] sm:max-w-[78%]">
-        <div className="rounded-2xl rounded-bl-sm bg-white border border-emerald-100 px-4 py-2.5 shadow-sm">
-          <p className="m-0 text-sm sm:text-[15px] leading-relaxed text-slate-800 whitespace-pre-wrap">
+        <div className="rounded-2xl rounded-bl-sm bg-surface border border-emerald-100 px-4 py-2.5 shadow-sm">
+          <p className="m-0 text-sm sm:text-[15px] leading-relaxed text-primary whitespace-pre-wrap">
             {message.content}
             {isStreaming && (
               <span
@@ -88,7 +88,7 @@ function AssistantBubble({ message }: { message: CoachMessage }) {
               <button
                 type="button"
                 onClick={() => handleListen(true)}
-                className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-md px-2 py-1 transition-colors"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-secondary hover:text-primary hover:bg-surface-2 rounded-md px-2 py-1 transition-colors"
                 title="Repetir mais devagar"
               >
                 <Turtle className="w-3.5 h-3.5" />

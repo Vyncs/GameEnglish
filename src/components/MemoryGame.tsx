@@ -569,7 +569,7 @@ export function MemoryGame() {
                       </button>
                       <button
                         onClick={() => setNewPairMode(null)}
-                        className="px-4 py-2 bg-slate-200 text-secondary rounded-lg hover:bg-slate-300 transition-all"
+                        className="px-4 py-2 bg-surface-2 text-secondary rounded-lg hover:bg-surface transition-all"
                       >
                         Cancelar
                       </button>
@@ -762,7 +762,7 @@ export function MemoryGame() {
           <div className="flex gap-3">
             <button
               onClick={resetMemoryGame}
-              className="flex-1 py-3 bg-surface-2 text-secondary font-semibold rounded-xl hover:bg-slate-200 transition-all flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-surface-2 text-secondary font-semibold rounded-xl hover:bg-surface-2 transition-all flex items-center justify-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -793,7 +793,7 @@ export function MemoryGame() {
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={resetMemoryGame}
-            className="p-2 bg-surface-2 hover:bg-slate-200 text-secondary rounded-xl transition-colors"
+            className="p-2 bg-surface-2 hover:bg-surface-2 text-secondary rounded-xl transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>

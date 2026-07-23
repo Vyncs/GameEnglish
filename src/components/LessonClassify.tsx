@@ -175,7 +175,7 @@ export function LessonClassify() {
         </div>
 
         {/* Barra de progresso */}
-        <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+        <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
           <div
             className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-300"
             style={{ width: `${(answeredCount / total) * 100}%` }}
@@ -225,7 +225,7 @@ export function LessonClassify() {
           <div className="mb-3 space-y-1.5 rounded-xl border border-amber-200 bg-amber-50/70 p-3 animate-fade-in">
             {CLASSIFY_CATEGORIES.map((cat) => (
               <div key={cat.id} className="flex items-start gap-2 text-xs">
-                <span className="flex h-5 min-w-[1.75rem] shrink-0 items-center justify-center rounded-md bg-surface px-1 font-bold text-secondary ring-1 ring-slate-200">
+                <span className="flex h-5 min-w-[1.75rem] shrink-0 items-center justify-center rounded-md bg-surface px-1 font-bold text-secondary ring-1 ring-line">
                   {cat.label}
                 </span>
                 <span className="pt-0.5 text-secondary">{cat.hint}</span>

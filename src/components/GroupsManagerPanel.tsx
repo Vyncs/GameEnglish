@@ -39,9 +39,9 @@ export function GroupsManagerPanel() {
   };
 
   return (
-    <div className="w-full rounded-2xl border border-slate-200/80 bg-white/90 shadow-sm overflow-hidden">
-      <div className="p-3 border-b border-slate-100 flex items-center justify-between">
-        <span className="text-sm font-semibold text-slate-700">Meus Grupos</span>
+    <div className="w-full rounded-2xl border border-line bg-surface shadow-sm overflow-hidden">
+      <div className="p-3 border-b border-line flex items-center justify-between">
+        <span className="text-sm font-semibold text-secondary">Meus Grupos</span>
         <button
           type="button"
           onClick={() => setIsAdding(true)}
@@ -53,14 +53,14 @@ export function GroupsManagerPanel() {
       </div>
 
       {isAdding && (
-        <div className="p-3 border-b border-slate-100">
+        <div className="p-3 border-b border-line">
           <div className="flex gap-2">
             <input
               type="text"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
               placeholder="Nome do grupo..."
-              className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+              className="flex-1 px-3 py-1.5 bg-surface-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
               autoFocus
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleAddGroup();
@@ -70,7 +70,7 @@ export function GroupsManagerPanel() {
             <button type="button" onClick={handleAddGroup} className="p-1.5 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-colors">
               <Check className="w-3.5 h-3.5" />
             </button>
-            <button type="button" onClick={() => { setIsAdding(false); setNewGroupName(''); }} className="p-1.5 bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300 transition-colors">
+            <button type="button" onClick={() => { setIsAdding(false); setNewGroupName(''); }} className="p-1.5 bg-surface-2 text-secondary rounded-lg hover:bg-surface transition-colors">
               <X className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -79,7 +79,7 @@ export function GroupsManagerPanel() {
 
       <div className="max-h-64 overflow-y-auto">
         {groups.length === 0 ? (
-          <div className="text-center py-6 text-slate-400">
+          <div className="text-center py-6 text-faint">
             <Folder className="w-8 h-8 mx-auto mb-1.5 opacity-50" />
             <p className="text-xs">Nenhum grupo criado</p>
           </div>
@@ -95,7 +95,7 @@ export function GroupsManagerPanel() {
                     type="text"
                     value={editingName}
                     onChange={(e) => setEditingName(e.target.value)}
-                    className="flex-1 px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
+                    className="flex-1 px-2 py-1 bg-surface-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
                     autoFocus
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') handleSaveEdit();
@@ -105,7 +105,7 @@ export function GroupsManagerPanel() {
                   <button type="button" onClick={handleSaveEdit} className="p-1 bg-emerald-500 text-white rounded-lg">
                     <Check className="w-3.5 h-3.5" />
                   </button>
-                  <button type="button" onClick={() => { setEditingId(null); setEditingName(''); }} className="p-1 bg-slate-200 text-slate-600 rounded-lg">
+                  <button type="button" onClick={() => { setEditingId(null); setEditingName(''); }} className="p-1 bg-surface-2 text-secondary rounded-lg">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -124,11 +124,11 @@ export function GroupsManagerPanel() {
                   }
                 }}
                 className={`group flex items-center gap-2 px-3 py-2.5 cursor-pointer transition-colors ${
-                  isSelected ? 'bg-cyan-50 text-cyan-700' : 'hover:bg-slate-50 text-slate-700'
+                  isSelected ? 'bg-cyan-50 text-cyan-700' : 'hover:bg-surface-2 text-secondary'
                 }`}
                 onClick={() => selectGroup(group.id)}
               >
-                <Folder className={`w-4 h-4 shrink-0 ${isSelected ? 'text-cyan-500' : 'text-slate-400'}`} />
+                <Folder className={`w-4 h-4 shrink-0 ${isSelected ? 'text-cyan-500' : 'text-faint'}`} />
                 <span className="flex-1 text-sm font-medium truncate">{group.name}</span>
                 {reviewCount > 0 && (
                   <span className="px-1.5 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-full shrink-0">
@@ -139,14 +139,14 @@ export function GroupsManagerPanel() {
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setEditingId(group.id); setEditingName(group.name); }}
-                    className="p-1 rounded hover:bg-slate-200 text-slate-400 hover:text-slate-600 transition-colors"
+                    className="p-1 rounded hover:bg-surface-2 text-faint hover:text-secondary transition-colors"
                   >
                     <Pencil className="w-3 h-3" />
                   </button>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleDelete(group.id); }}
-                    className="p-1 rounded hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors"
+                    className="p-1 rounded hover:bg-red-50 text-faint hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-3 h-3" />
                   </button>
@@ -157,8 +157,8 @@ export function GroupsManagerPanel() {
         )}
       </div>
 
-      <div className="p-2 border-t border-slate-100">
-        <p className="text-[10px] text-slate-400 text-center">
+      <div className="p-2 border-t border-line">
+        <p className="text-[10px] text-faint text-center">
           {groups.length} grupo{groups.length !== 1 ? 's' : ''}
         </p>
       </div>

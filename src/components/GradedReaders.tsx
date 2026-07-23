@@ -345,7 +345,7 @@ export function GradedReaders() {
               <button
                 onClick={() => setReaderTheme('light')}
                 className={`p-2 rounded-md transition-colors ${
-                  readerTheme === 'light' ? 'bg-surface shadow-sm' : 'hover:bg-slate-200'
+                  readerTheme === 'light' ? 'bg-surface shadow-sm' : 'hover:bg-surface-2'
                 }`}
                 title="Light"
               >
@@ -354,7 +354,7 @@ export function GradedReaders() {
               <button
                 onClick={() => setReaderTheme('sepia')}
                 className={`p-2 rounded-md transition-colors ${
-                  readerTheme === 'sepia' ? 'bg-surface shadow-sm' : 'hover:bg-slate-200'
+                  readerTheme === 'sepia' ? 'bg-surface shadow-sm' : 'hover:bg-surface-2'
                 }`}
                 title="Sepia"
               >
@@ -363,7 +363,7 @@ export function GradedReaders() {
               <button
                 onClick={() => setReaderTheme('dark')}
                 className={`p-2 rounded-md transition-colors ${
-                  readerTheme === 'dark' ? 'bg-zinc-700 shadow-sm text-white' : 'hover:bg-slate-200'
+                  readerTheme === 'dark' ? 'bg-zinc-700 shadow-sm text-white' : 'hover:bg-surface-2'
                 }`}
                 title="Dark"
               >
@@ -411,7 +411,7 @@ export function GradedReaders() {
                         ? 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
                         : readerTheme === 'sepia'
                         ? 'bg-amber-200/80 text-amber-800 hover:bg-amber-300'
-                        : 'bg-surface-2 text-secondary hover:bg-slate-200'
+                        : 'bg-surface-2 text-secondary hover:bg-surface-2'
                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                     title="Reproduzir frase"
                     aria-label="Reproduzir áudio da frase"
@@ -1054,7 +1054,7 @@ ${title ? `- Optional title hint from user: "${title}" (you may adapt).` : ''}`;
               href="https://console.groq.com/keys"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-4 py-3 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 text-sm"
+              className="inline-flex items-center gap-1 px-4 py-3 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 text-sm"
             >
               <ExternalLink className="w-4 h-4" />
               Obter chave

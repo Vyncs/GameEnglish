@@ -318,7 +318,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           <div className="flex gap-3 justify-end">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors flex items-center gap-2"
             >
               <X className="w-4 h-4" />
               Cancelar
@@ -472,7 +472,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           {!hasSubmitted && (
             <button
               onClick={() => setShowAnswer(!showAnswer)}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors"
             >
               {showAnswer ? (
                 <>
@@ -491,7 +491,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           {hasSubmitted && (
             <button
               onClick={handleReset}
-              className="flex-1 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
+              className="flex-1 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors"
             >
               Tentar novamente
             </button>

@@ -51,7 +51,7 @@ export function ChatPanel({ messages, isSending, onSend, onClear, onPickStarter 
             <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
-          <div className="text-[13px] font-semibold tracking-tight text-slate-800 truncate">
+          <div className="text-[13px] font-semibold tracking-tight text-primary truncate">
             Conversa com Coach
           </div>
           <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/70">
@@ -63,7 +63,7 @@ export function ChatPanel({ messages, isSending, onSend, onClear, onPickStarter 
           type="button"
           onClick={onClear}
           disabled={isEmpty}
-          className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-md px-2 py-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-1 text-[11px] font-medium text-tertiary hover:text-red-600 hover:bg-red-50 rounded-md px-2 py-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           title="Limpar conversa"
         >
           <Trash2 className="w-3.5 h-3.5" />
@@ -94,13 +94,13 @@ export function ChatPanel({ messages, isSending, onSend, onClear, onPickStarter 
         }}
       >
         <ChatInput onSend={onSend} disabled={isSending} isSending={isSending} />
-        <p className="mt-1.5 px-2 text-[10px] text-slate-400">
+        <p className="mt-1.5 px-2 text-[10px] text-faint">
           Pressione{' '}
-          <kbd className="px-1 py-0.5 rounded bg-slate-100 border border-slate-200 font-mono text-[10px]">
+          <kbd className="px-1 py-0.5 rounded bg-surface-2 border border-line font-mono text-[10px]">
             Enter
           </kbd>{' '}
           para enviar •{' '}
-          <kbd className="px-1 py-0.5 rounded bg-slate-100 border border-slate-200 font-mono text-[10px]">
+          <kbd className="px-1 py-0.5 rounded bg-surface-2 border border-line font-mono text-[10px]">
             Shift+Enter
           </kbd>{' '}
           para nova linha

@@ -125,7 +125,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
         {topic.subtitle} · {topic.items.length} palavras
       </p>
 
-      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
         <div
           className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
           style={{ width: `${(doneCount / topic.stages.length) * 100}%` }}
@@ -602,7 +602,7 @@ function StageHeader({ onBack, title, progress }: { onBack: () => void; title: s
 
 function Bar({ value, total }: { value: number; total: number }) {
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
+    <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
       <div
         className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
         style={{ width: `${total > 0 ? (value / total) * 100 : 0}%` }}

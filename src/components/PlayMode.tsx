@@ -336,12 +336,12 @@ export function PlayMode() {
                 <p className="text-5xl font-bold text-emerald-500">{sessionStats.correct}</p>
                 <p className="text-tertiary font-medium">Acertos</p>
               </div>
-              <div className="w-px h-20 bg-slate-200" />
+              <div className="w-px h-20 bg-surface-2" />
               <div className="text-center">
                 <p className="text-5xl font-bold text-red-500">{sessionStats.incorrect}</p>
                 <p className="text-tertiary font-medium">Erros</p>
               </div>
-              <div className="w-px h-20 bg-slate-200" />
+              <div className="w-px h-20 bg-surface-2" />
               <div className="text-center">
                 <p className={`text-5xl font-bold ${
                   percentage >= 70 ? 'text-emerald-500' : percentage >= 40 ? 'text-amber-500' : 'text-red-500'
@@ -475,7 +475,7 @@ export function PlayMode() {
               {/* Indicador de nível e direção */}
               <div className="bg-gradient-to-r from-slate-100 to-slate-50 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-200 rounded-lg">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-2 rounded-lg">
                     <Target className="w-4 h-4 text-secondary" />
                     <span className="text-sm font-medium text-secondary">Nível {currentCard.level}</span>
                   </div>

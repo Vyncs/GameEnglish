@@ -21,7 +21,7 @@ const STATUS_LABEL: Record<VoiceConversationStatus, string> = {
 };
 
 const STATUS_COLOR: Record<VoiceConversationStatus, string> = {
-  idle: 'bg-slate-100 text-slate-600 border-slate-200',
+  idle: 'bg-surface-2 text-secondary border-line',
   starting: 'bg-amber-50 text-amber-700 border-amber-200',
   listening: 'bg-cyan-50 text-cyan-700 border-cyan-200',
   processing: 'bg-amber-50 text-amber-700 border-amber-200',
@@ -67,7 +67,7 @@ export function VoiceConversationPanel({
           <div className="text-xs font-semibold uppercase tracking-wider text-emerald-800">
             Conversa por voz
           </div>
-          <div className="mt-0.5 text-sm text-slate-600">
+          <div className="mt-0.5 text-sm text-secondary">
             {isActive
               ? 'Ele te ouve, responde e devolve a palavra pra você.'
               : 'Aperte Iniciar e converse normalmente com o tutor.'}
@@ -119,7 +119,7 @@ export function VoiceConversationPanel({
 
       {/* Interim transcript */}
       {status === 'listening' && interimTranscript && (
-        <div className="mt-3 rounded-2xl bg-white/80 border border-cyan-200/60 px-3 py-2 text-sm text-slate-700">
+        <div className="mt-3 rounded-2xl bg-surface border border-cyan-200/60 px-3 py-2 text-sm text-secondary">
           <div className="text-[10px] uppercase tracking-wider font-semibold text-cyan-700 mb-0.5">
             Você está dizendo
           </div>
@@ -134,7 +134,7 @@ export function VoiceConversationPanel({
           <button
             type="button"
             onClick={onStart}
-            className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-red-200 text-red-700 text-xs font-semibold hover:bg-red-50 hover:border-red-300 transition-colors"
+            className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-red-200 text-red-700 text-xs font-semibold hover:bg-red-50 hover:border-red-300 transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Tentar novamente

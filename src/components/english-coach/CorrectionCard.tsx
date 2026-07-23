@@ -29,7 +29,7 @@ export function CorrectionCard({ correction, explanation, naturalExample }: Corr
       )}
 
       {explanation && (
-        <div className="mt-3 flex items-start gap-2 text-slate-700">
+        <div className="mt-3 flex items-start gap-2 text-secondary">
           <BookOpenCheck className="w-4 h-4 mt-0.5 shrink-0 text-emerald-600" />
           <div className="text-sm leading-relaxed">
             <div className="text-[11px] uppercase tracking-wider font-semibold text-emerald-700 mb-0.5">
@@ -41,7 +41,7 @@ export function CorrectionCard({ correction, explanation, naturalExample }: Corr
       )}
 
       {naturalExample && (
-        <div className="mt-3 flex items-start gap-2 text-slate-800">
+        <div className="mt-3 flex items-start gap-2 text-primary">
           <Sparkles className="w-4 h-4 mt-0.5 shrink-0 text-violet-600" />
           <div className="text-sm leading-relaxed">
             <div className="text-[11px] uppercase tracking-wider font-semibold text-violet-700 mb-0.5">

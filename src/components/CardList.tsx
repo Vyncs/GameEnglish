@@ -347,7 +347,7 @@ export function CardList() {
                   setNewTips('');
                   setNewDirection('pt-en');
                 }}
-                className="px-5 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
+                className="px-5 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors"
               >
                 Cancelar
               </button>

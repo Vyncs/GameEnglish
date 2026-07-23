@@ -165,12 +165,12 @@ export function ReviewSession() {
                 <p className="text-4xl font-bold text-emerald-500">{sessionResults.correct}</p>
                 <p className="text-tertiary">Acertos</p>
               </div>
-              <div className="w-px h-16 bg-slate-200" />
+              <div className="w-px h-16 bg-surface-2" />
               <div className="text-center">
                 <p className="text-4xl font-bold text-red-500">{sessionResults.incorrect}</p>
                 <p className="text-tertiary">Erros</p>
               </div>
-              <div className="w-px h-16 bg-slate-200" />
+              <div className="w-px h-16 bg-surface-2" />
               <div className="text-center">
                 <p className={`text-4xl font-bold ${
                   percentage >= 70 ? 'text-emerald-500' : percentage >= 40 ? 'text-amber-500' : 'text-red-500'
@@ -195,7 +195,7 @@ export function ReviewSession() {
           <div className="flex gap-4">
             <button
               onClick={handleRestart}
-              className="flex-1 py-3 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 py-3 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors flex items-center justify-center gap-2"
             >
               <RotateCcw className="w-5 h-5" />
               Revisar Novamente
