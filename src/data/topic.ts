@@ -27,11 +27,24 @@ export interface TopicItem {
 
 export type TopicStage = 'study' | 'meaning' | 'forms';
 
+/**
+ * Categorias exibidas na Home, cada uma como uma "prateleira" com scroll
+ * lateral. A ordem daqui é a ordem das seções na tela.
+ */
+export const TOPIC_CATEGORIES: { id: string; label: string; emoji: string; desc: string }[] = [
+  { id: 'verbos', label: 'Verbos', emoji: '🏃', desc: 'Os verbos mais usados, em blocos de 25' },
+  { id: 'adjetivos', label: 'Adjetivos', emoji: '✨', desc: 'Como descrever coisas, pessoas e situações' },
+  { id: 'tempos', label: 'Tempos verbais', emoji: '⏳', desc: 'Passado, presente e futuro na prática' },
+  { id: 'outros', label: 'Outros temas', emoji: '🗂️', desc: 'Clima, comida, casa e mais' },
+];
+
 export interface Topic {
   id: string;
   title: string;
   subtitle: string;
   emoji: string;
+  /** Categoria (prateleira) onde o tópico aparece — ver TOPIC_CATEGORIES. */
+  category: string;
   /** Dificuldade: 1 = mais fácil. Usado para ordenar os tópicos. */
   level: 1 | 2 | 3;
   /** Etapas do passo a passo. "forms" só faz sentido para verbos. */

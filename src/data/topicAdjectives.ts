@@ -9,6 +9,7 @@ export const TOPIC_ADJECTIVES: Topic = {
   title: 'Adjetivos · essenciais',
   subtitle: 'good → busy · 25 mais usados',
   emoji: '✨',
+  category: 'adjetivos',
   level: 1,
   stages: ['study', 'meaning'],
   items: [

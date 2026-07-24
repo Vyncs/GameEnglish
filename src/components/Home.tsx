@@ -4,6 +4,8 @@ import { useLessonStore } from '../store/useLessonStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { LESSON_01 } from '../data/lessonClassify';
 import { TOPICS } from '../data/topics';
+import { TOPIC_CATEGORIES } from '../data/topic';
+import { CardRail } from './CardRail';
 import { ImportExport } from './ImportExport';
 import {
   BookOpen,
@@ -214,162 +216,58 @@ export function Home() {
         </div>
 
 
-        {/* AULAS — regras/gramática */}
-        <div className={`mb-8 ${totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}`}>
-          <div className="mb-3 flex items-center gap-2.5">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-accent-soft ring-1 ring-accent-line/80">
-              <GraduationCap className="h-4 w-4 text-accent-text" strokeWidth={2.4} />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight text-primary">Aulas</h2>
-              <p className="text-xs text-tertiary">As regras — aprenda uma vez, use sempre</p>
-            </div>
-          </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <button
-              type="button"
+        {/* AULAS — regras/gramática, em prateleira */}
+        <div className={totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}>
+          <CardRail title="Aulas" desc="As regras — aprenda uma vez, use sempre" icon="📘">
+            <RailCard
               onClick={() => setViewMode('lesson-classify')}
-              className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
-            >
-              {lessonDone && (
-                <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  Concluída
-                </span>
-              )}
-              <div className="flex items-center gap-4">
-                <div
-                  className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-white shadow-sm transition-transform group-hover:scale-105 ${
-                    lessonDone
-                      ? 'bg-gradient-to-br from-emerald-500 to-teal-600'
-                      : 'bg-gradient-to-br from-accent to-accent-strong'
-                  }`}
-                >
-                  {lessonDone ? <CheckCircle2 className="h-6 w-6" /> : <GraduationCap className="h-6 w-6" strokeWidth={2.2} />}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base font-semibold tracking-tight text-primary">{LESSON_01.title}</h3>
-                    {!lessonDone && (
-                      <ArrowRight className="h-4 w-4 text-accent transition-transform group-hover:translate-x-0.5" />
-                    )}
-                  </div>
-                  <p className="text-xs text-tertiary">{LESSON_01.subtitle}</p>
-                </div>
-              </div>
-              <div className="mt-4">
-                <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-tertiary">
-                  <span className="tabular-nums">
-                    {lessonAnswered}/{lessonTotal} respondidas
-                  </span>
-                  {lessonAnswered > 0 && (
-                    <span className="tabular-nums text-emerald-600">{lessonCorrect} acertos</span>
-                  )}
-                </div>
-                <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${
-                      lessonDone
-                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                        : 'bg-gradient-to-r from-accent to-accent-strong'
-                    }`}
-                    style={{ width: `${(lessonAnswered / lessonTotal) * 100}%` }}
-                  />
-                </div>
-                <p className="mt-2 text-sm font-semibold text-accent-text">
-                  {lessonDone
-                    ? 'Ver resultado e revisão →'
-                    : lessonAnswered > 0
-                      ? 'Continuar exercício →'
-                      : 'Começar exercício →'}
-                </p>
-              </div>
-            </button>
-          </div>
-        </div>
+              emoji="🎓"
+              title={LESSON_01.title}
+              subtitle={LESSON_01.subtitle}
+              done={lessonDone}
+              progress={lessonAnswered}
+              total={lessonTotal}
+              progressLabel={`${lessonAnswered}/${lessonTotal} respondidas`}
+              extraLabel={lessonAnswered > 0 ? `${lessonCorrect} acertos` : undefined}
+              cta={
+                lessonDone
+                  ? 'Ver resultado →'
+                  : lessonAnswered > 0
+                    ? 'Continuar →'
+                    : 'Começar →'
+              }
+            />
+          </CardRail>
 
-        {/* TÓPICOS — vocabulário, do mais fácil ao mais difícil */}
-        <div className={`mb-8 ${totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}`}>
-          <div className="mb-3 flex items-center gap-2.5">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-cyan-100 ring-1 ring-cyan-200/80">
-              <Layers className="h-4 w-4 text-cyan-600" strokeWidth={2.4} />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight text-primary">Tópicos</h2>
-              <p className="text-xs text-tertiary">
-                Vocabulário em blocos — do mais fácil ao mais difícil
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {TOPICS.map((topic) => {
-              const done = topicProgress[topic.id]?.stagesDone?.length ?? 0;
-              const total = topic.stages.length;
-              const complete = done === total;
-              return (
-                <button
-                  key={topic.id}
-                  type="button"
-                  onClick={() => openTopic(topic.id)}
-                  className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
-                >
-                  {complete && (
-                    <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      Concluído
-                    </span>
-                  )}
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-2xl shadow-sm transition-transform group-hover:scale-105 ${
-                        complete
-                          ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white'
-                          : 'bg-accent-soft ring-1 ring-accent-line'
-                      }`}
-                    >
-                      {complete ? <CheckCircle2 className="h-6 w-6" /> : <span>{topic.emoji}</span>}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-semibold tracking-tight text-primary">{topic.title}</h3>
-                        {!complete && (
-                          <ArrowRight className="h-4 w-4 text-accent transition-transform group-hover:translate-x-0.5" />
-                        )}
-                      </div>
-                      <p className="text-xs text-tertiary">
-                        {topic.subtitle} · {topic.items.length} palavras
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-tertiary">
-                      <span className="tabular-nums">
-                        {done}/{total} etapas
-                      </span>
-                      <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold text-tertiary">
-                        {topic.level === 1 ? 'Fácil' : topic.level === 2 ? 'Médio' : 'Difícil'}
-                      </span>
-                    </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          complete
-                            ? 'bg-gradient-to-r from-emerald-500 to-teal-500'
-                            : 'bg-gradient-to-r from-accent to-accent-strong'
-                        }`}
-                        style={{ width: `${(done / total) * 100}%` }}
-                      />
-                    </div>
-                    <p className="mt-2 text-sm font-semibold text-accent-text">
-                      {complete ? 'Revisar tópico →' : done > 0 ? 'Continuar →' : 'Começar →'}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+          {/* TÓPICOS — uma prateleira por categoria */}
+          {TOPIC_CATEGORIES.map((cat) => {
+            const list = TOPICS.filter((t) => t.category === cat.id);
+            if (list.length === 0) return null;
+            return (
+              <CardRail key={cat.id} title={cat.label} desc={cat.desc} icon={cat.emoji}>
+                {list.map((topic) => {
+                  const done = topicProgress[topic.id]?.stagesDone?.length ?? 0;
+                  const total = topic.stages.length;
+                  return (
+                    <RailCard
+                      key={topic.id}
+                      onClick={() => openTopic(topic.id)}
+                      emoji={topic.emoji}
+                      title={topic.title}
+                      subtitle={`${topic.subtitle} · ${topic.items.length} palavras`}
+                      done={done === total}
+                      progress={done}
+                      total={total}
+                      progressLabel={`${done}/${total} etapas`}
+                      extraLabel={topic.level === 1 ? 'Fácil' : topic.level === 2 ? 'Médio' : 'Difícil'}
+                      cta={done === total ? 'Revisar →' : done > 0 ? 'Continuar →' : 'Começar →'}
+                    />
+                  );
+                })}
+              </CardRail>
+            );
+          })}
         </div>
 
         {/* MEUS GRUPOS — mapa de evolução */}
@@ -771,6 +669,71 @@ function MasteryRatio({ pct }: { pct: number }) {
         {pct}%
       </span>
     </div>
+  );
+}
+
+/** Card de largura fixa usado dentro das prateleiras (Aulas, Verbos, …). */
+function RailCard({
+  onClick, emoji, title, subtitle, done, progress, total, progressLabel, extraLabel, cta,
+}: {
+  onClick: () => void;
+  emoji: string;
+  title: string;
+  subtitle: string;
+  done: boolean;
+  progress: number;
+  total: number;
+  progressLabel: string;
+  extraLabel?: string;
+  cta: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative flex w-[270px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-line bg-surface p-5 text-left backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(0,0,0,0.35)]"
+    >
+      {done && (
+        <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+          <CheckCircle2 className="h-3.5 w-3.5" />
+          Concluído
+        </span>
+      )}
+
+      <div className="flex items-center gap-3">
+        <div
+          className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl text-2xl shadow-sm transition-transform group-hover:scale-105 ${
+            done ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white' : 'bg-accent-soft ring-1 ring-accent-line'
+          }`}
+        >
+          {done ? <CheckCircle2 className="h-6 w-6" /> : <span>{emoji}</span>}
+        </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-base font-semibold tracking-tight text-primary">{title}</h3>
+          <p className="truncate text-xs text-tertiary">{subtitle}</p>
+        </div>
+      </div>
+
+      <div className="mt-4">
+        <div className="mb-1.5 flex items-center justify-between text-[11px] font-medium text-tertiary">
+          <span className="tabular-nums">{progressLabel}</span>
+          {extraLabel && (
+            <span className="rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-semibold">
+              {extraLabel}
+            </span>
+          )}
+        </div>
+        <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${
+              done ? 'bg-gradient-to-r from-emerald-500 to-teal-500' : 'bg-gradient-to-r from-accent to-accent-strong'
+            }`}
+            style={{ width: `${total > 0 ? (progress / total) * 100 : 0}%` }}
+          />
+        </div>
+        <p className="mt-2 text-sm font-semibold text-accent-text">{cta}</p>
+      </div>
+    </button>
   );
 }
 
