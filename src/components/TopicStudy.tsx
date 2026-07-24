@@ -9,6 +9,7 @@ import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { useSpeech } from '../hooks/useSpeech';
 import { STAGE_INFO, type Topic, type TopicItem, type TopicStage } from '../data/topic';
 import { MatchGame, BlitzGame, MemoryGame } from './VerbGames';
+import { playCorrect, playWrong } from '../utils/sfx';
 
 const EMPTY_STAGES: string[] = [];
 /** Itens que entram no exercício de formas (irregulares com particípio). */
@@ -459,7 +460,7 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
             else if (isThis) cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
             else cls += 'border-line bg-surface backdrop-blur-md opacity-60';
             return (
-              <button key={opt} type="button" disabled={!!chosen} onClick={() => setChosen(opt)} className={cls}>
+              <button key={opt} type="button" disabled={!!chosen} onClick={() => { setChosen(opt); (opt === v.pt ? playCorrect : playWrong)(); }} className={cls}>
                 <span className="flex-1 font-medium text-secondary">{opt}</span>
                 {chosen && isCorrect && <Check className="h-4 w-4 text-emerald-500" />}
                 {chosen && isThis && !isCorrect && <X className="h-4 w-4 text-red-500" />}
@@ -545,7 +546,7 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
             else if (isThis) cls += 'border-red-300 bg-red-50 ring-1 ring-red-300';
             else cls += 'border-line bg-surface backdrop-blur-md opacity-60';
             return (
-              <button key={opt} type="button" disabled={!!chosen} onClick={() => setChosen(opt)} className={cls}>
+              <button key={opt} type="button" disabled={!!chosen} onClick={() => { setChosen(opt); (opt === correct ? playCorrect : playWrong)(); }} className={cls}>
                 <span className="flex-1 font-semibold text-secondary">{opt}</span>
                 {chosen && isCorrect && <Check className="h-4 w-4 text-emerald-500" />}
                 {chosen && isThis && !isCorrect && <X className="h-4 w-4 text-red-500" />}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, Trophy, RotateCcw, Timer, Zap } from 'lucide-react';
 import type { Topic, TopicItem } from '../data/topic';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
+import { playCorrect, playWrong, playFinish } from '../utils/sfx';
 
 const MATCH_PAIRS = 6;
 const MEMORY_PAIRS = 6;
@@ -118,15 +119,18 @@ function MatchRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
     }
     const a = tiles.find((x) => x.key === selected)!;
     if (a.itemId === t.itemId && a.kind !== t.kind) {
+      playCorrect();
       const next = tiles.map((x) => (x.key === a.key || x.key === t.key ? { ...x, matched: true } : x));
       setTiles(next);
       setSelected(null);
       if (next.every((x) => x.matched)) {
         doneRef.current = true;
         setDone(true);
+        playFinish();
         saveMatchTime(topic.id, Math.round(elapsed));
       }
     } else {
+      playWrong();
       setWrong([a.key, t.key]);
       setSelected(null);
       setTimeout(() => setWrong([]), 600);
@@ -228,7 +232,7 @@ function BlitzRound({ topic, onReplay }: { topic: Topic; onReplay: () => void })
   const pick = (pt: string) => {
     if (done) return;
     const ok = pt === item.pt;
-    if (ok) setScore((s) => s + 1);
+    if (ok) { setScore((s) => s + 1); playCorrect(); } else playWrong();
     setFlash(ok ? 'ok' : 'no');
     setTimeout(() => setFlash(null), 250);
     setItem(randomItem(topic));
@@ -366,9 +370,11 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
     const first = cards.find((x) => x.key === flipped[0])!;
     setMoves((m) => m + 1);
     if (first.itemId === c.itemId && first.kind !== c.kind) {
+      playCorrect();
       setMatched((m) => [...m, first.key, c.key]);
       setFlipped([]);
     } else {
+      playWrong();
       setFlipped([first.key, c.key]);
       setBusy(true);
       setTimeout(() => {

@@ -17,6 +17,7 @@ import {
   Image as ImageIcon,
   Languages
 } from 'lucide-react';
+import { playCorrect, playWrong } from '../utils/sfx';
 
 export function ReviewSession() {
   const { 
@@ -65,6 +66,7 @@ export function ReviewSession() {
     const correct = normalizedUser === normalizedCorrect;
 
     setIsCorrect(correct);
+    (correct ? playCorrect : playWrong)();
     setShowResult(true);
     
     // Atualizar estatísticas da sessão

@@ -25,6 +25,7 @@ import {
   Settings,
   Lightbulb
 } from 'lucide-react';
+import { playCorrect, playWrong } from '../utils/sfx';
 
 // Threshold de similaridade para fuzzy matching (85%)
 const FUZZY_THRESHOLD = 85;
@@ -104,6 +105,7 @@ export function PlayMode() {
     const correct = result.isAcceptable;
 
     setIsCorrect(correct);
+    (correct ? playCorrect : playWrong)();
     setFuzzyResult({ isExact: result.isExactMatch, similarity: result.similarity });
     setShowResult(true);
     
