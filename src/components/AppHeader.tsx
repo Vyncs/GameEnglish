@@ -4,9 +4,12 @@ import {
   GraduationCap, BookOpen, MessagesSquare, Moon, Sun,
   Volume2,
   VolumeX,
+  Languages,
 } from 'lucide-react';
 import { useThemeStore } from '../store/useThemeStore';
 import { useSfxStore } from '../store/useSfxStore';
+import { useLangStore } from '../store/useLangStore';
+import { useT } from '../i18n/useT';
 import { findTheme } from '../data/themes';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -52,6 +55,9 @@ export function AppHeader() {
   const toggleMode = useThemeStore((s) => s.toggleMode);
   const sfxOn = useSfxStore((s) => s.enabled);
   const toggleSfx = useSfxStore((s) => s.toggle);
+  const lang = useLangStore((s) => s.lang);
+  const toggleLang = useLangStore((s) => s.toggle);
+  const t = useT();
   const isDark = findTheme(themeId).mode === 'dark';
 
   const [hasTeacher, setHasTeacher] = useState(false);
@@ -77,7 +83,7 @@ export function AppHeader() {
   const navItems: NavItem[] = [
     {
       id: 'home',
-      label: 'Início',
+      label: t('nav.home'),
       icon: <Home className="w-4 h-4" />,
       viewModes: ['home'],
       action: goToHome,
@@ -85,7 +91,7 @@ export function AppHeader() {
     },
     {
       id: 'groups',
-      label: 'Grupos',
+      label: t('nav.groups'),
       icon: <BookOpen className="w-4 h-4" />,
       viewModes: ['cards'],
       action: goToGroups,
@@ -93,7 +99,7 @@ export function AppHeader() {
     },
     {
       id: 'readers',
-      label: 'Readers',
+      label: t('nav.readers'),
       icon: <Library className="w-4 h-4" />,
       viewModes: ['readers'],
       action: () => startReaders(),
@@ -101,7 +107,7 @@ export function AppHeader() {
     },
     {
       id: 'review',
-      label: 'Revisar',
+      label: t('nav.review'),
       icon: <RefreshCw className="w-4 h-4" />,
       viewModes: ['play', 'review-hub'],
       action: () => setViewMode('review-hub'),
@@ -110,7 +116,7 @@ export function AppHeader() {
     },
     {
       id: 'bricks',
-      label: 'Bricks',
+      label: t('nav.bricks'),
       icon: <Blocks className="w-4 h-4" />,
       viewModes: ['bricks', 'bricks-challenge'],
       action: () => setViewMode('bricks'),
@@ -118,7 +124,7 @@ export function AppHeader() {
     },
     {
       id: 'pairs',
-      label: 'Pairs',
+      label: t('nav.pairs'),
       icon: <Puzzle className="w-4 h-4" />,
       viewModes: ['memory'],
       action: () => startMemoryGame(),
@@ -126,7 +132,7 @@ export function AppHeader() {
     },
     {
       id: 'karaoke',
-      label: 'Karaoke',
+      label: t('nav.karaoke'),
       icon: <Mic className="w-4 h-4" />,
       viewModes: ['karaoke'],
       action: () => setViewMode('karaoke'),
@@ -135,7 +141,7 @@ export function AppHeader() {
     },
     {
       id: 'english-coach',
-      label: 'Coach',
+      label: t('nav.coach'),
       icon: <MessagesSquare className="w-4 h-4" />,
       viewModes: ['english-coach'],
       action: () => setViewMode('english-coach'),
@@ -143,7 +149,7 @@ export function AppHeader() {
     },
     {
       id: 'teacher-materials',
-      label: 'Materiais',
+      label: t('nav.materials'),
       icon: <GraduationCap className="w-4 h-4" />,
       viewModes: ['teacher-materials'],
       action: () => setViewMode('teacher-materials'),
@@ -181,11 +187,11 @@ export function AppHeader() {
         className={pillClass}
         title={
           item.locked
-            ? 'Assine para desbloquear'
+            ? t('header.tip.locked')
             : item.inDevelopment
-              ? 'Em desenvolvimento'
+              ? t('header.tip.inDev')
               : item.badge
-                ? 'Você tem cards para revisar!'
+                ? t('header.tip.reviewBadge')
                 : undefined
         }
       >
@@ -209,7 +215,7 @@ export function AppHeader() {
               isActive ? 'bg-white/20 text-white' : 'bg-amber-100 text-amber-800'
             }`}
           >
-            Em desenvolvimento
+            {t('nav.inDevelopment')}
           </span>
         )}
       </button>
@@ -229,10 +235,21 @@ export function AppHeader() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
+            onClick={toggleLang}
+            className="flex h-9 items-center gap-1 rounded-xl px-2 text-secondary transition-colors hover:bg-surface-2"
+            title={lang === 'pt' ? t('header.lang.toEn') : t('header.lang.toPt')}
+            aria-label={lang === 'pt' ? t('header.lang.toEn') : t('header.lang.toPt')}
+          >
+            <Languages className="h-5 w-5" />
+            <span className="text-xs font-bold">{lang === 'pt' ? 'PT' : 'EN'}</span>
+          </button>
+
+          <button
+            type="button"
             onClick={toggleSfx}
             className="grid h-9 w-9 place-items-center rounded-xl text-secondary transition-colors hover:bg-surface-2"
-            title={sfxOn ? 'Desativar sons' : 'Ativar sons'}
-            aria-label={sfxOn ? 'Desativar sons' : 'Ativar sons'}
+            title={sfxOn ? t('header.sfx.off') : t('header.sfx.on')}
+            aria-label={sfxOn ? t('header.sfx.off') : t('header.sfx.on')}
             aria-pressed={sfxOn}
           >
             {sfxOn ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
@@ -242,8 +259,8 @@ export function AppHeader() {
             type="button"
             onClick={toggleMode}
             className="grid h-9 w-9 place-items-center rounded-xl text-secondary transition-colors hover:bg-surface-2"
-            title={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
-            aria-label={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
+            title={isDark ? t('header.theme.toLight') : t('header.theme.toDark')}
+            aria-label={isDark ? t('header.theme.toLight') : t('header.theme.toDark')}
           >
             {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </button>
@@ -258,11 +275,11 @@ export function AppHeader() {
           type="button"
           onClick={goToHome}
           className="flex items-center gap-1.5 rounded-xl px-2 py-1.5 text-sm font-semibold text-secondary transition-colors hover:bg-surface-2"
-          title="Ir para o início"
-          aria-label="Ir para o início"
+          title={t('header.goHome')}
+          aria-label={t('header.goHome')}
         >
           <Home className="h-5 w-5 text-cyan-600" />
-          Início
+          {t('nav.home')}
         </button>
 
         <div className="flex items-center gap-1 shrink-0">
@@ -274,7 +291,7 @@ export function AppHeader() {
                 ? 'bg-cyan-500 text-white'
                 : 'text-secondary hover:bg-surface-2'
             }`}
-            title="Grupos"
+            title={t('nav.groups')}
           >
             <BookOpen className="w-5 h-5" />
           </button>
@@ -287,8 +304,8 @@ export function AppHeader() {
                 ? 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white'
                 : 'text-secondary hover:bg-surface-2'
             }`}
-            title="English Coach"
-            aria-label="English Coach"
+            title={t('nav.coach')}
+            aria-label={t('nav.coach')}
           >
             <MessagesSquare className="w-5 h-5" />
           </button>
@@ -325,7 +342,7 @@ export function AppHeader() {
                   ? 'bg-violet-500 text-white'
                   : 'text-secondary hover:bg-surface-2'
               }`}
-              title="Materiais"
+              title={t('nav.materials')}
             >
               <GraduationCap className="w-5 h-5" />
             </button>

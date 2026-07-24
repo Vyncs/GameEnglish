@@ -7,6 +7,8 @@ import { TOPICS } from '../data/topics';
 import { TOPIC_CATEGORIES } from '../data/topic';
 import { CardRail } from './CardRail';
 import { ImportExport } from './ImportExport';
+import { useT } from '../i18n/useT';
+import type { TransKey } from '../i18n/translations';
 import {
   BookOpen,
   Clock,
@@ -28,6 +30,8 @@ import {
 } from 'lucide-react';
 
 export function Home() {
+  const t = useT();
+  const catKey = (id: string, suffix: 'label' | 'desc') => `home.cat.${id}.${suffix}` as TransKey;
   const {
     groups,
     cards,
@@ -96,8 +100,8 @@ export function Home() {
                 <Calendar className="h-4 w-4" strokeWidth={2.4} />
               </div>
               <div>
-                <h2 className="text-lg font-semibold tracking-tight text-primary">Sessão de hoje</h2>
-                <p className="text-xs text-tertiary">Revisar · uma regra · palavras novas</p>
+                <h2 className="text-lg font-semibold tracking-tight text-primary">{t('home.today.title')}</h2>
+                <p className="text-xs text-tertiary">{t('home.today.subtitle')}</p>
               </div>
             </div>
 
@@ -105,13 +109,13 @@ export function Home() {
               {/* 1. Revisar */}
               <TodayStep
                 n={1}
-                title="Revisar"
+                title={t('home.today.review')}
                 subtitle={
                   totalReviewCount > 0
-                    ? `${totalReviewCount} cards esperando por você`
-                    : 'Você está em dia — nada pendente'
+                    ? t('home.today.reviewWaiting', { n: totalReviewCount })
+                    : t('home.today.reviewDone')
                 }
-                cta={totalReviewCount > 0 ? 'Revisar agora' : 'Praticar mesmo assim'}
+                cta={totalReviewCount > 0 ? t('home.today.reviewNow') : t('home.today.reviewAnyway')}
                 done={totalReviewCount === 0}
                 tint="from-accent to-accent-strong"
                 icon={<RefreshCw className="h-4 w-4" />}
@@ -121,13 +125,13 @@ export function Home() {
               {/* 2. Regra do dia */}
               <TodayStep
                 n={2}
-                title="Praticar a regra"
+                title={t('home.today.rule')}
                 subtitle={
                   lessonDone
-                    ? `${LESSON_01.title} · concluída`
-                    : `${LESSON_01.title} · ${lessonAnswered}/${lessonTotal} respondidas`
+                    ? t('home.today.ruleDone', { title: LESSON_01.title })
+                    : t('home.today.ruleProgress', { title: LESSON_01.title, a: lessonAnswered, b: lessonTotal })
                 }
-                cta={lessonDone ? 'Rever a aula' : lessonAnswered > 0 ? 'Continuar' : 'Começar'}
+                cta={lessonDone ? t('cta.reviewLesson') : lessonAnswered > 0 ? t('cta.continue') : t('cta.start')}
                 done={lessonDone}
                 tint="from-cyan-500 to-blue-600"
                 icon={<GraduationCap className="h-4 w-4" />}
@@ -137,9 +141,9 @@ export function Home() {
               {/* 3. Palavras do dia */}
               <TodayStep
                 n={3}
-                title="Aprender palavras"
-                subtitle={`${nextTopic.emoji} ${nextTopic.title} · ${nextTopicDone}/${nextTopic.stages.length} etapas`}
-                cta={nextTopicDone > 0 ? 'Continuar' : 'Começar'}
+                title={t('home.today.words')}
+                subtitle={t('home.today.wordsProgress', { emoji: nextTopic.emoji, title: nextTopic.title, a: nextTopicDone, b: nextTopic.stages.length })}
+                cta={nextTopicDone > 0 ? t('cta.continue') : t('cta.start')}
                 done={nextTopicDone === nextTopic.stages.length}
                 tint="from-emerald-500 to-teal-600"
                 icon={<Layers className="h-4 w-4" />}
@@ -158,16 +162,16 @@ export function Home() {
           <KpiCard
             icon={<BookOpen className="h-4 w-4" strokeWidth={2.4} />}
             iconTint="bg-cyan-50 text-cyan-600 ring-line"
-            label="Total de Cards"
+            label={t('home.kpi.total')}
             value={totalCards}
             visual={
               totalCards > 0 ? (
                 <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-cyan-600">
-                  <BookOpen className="h-3 w-3" /> biblioteca
+                  <BookOpen className="h-3 w-3" /> {t('home.kpi.library')}
                 </span>
               ) : (
                 <span className="text-[10px] font-medium text-faint">
-                  comece criando um grupo
+                  {t('home.kpi.createGroupHint')}
                 </span>
               )
             }
@@ -176,7 +180,7 @@ export function Home() {
           <KpiCard
             icon={<Clock className="h-4 w-4" strokeWidth={2.4} />}
             iconTint="bg-accent-soft text-accent-text ring-accent-line"
-            label="Para Revisar"
+            label={t('home.kpi.toReview')}
             value={totalReviewCount}
             valueColorClass={totalReviewCount > 0 ? 'text-accent-text' : 'text-primary'}
             visual={
@@ -186,11 +190,11 @@ export function Home() {
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
                   </span>
-                  pronto agora
+                  {t('home.kpi.readyNow')}
                 </span>
               ) : (
                 <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
-                  <Check className="h-3 w-3" /> tudo em dia
+                  <Check className="h-3 w-3" /> {t('home.kpi.allDone')}
                 </span>
               )
             }
@@ -199,7 +203,7 @@ export function Home() {
           <KpiCard
             icon={<Target className="h-4 w-4" strokeWidth={2.4} />}
             iconTint="bg-accent-soft text-accent-text ring-accent-line"
-            label="Nível Médio"
+            label={t('home.kpi.avgLevel')}
             value={avgLevel}
             suffix={<span className="text-base font-medium text-faint">/ 5</span>}
             visual={<LevelDots value={avgLevelNum} />}
@@ -208,7 +212,7 @@ export function Home() {
           <KpiCard
             icon={<Trophy className="h-4 w-4" strokeWidth={2.4} />}
             iconTint="bg-emerald-50 text-emerald-600 ring-emerald-100"
-            label="Dominados"
+            label={t('home.kpi.mastered')}
             value={masteredCards}
             valueColorClass={masteredCards > 0 ? 'text-emerald-600' : 'text-primary'}
             visual={<MasteryRatio pct={masteredPct} />}
@@ -219,7 +223,7 @@ export function Home() {
 
         {/* AULAS — regras/gramática, em prateleira */}
         <div className={totalReviewCount > 0 ? 'order-2 lg:order-2' : 'order-1 lg:order-1'}>
-          <CardRail title="Aulas" desc="As regras — aprenda uma vez, use sempre" icon="📘">
+          <CardRail title={t('home.rail.lessons')} desc={t('home.rail.lessonsDesc')} icon="📘">
             <RailCard
               onClick={() => setViewMode('lesson-classify')}
               emoji="🎓"
@@ -228,14 +232,14 @@ export function Home() {
               done={lessonDone}
               progress={lessonAnswered}
               total={lessonTotal}
-              progressLabel={`${lessonAnswered}/${lessonTotal} respondidas`}
-              extraLabel={lessonAnswered > 0 ? `${lessonCorrect} acertos` : undefined}
+              progressLabel={t('home.rail.answered', { a: lessonAnswered, b: lessonTotal })}
+              extraLabel={lessonAnswered > 0 ? t('home.rail.correct', { n: lessonCorrect }) : undefined}
               cta={
                 lessonDone
-                  ? 'Ver resultado →'
+                  ? t('home.rail.seeResult')
                   : lessonAnswered > 0
-                    ? 'Continuar →'
-                    : 'Começar →'
+                    ? t('home.rail.continue')
+                    : t('home.rail.start')
               }
             />
           </CardRail>
@@ -245,7 +249,7 @@ export function Home() {
             const list = TOPICS.filter((t) => t.category === cat.id);
             if (list.length === 0) return null;
             return (
-              <CardRail key={cat.id} title={cat.label} desc={cat.desc} icon={cat.emoji}>
+              <CardRail key={cat.id} title={t(catKey(cat.id, 'label'))} desc={t(catKey(cat.id, 'desc'))} icon={cat.emoji}>
                 {list.map((topic) => {
                   const done = topicProgress[topic.id]?.stagesDone?.length ?? 0;
                   const total = topic.stages.length;
@@ -255,13 +259,13 @@ export function Home() {
                       onClick={() => openTopic(topic.id)}
                       emoji={topic.emoji}
                       title={topic.title}
-                      subtitle={`${topic.subtitle} · ${topic.items.length} palavras`}
+                      subtitle={t('home.rail.words', { sub: topic.subtitle, n: topic.items.length })}
                       done={done === total}
                       progress={done}
                       total={total}
-                      progressLabel={`${done}/${total} etapas`}
-                      extraLabel={topic.level === 1 ? 'Fácil' : topic.level === 2 ? 'Médio' : 'Difícil'}
-                      cta={done === total ? 'Revisar →' : done > 0 ? 'Continuar →' : 'Começar →'}
+                      progressLabel={t('home.rail.stages', { a: done, b: total })}
+                      extraLabel={topic.level === 1 ? t('level.easy') : topic.level === 2 ? t('level.medium') : t('level.hard')}
+                      cta={done === total ? t('home.rail.review') : done > 0 ? t('home.rail.continue') : t('home.rail.start')}
                     />
                   );
                 })}
@@ -283,14 +287,14 @@ export function Home() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold tracking-tight text-primary">
-                  Meus Grupos
+                  {t('groups.mine')}
                 </h2>
                 <p className="text-xs text-tertiary">
-                  {groups.length} {groups.length === 1 ? 'coleção' : 'coleções'}
+                  {t('groups.collections', { n: groups.length })}
                   {totalCards > 0 && (
                     <>
                       <span className="text-slate-300"> · </span>
-                      {totalCards} {totalCards === 1 ? 'card' : 'cards'} no total
+                      {t('groups.cardsTotal', { n: totalCards })}
                     </>
                   )}
                 </p>
@@ -301,7 +305,7 @@ export function Home() {
               className="group flex items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 active:translate-y-0"
             >
               <Plus className="h-3.5 w-3.5 transition-transform group-hover:rotate-90" />
-              Novo Grupo
+              {t('groups.new')}
             </button>
           </div>
 
@@ -313,7 +317,7 @@ export function Home() {
                   type="text"
                   value={newGroupName}
                   onChange={(e) => setNewGroupName(e.target.value)}
-                  placeholder="Nome do grupo..."
+                  placeholder={t('groups.namePlaceholder')}
                   className="flex-1 rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm transition-all placeholder:text-faint focus:border-[var(--accent)] focus:bg-surface focus:outline-none focus:ring-4 focus:ring-accent-line"
                   autoFocus
                   onKeyDown={(e) => {
@@ -327,7 +331,7 @@ export function Home() {
                     disabled={!newGroupName.trim()}
                     className="flex-1 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[var(--accent-strong)] hover:shadow-md hover:shadow-slate-900/10 disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-faint disabled:shadow-none sm:flex-none"
                   >
-                    Criar
+                    {t('groups.create')}
                   </button>
                   <button
                     onClick={() => {
@@ -336,7 +340,7 @@ export function Home() {
                     }}
                     className="flex-1 rounded-xl bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:bg-surface-2 sm:flex-none"
                   >
-                    Cancelar
+                    {t('groups.cancel')}
                   </button>
                 </div>
               </div>
@@ -357,17 +361,17 @@ export function Home() {
                 <Folder className="h-7 w-7 text-accent" strokeWidth={2} />
               </div>
               <h3 className="mb-1.5 text-base font-semibold tracking-tight text-primary">
-                Comece sua biblioteca
+                {t('groups.emptyTitle')}
               </h3>
               <p className="mx-auto mb-5 max-w-xs text-sm text-tertiary">
-                Crie seu primeiro grupo para começar a adicionar flash cards e construir seu progresso.
+                {t('groups.emptyText')}
               </p>
               <button
                 onClick={() => setIsAddingGroup(true)}
                 className="inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--accent-strong)] hover:shadow-lg hover:shadow-slate-900/10"
               >
                 <Plus className="h-4 w-4" />
-                Criar Primeiro Grupo
+                {t('groups.createFirst')}
               </button>
             </div>
           ) : (
@@ -424,12 +428,12 @@ export function Home() {
                               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
                               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
                             </span>
-                            {reviewCount} para revisar
+                            {t('groups.toReview', { n: reviewCount })}
                           </span>
                         ) : gTotal > 0 ? (
                           <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                             <Check className="h-3 w-3" />
-                            Em dia
+                            {t('groups.upToDate')}
                           </span>
                         ) : null}
                       </div>
@@ -439,7 +443,7 @@ export function Home() {
                       </h3>
                       <div className="mb-3 flex items-center gap-1.5 text-xs text-tertiary">
                         <span className="font-medium tabular-nums">{gTotal}</span>
-                        <span>{gTotal === 1 ? 'card' : 'cards'}</span>
+                        <span>{t('groups.cards', { n: gTotal })}</span>
                         {gMastered > 0 && (
                           <>
                             <span className="text-slate-300">·</span>
@@ -466,10 +470,10 @@ export function Home() {
                           </div>
                           <div className="mt-2 flex items-center justify-between text-[10px] font-medium text-faint">
                             <span className="tabular-nums">
-                              Nível {gAvg.toFixed(1)} / 5
+                              {t('groups.level', { x: gAvg.toFixed(1) })}
                             </span>
                             <span className="flex items-center gap-0.5 opacity-0 transition-opacity duration-200 group-hover:opacity-70">
-                              Abrir
+                              {t('groups.open')}
                               <ChevronRight className="h-3 w-3" />
                             </span>
                           </div>
@@ -484,7 +488,7 @@ export function Home() {
                           className="mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-3 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10"
                         >
                           <RefreshCw className="h-3.5 w-3.5" />
-                          Revisar {reviewCount} {reviewCount === 1 ? 'card' : 'cards'}
+                          {t('groups.reviewN', { n: reviewCount })}
                         </button>
                       )}
                     </div>
@@ -516,10 +520,10 @@ export function Home() {
               </div>
               <div>
                 <h3 className="text-[15px] font-semibold tracking-tight text-primary">
-                  Backup & Restauração
+                  {t('home.backup.title')}
                 </h3>
                 <p className="text-xs text-tertiary">
-                  Exporte ou importe seu progresso
+                  {t('home.backup.subtitle')}
                 </p>
               </div>
             </div>
@@ -529,14 +533,14 @@ export function Home() {
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-surface hover:shadow-sm"
               >
                 <Download className="h-4 w-4" strokeWidth={2.2} />
-                Exportar
+                {t('home.backup.export')}
               </button>
               <button
                 onClick={() => setShowImportExport(true)}
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:-translate-y-0.5 hover:border-slate-300 hover:bg-surface hover:shadow-sm"
               >
                 <Upload className="h-4 w-4" strokeWidth={2.2} />
-                Importar
+                {t('home.backup.import')}
               </button>
             </div>
           </div>
@@ -558,15 +562,15 @@ export function Home() {
                   <Calendar className="h-5 w-5 text-cyan-600" strokeWidth={2.2} />
                 </div>
                 <h3 className="text-[15px] font-semibold tracking-tight text-primary">
-                  Dica de Estudo
+                  {t('home.tip.title')}
                 </h3>
               </div>
               <p className="text-sm leading-relaxed text-secondary">
-                A revisão espaçada é mais eficiente que estudar muitas horas seguidas.{' '}
+                {t('home.tip.body1')}{' '}
                 <span className="font-semibold text-cyan-900">
-                  Revise alguns minutos todo dia
+                  {t('home.tip.body2')}
                 </span>{' '}
-                — é assim que vocabulário fica retido pra valer.
+                {t('home.tip.body3')}
               </p>
             </div>
           </div>
@@ -687,6 +691,7 @@ function RailCard({
   extraLabel?: string;
   cta: string;
 }) {
+  const t = useT();
   return (
     <button
       type="button"
@@ -696,7 +701,7 @@ function RailCard({
       {done && (
         <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
           <CheckCircle2 className="h-3.5 w-3.5" />
-          Concluído
+          {t('home.rail.done')}
         </span>
       )}
 

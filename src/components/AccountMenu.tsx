@@ -6,12 +6,14 @@ import {
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { usePwaInstall } from '../hooks/usePwaInstall';
+import { useT } from '../i18n/useT';
 
 export function AccountMenu() {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { viewMode, setViewMode } = useStore();
   const { isInstalled } = usePwaInstall();
+  const t = useT();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -42,7 +44,7 @@ export function AccountMenu() {
         aria-haspopup="menu"
       >
         <User className="w-4 h-4 shrink-0" />
-        <span className="hidden xl:inline">Conta</span>
+        <span className="hidden xl:inline">{t('account.title')}</span>
         <ChevronDown className={`w-3.5 h-3.5 shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -61,7 +63,7 @@ export function AccountMenu() {
             }}
           >
             <UserCircle className="w-4 h-4 text-tertiary shrink-0" />
-            Meu perfil
+            {t('account.profile')}
           </button>
           {!isInstalled && (
             <button
@@ -74,7 +76,7 @@ export function AccountMenu() {
               }}
             >
               <Download className="w-4 h-4 shrink-0" />
-              Instalar app
+              {t('account.install')}
             </button>
           )}
           {isAdmin && (
@@ -88,7 +90,7 @@ export function AccountMenu() {
               }}
             >
               <LayoutDashboard className="w-4 h-4 shrink-0" />
-              Admin
+              {t('account.admin')}
             </button>
           )}
           {isTeacher && (
@@ -102,7 +104,7 @@ export function AccountMenu() {
               }}
             >
               <GraduationCap className="w-4 h-4 shrink-0" />
-              Professor
+              {t('account.teacher')}
             </button>
           )}
         </div>
