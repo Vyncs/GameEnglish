@@ -135,20 +135,24 @@ export function GroupsManagerPanel() {
                     {reviewCount}
                   </span>
                 )}
-                <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                {/* No toque (sem hover) os botões ficam sempre visíveis; no desktop
+                    só aparecem ao passar o mouse, para não poluir a lista. */}
+                <div className="flex gap-0.5 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 transition-opacity shrink-0">
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setEditingId(group.id); setEditingName(group.name); }}
-                    className="p-1 rounded hover:bg-surface-2 text-faint hover:text-secondary transition-colors"
+                    aria-label={`Renomear ${group.name}`}
+                    className="p-1.5 rounded hover:bg-surface-2 text-faint hover:text-secondary transition-colors"
                   >
-                    <Pencil className="w-3 h-3" />
+                    <Pencil className="w-3.5 h-3.5" />
                   </button>
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleDelete(group.id); }}
-                    className="p-1 rounded hover:bg-red-50 text-faint hover:text-red-500 transition-colors"
+                    aria-label={`Excluir ${group.name}`}
+                    className="p-1.5 rounded hover:bg-red-50 text-faint hover:text-red-500 transition-colors"
                   >
-                    <Trash2 className="w-3 h-3" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
