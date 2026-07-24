@@ -233,7 +233,7 @@ export function Home() {
               className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
             >
               {lessonDone && (
-                <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   Concluída
                 </span>
@@ -316,7 +316,7 @@ export function Home() {
                   className="group relative w-full overflow-hidden rounded-2xl border border-line bg-surface backdrop-blur-md p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:shadow-[0_18px_36px_-12px_rgba(124,58,237,0.20)]"
                 >
                   {complete && (
-                    <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                    <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       Concluído
                     </span>
@@ -380,7 +380,7 @@ export function Home() {
         >
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-surface-2/80 ring-1 ring-slate-200/80">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-surface-2/80 ring-1 ring-line">
                 <Folder className="h-4 w-4 text-secondary" strokeWidth={2.4} />
               </div>
               <div>
@@ -427,7 +427,7 @@ export function Home() {
                   <button
                     onClick={handleAddGroup}
                     disabled={!newGroupName.trim()}
-                    className="flex-1 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[var(--accent-strong)] hover:shadow-md hover:shadow-slate-900/10 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-faint disabled:shadow-none sm:flex-none"
+                    className="flex-1 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[var(--accent-strong)] hover:shadow-md hover:shadow-slate-900/10 disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-faint disabled:shadow-none sm:flex-none"
                   >
                     Criar
                   </button>
@@ -436,7 +436,7 @@ export function Home() {
                       setIsAddingGroup(false);
                       setNewGroupName('');
                     }}
-                    className="flex-1 rounded-xl bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:bg-slate-200 sm:flex-none"
+                    className="flex-1 rounded-xl bg-surface-2 px-4 py-2.5 text-sm font-medium text-secondary transition-all hover:bg-surface-2 sm:flex-none"
                   >
                     Cancelar
                   </button>
@@ -529,7 +529,7 @@ export function Home() {
                             {reviewCount} para revisar
                           </span>
                         ) : gTotal > 0 ? (
-                          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+                          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
                             <Check className="h-3 w-3" />
                             Em dia
                           </span>
@@ -744,7 +744,7 @@ function LevelDots({ value }: { value: number }) {
         return (
           <div
             key={dot}
-            className="relative h-2 w-2 overflow-hidden rounded-full bg-slate-200"
+            className="relative h-2 w-2 overflow-hidden rounded-full bg-surface-2"
           >
             <div
               className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-700"
@@ -800,7 +800,7 @@ function TodayStep({
       >
         {done ? <Check className="h-5 w-5" strokeWidth={2.6} /> : icon}
         {!done && (
-          <span className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-surface text-[10px] font-bold text-secondary ring-1 ring-slate-200">
+          <span className="absolute -left-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-surface text-[10px] font-bold text-secondary ring-1 ring-line">
             {n}
           </span>
         )}

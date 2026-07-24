@@ -50,18 +50,18 @@ export function EmptyState({ onStart, tutorName = 'Coach' }: EmptyStateProps) {
 
       {/* Hero — autoridade */}
       <h2
-        className="mt-3 text-[28px] sm:text-[36px] font-bold leading-[1.1] tracking-tight text-slate-900"
+        className="mt-3 text-[28px] sm:text-[36px] font-bold leading-[1.1] tracking-tight text-primary"
         style={{ fontFeatureSettings: '"ss01", "cv11"' }}
       >
         Hi, I'm {tutorName}{' '}
         <span className="inline-block animate-fade-in">👋</span>
       </h2>
 
-      <p className="mt-3 text-base sm:text-lg text-slate-600 max-w-md leading-relaxed">
+      <p className="mt-3 text-base sm:text-lg text-secondary max-w-md leading-relaxed">
         Seu professor particular de inglês. Vou conversar com você, corrigir seus erros e te ajudar
         a soar mais{' '}
         <span className="relative inline-block">
-          <span className="relative z-10 font-semibold text-slate-800">natural</span>
+          <span className="relative z-10 font-semibold text-primary">natural</span>
           <span
             className="absolute inset-x-0 bottom-0.5 h-2 -z-0"
             style={{ background: 'rgba(244, 226, 43, 0.40)' }}
@@ -84,7 +84,7 @@ export function EmptyState({ onStart, tutorName = 'Coach' }: EmptyStateProps) {
             key={s.label}
             type="button"
             onClick={() => onStart(s.message, s.mode)}
-            className="group relative text-left p-3.5 rounded-2xl bg-white border border-slate-200/80 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 overflow-hidden animate-fade-in"
+            className="group relative text-left p-3.5 rounded-2xl bg-surface border border-line transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300 overflow-hidden animate-fade-in"
             style={{
               animationDelay: `${idx * 60}ms`,
               boxShadow:
@@ -110,13 +110,13 @@ export function EmptyState({ onStart, tutorName = 'Coach' }: EmptyStateProps) {
             />
 
             <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-2 font-semibold text-[15px] tracking-tight text-slate-900 group-hover:text-emerald-800 transition-colors">
+              <div className="flex items-center gap-2 font-semibold text-[15px] tracking-tight text-primary group-hover:text-emerald-800 transition-colors">
                 <span className="text-lg leading-none">{s.emoji}</span>
                 {s.label}
               </div>
               <ArrowRight className="w-4 h-4 text-slate-300 transition-all duration-200 group-hover:text-emerald-600 group-hover:translate-x-0.5" />
             </div>
-            <p className="mt-1.5 text-[12px] text-slate-500 line-clamp-2 leading-snug">
+            <p className="mt-1.5 text-[12px] text-tertiary line-clamp-2 leading-snug">
               "{s.message}"
             </p>
           </button>
@@ -125,10 +125,10 @@ export function EmptyState({ onStart, tutorName = 'Coach' }: EmptyStateProps) {
 
       {/* Privacy + tip */}
       <div className="mt-7 flex flex-col items-center gap-2">
-        <p className="text-[11px] text-slate-400 leading-relaxed max-w-sm">
+        <p className="text-[11px] text-faint leading-relaxed max-w-sm">
           Pode escrever em português também — eu respondo em inglês.
         </p>
-        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-slate-400">
+        <span className="inline-flex items-center gap-1 text-[10px] font-medium text-faint">
           <ShieldCheck className="w-3 h-3" strokeWidth={2.2} />
           Suas conversas são privadas
         </span>

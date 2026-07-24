@@ -20,7 +20,7 @@ export function LevelSelector({ value, onChange, compact }: LevelSelectorProps) 
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                 active
                   ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
-                  : 'bg-white text-slate-700 border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/40'
+                  : 'bg-surface text-secondary border-line hover:border-emerald-300 hover:bg-emerald-50'
               }`}
               aria-pressed={active}
             >
@@ -37,17 +37,17 @@ export function LevelSelector({ value, onChange, compact }: LevelSelectorProps) 
             className={`text-left p-3 rounded-2xl border transition-all ${
               active
                 ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-300 ring-2 ring-emerald-200 shadow-sm'
-                : 'bg-white border-slate-200 hover:border-emerald-300 hover:shadow-sm'
+                : 'bg-surface border-line hover:border-emerald-300 hover:shadow-sm'
             }`}
             aria-pressed={active}
           >
             <div className="flex items-center gap-2">
               <span className="text-xl">{opt.emoji}</span>
-              <span className={`font-semibold ${active ? 'text-emerald-800' : 'text-slate-800'}`}>
+              <span className={`font-semibold ${active ? 'text-emerald-800' : 'text-primary'}`}>
                 {opt.label}
               </span>
             </div>
-            <p className={`mt-1 text-xs ${active ? 'text-emerald-700/80' : 'text-slate-500'}`}>
+            <p className={`mt-1 text-xs ${active ? 'text-emerald-700/80' : 'text-tertiary'}`}>
               {opt.description}
             </p>
           </button>

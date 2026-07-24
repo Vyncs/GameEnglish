@@ -311,14 +311,14 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
               value={editTips}
               onChange={(e) => setEditTips(e.target.value)}
               placeholder="Ex: Verbo irregular - Past: went, Past Participle: gone"
-              className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+              className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
               rows={2}
             />
           </div>
           <div className="flex gap-3 justify-end">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors flex items-center gap-2"
             >
               <X className="w-4 h-4" />
               Cancelar
@@ -472,7 +472,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           {!hasSubmitted && (
             <button
               onClick={() => setShowAnswer(!showAnswer)}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors"
             >
               {showAnswer ? (
                 <>
@@ -491,7 +491,7 @@ export function FlashCard({ card, enableSpacedRepetition = false }: FlashCardPro
           {hasSubmitted && (
             <button
               onClick={handleReset}
-              className="flex-1 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
+              className="flex-1 px-4 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors"
             >
               Tentar novamente
             </button>

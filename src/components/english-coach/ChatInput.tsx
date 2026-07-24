@@ -94,7 +94,7 @@ export function ChatInput({
   };
 
   return (
-    <div className="relative flex items-end gap-2 p-2 sm:p-3 rounded-2xl border border-slate-200 bg-white shadow-sm focus-within:border-emerald-300 focus-within:ring-2 focus-within:ring-emerald-100 transition-all">
+    <div className="relative flex items-end gap-2 p-2 sm:p-3 rounded-2xl border border-line bg-surface shadow-sm focus-within:border-emerald-300 focus-within:ring-2 focus-within:ring-emerald-100 transition-all">
       {micSupported && (
         <button
           type="button"
@@ -103,7 +103,7 @@ export function ChatInput({
           className={`shrink-0 h-9 w-9 inline-flex items-center justify-center rounded-xl transition-colors ${
             isListening
               ? 'bg-red-500 text-white animate-pulse'
-              : 'bg-slate-100 text-slate-600 hover:bg-emerald-50 hover:text-emerald-700'
+              : 'bg-surface-2 text-secondary hover:bg-emerald-50 hover:text-emerald-700'
           }`}
           title={isListening ? 'Parar gravação' : 'Falar'}
           aria-label={isListening ? 'Parar gravação' : 'Falar'}
@@ -122,7 +122,7 @@ export function ChatInput({
         onBlur={handleBlur}
         disabled={disabled}
         placeholder={isListening ? 'Ouvindo… fale em inglês' : placeholder}
-        className="flex-1 resize-none border-none outline-none bg-transparent text-[15px] leading-relaxed placeholder:text-slate-400 max-h-[140px] py-1.5"
+        className="flex-1 resize-none border-none outline-none bg-transparent text-[15px] leading-relaxed placeholder:text-faint max-h-[140px] py-1.5"
         aria-label="Mensagem"
       />
 

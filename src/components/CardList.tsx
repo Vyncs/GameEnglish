@@ -330,7 +330,7 @@ export function CardList() {
                 value={newTips}
                 onChange={(e) => setNewTips(e.target.value)}
                 placeholder="Ex: Verbo irregular - Past: went, Past Participle: gone"
-                className="w-full px-4 py-3 bg-amber-50/50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
+                className="w-full px-4 py-3 bg-amber-50 border border-amber-200 rounded-xl text-primary focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-100 resize-none"
                 rows={2}
               />
               <p className="mt-1 text-xs text-faint">
@@ -347,7 +347,7 @@ export function CardList() {
                   setNewTips('');
                   setNewDirection('pt-en');
                 }}
-                className="px-5 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 transition-colors"
+                className="px-5 py-2.5 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 transition-colors"
               >
                 Cancelar
               </button>

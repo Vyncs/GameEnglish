@@ -158,7 +158,7 @@ export function Account() {
                     onClick={() => setTheme(t.id)}
                     className={`flex items-center gap-2.5 rounded-xl border p-2.5 text-left transition-all ${
                       active
-                        ? 'border-slate-400 bg-surface shadow-sm ring-2 ring-slate-300'
+                        ? 'border-slate-400 bg-surface shadow-sm ring-2 ring-line'
                         : 'border-line bg-surface backdrop-blur-md hover:border-slate-300'
                     }`}
                     title={t.description}
@@ -199,7 +199,7 @@ export function Account() {
               type="button"
               onClick={handleSimulateClearSubscription}
               disabled={simulateLoading}
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-300 bg-surface-2 text-secondary rounded-xl hover:bg-slate-200 disabled:opacity-60 text-sm"
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-300 bg-surface-2 text-secondary rounded-xl hover:bg-surface-2 disabled:opacity-60 text-sm"
             >
               {simulateLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               Simular plano gratuito (dev)

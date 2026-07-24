@@ -65,7 +65,7 @@ export function BricksChallenge() {
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                       selectedVerb === verb
                         ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white shadow-lg shadow-orange-500/25'
-                        : 'bg-surface-2 text-secondary hover:bg-slate-200'
+                        : 'bg-surface-2 text-secondary hover:bg-surface-2'
                     }`}
                   >
                     {verb}
@@ -161,14 +161,14 @@ export function BricksChallenge() {
                 <p className="text-5xl font-bold text-emerald-500">{correctCount}</p>
                 <p className="text-tertiary">Acertos</p>
               </div>
-              <div className="w-px h-16 bg-slate-200" />
+              <div className="w-px h-16 bg-surface-2" />
               <div className="text-center">
                 <p className="text-5xl font-bold text-red-500">
                   {bricksChallenge.results.length - correctCount}
                 </p>
                 <p className="text-tertiary">Erros</p>
               </div>
-              <div className="w-px h-16 bg-slate-200" />
+              <div className="w-px h-16 bg-surface-2" />
               <div className="text-center">
                 <p className={`text-5xl font-bold ${
                   percentage >= 70 ? 'text-emerald-500' : percentage >= 40 ? 'text-amber-500' : 'text-red-500'

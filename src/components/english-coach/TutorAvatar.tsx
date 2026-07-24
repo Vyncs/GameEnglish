@@ -196,16 +196,16 @@ export function TutorAvatar({
               className="flex items-end justify-center gap-[14%]"
               style={{ width: '38%', height: '52%' }}
             >
-              <div className="orb-bar-1 w-[26%] rounded-full bg-white/90" />
-              <div className="orb-bar-2 w-[26%] rounded-full bg-white" />
-              <div className="orb-bar-3 w-[26%] rounded-full bg-white/90" />
+              <div className="orb-bar-1 w-[26%] rounded-full bg-surface" />
+              <div className="orb-bar-2 w-[26%] rounded-full bg-surface" />
+              <div className="orb-bar-3 w-[26%] rounded-full bg-surface" />
             </div>
           ) : stateKind === 'thinking' ? (
             // 3 dots em sequência
             <div className="flex items-center gap-[10%]" style={{ width: '46%' }}>
-              <span className="thinking-dot-1 block rounded-full bg-white" style={{ width: '22%', aspectRatio: '1' }} />
-              <span className="thinking-dot-2 block rounded-full bg-white" style={{ width: '22%', aspectRatio: '1' }} />
-              <span className="thinking-dot-3 block rounded-full bg-white" style={{ width: '22%', aspectRatio: '1' }} />
+              <span className="thinking-dot-1 block rounded-full bg-surface" style={{ width: '22%', aspectRatio: '1' }} />
+              <span className="thinking-dot-2 block rounded-full bg-surface" style={{ width: '22%', aspectRatio: '1' }} />
+              <span className="thinking-dot-3 block rounded-full bg-surface" style={{ width: '22%', aspectRatio: '1' }} />
             </div>
           ) : stateKind === 'correcting' ? (
             <AlertCircle

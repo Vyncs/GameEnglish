@@ -125,7 +125,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
         {topic.subtitle} · {topic.items.length} palavras
       </p>
 
-      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
         <div
           className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
           style={{ width: `${(doneCount / topic.stages.length) * 100}%` }}
@@ -158,7 +158,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
                 locked
                   ? 'cursor-not-allowed border-line bg-surface-2 opacity-60'
                   : done
-                    ? 'border-emerald-200 bg-emerald-50/60 hover:border-emerald-300'
+                    ? 'border-emerald-200 bg-emerald-50 hover:border-emerald-300'
                     : 'border-line bg-surface backdrop-blur-md hover:-translate-y-0.5 hover:border-accent-line hover:shadow-md'
               }`}
             >
@@ -469,7 +469,7 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
         </div>
 
         {chosen && (
-          <div className={`mt-4 rounded-xl border p-3 text-sm animate-fade-in ${isRight ? 'border-emerald-200 bg-emerald-50/80 text-emerald-800' : 'border-amber-200 bg-amber-50/80 text-amber-800'}`}>
+          <div className={`mt-4 rounded-xl border p-3 text-sm animate-fade-in ${isRight ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
             <p className="font-semibold">{isRight ? 'Boa! ✅' : `Resposta: ${v.pt}`}</p>
             <p className="mt-0.5 text-secondary">{v.tip}</p>
             {!isRight && <p className="mt-1 text-xs text-tertiary">Esta palavra volta no fim para você fixar.</p>}
@@ -555,7 +555,7 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
         </div>
 
         {chosen && (
-          <div className={`mt-4 rounded-xl border p-3 text-sm animate-fade-in ${isRight ? 'border-emerald-200 bg-emerald-50/80 text-emerald-800' : 'border-amber-200 bg-amber-50/80 text-amber-800'}`}>
+          <div className={`mt-4 rounded-xl border p-3 text-sm animate-fade-in ${isRight ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-800'}`}>
             <p className="font-semibold">
               {isRight ? 'Boa! ✅' : `Correto: ${v.base} – ${v.past} – ${v.participle}`}
             </p>
@@ -602,7 +602,7 @@ function StageHeader({ onBack, title, progress }: { onBack: () => void; title: s
 
 function Bar({ value, total }: { value: number; total: number }) {
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
+    <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
       <div
         className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
         style={{ width: `${total > 0 ? (value / total) * 100 : 0}%` }}

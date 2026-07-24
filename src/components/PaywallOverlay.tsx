@@ -19,14 +19,14 @@ export function PaywallOverlay({ featureName }: PaywallOverlayProps) {
         className="absolute inset-0 z-10 flex items-center justify-center bg-slate-900/40 backdrop-blur-md"
         aria-hidden="false"
       >
-        <div className="mx-4 max-w-sm rounded-2xl border border-slate-200/60 bg-white/95 p-6 text-center shadow-xl backdrop-blur-sm">
+        <div className="mx-4 max-w-sm rounded-2xl border border-line bg-surface p-6 text-center shadow-xl backdrop-blur-sm">
           <div className="mb-3 flex justify-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-100">
               <Lock className="h-7 w-7 text-amber-600" />
             </div>
           </div>
-          <h2 className="text-lg font-bold text-slate-800">Recurso exclusivo para assinantes</h2>
-          <p className="mt-1 text-sm text-slate-600">
+          <h2 className="text-lg font-bold text-primary">Recurso exclusivo para assinantes</h2>
+          <p className="mt-1 text-sm text-secondary">
             <strong>{featureName}</strong> faz parte do plano pago. Assine para desbloquear.
           </p>
           <button

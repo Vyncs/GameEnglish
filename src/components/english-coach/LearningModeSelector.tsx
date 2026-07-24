@@ -20,7 +20,7 @@ export function LearningModeSelector({ value, onChange, compact }: LearningModeS
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
                 active
                   ? 'bg-cyan-500 text-white border-cyan-500 shadow-sm'
-                  : 'bg-white text-slate-700 border-slate-200 hover:border-cyan-300 hover:bg-cyan-50/40'
+                  : 'bg-surface text-secondary border-line hover:border-cyan-300 hover:bg-cyan-50'
               }`}
               aria-pressed={active}
             >
@@ -45,17 +45,17 @@ export function LearningModeSelector({ value, onChange, compact }: LearningModeS
             className={`text-left p-3 rounded-2xl border transition-all ${
               active
                 ? 'bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-300 ring-2 ring-cyan-200 shadow-sm'
-                : 'bg-white border-slate-200 hover:border-cyan-300 hover:shadow-sm'
+                : 'bg-surface border-line hover:border-cyan-300 hover:shadow-sm'
             }`}
             aria-pressed={active}
           >
             <div className="flex items-center gap-2">
               <span className="text-xl">{opt.emoji}</span>
-              <span className={`text-sm font-semibold ${active ? 'text-cyan-800' : 'text-slate-800'}`}>
+              <span className={`text-sm font-semibold ${active ? 'text-cyan-800' : 'text-primary'}`}>
                 {opt.label}
               </span>
             </div>
-            <p className={`mt-0.5 text-[11px] ${active ? 'text-cyan-700/80' : 'text-slate-500'}`}>
+            <p className={`mt-0.5 text-[11px] ${active ? 'text-cyan-700/80' : 'text-tertiary'}`}>
               {opt.description}
             </p>
           </button>

@@ -137,7 +137,7 @@ function EnglishCoachInner() {
                   <span className="block w-1 h-1 rounded-full bg-emerald-400 jv-dot-pulse" />
                   Online
                 </span>
-                <span className="hidden md:inline text-[10px] text-slate-500">
+                <span className="hidden md:inline text-[10px] text-tertiary">
                   · HD Voice · Premium AI Tutor
                 </span>
               </div>
@@ -160,13 +160,13 @@ function EnglishCoachInner() {
             <div className="jarvis-card jarvis-bracket px-3 py-2.5">
               <div className="space-y-2">
                 <div>
-                  <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-1">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-tertiary mb-1">
                     Nível
                   </div>
                   <LevelSelector value={level} onChange={setLevel} compact />
                 </div>
                 <div>
-                  <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-slate-500 mb-1">
+                  <div className="text-[9px] font-bold uppercase tracking-[0.16em] text-tertiary mb-1">
                     Modo
                   </div>
                   <LearningModeSelector value={mode} onChange={setMode} compact />
