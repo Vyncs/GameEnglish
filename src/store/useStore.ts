@@ -28,6 +28,7 @@ import { api } from '../api/client';
 import { useAuthStore } from './useAuthStore';
 import { hasPremiumAccess } from '../utils/subscription';
 import { FREE_MAX_GROUPS, FREE_MAX_CARDS_PER_GROUP } from '../utils/freeTier';
+import { playCorrect, playWrong } from '../utils/sfx';
 
 function isFreeTierLimited(): boolean {
   return !hasPremiumAccess(useAuthStore.getState().user?.subscriptionStatus);
@@ -642,6 +643,7 @@ export const useStore = create<AppState>()(
         const currentPhrase = challenge.phrases[challenge.currentIndex];
         const result = fuzzyCompare(answer, currentPhrase.english, FUZZY_THRESHOLD);
         const isCorrect = result.isAcceptable;
+        (isCorrect ? playCorrect : playWrong)();
         const isExactMatch = result.isExactMatch;
         
         const newResult = {
@@ -761,6 +763,7 @@ export const useStore = create<AppState>()(
           const secondCard = newCards.find((c) => c.id === secondId)!;
           
           const isMatch = firstCard.pairId === secondCard.pairId;
+          (isMatch ? playCorrect : playWrong)();
           
           setTimeout(() => {
             set((state) => {

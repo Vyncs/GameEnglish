@@ -8,6 +8,7 @@ export const TOPIC_WEATHER: Topic = {
   title: 'Clima e tempo',
   subtitle: 'weather → autumn · 25 palavras',
   emoji: '🌤️',
+  category: 'outros',
   level: 1,
   stages: ['study', 'meaning'],
   items: [

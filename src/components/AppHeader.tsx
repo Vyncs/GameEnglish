@@ -2,8 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   Home, RefreshCw, Blocks, Puzzle, Mic, Library, Lock,
   GraduationCap, BookOpen, MessagesSquare, Moon, Sun,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { useThemeStore } from '../store/useThemeStore';
+import { useSfxStore } from '../store/useSfxStore';
 import { findTheme } from '../data/themes';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
@@ -47,6 +50,8 @@ export function AppHeader() {
 
   const themeId = useThemeStore((s) => s.themeId);
   const toggleMode = useThemeStore((s) => s.toggleMode);
+  const sfxOn = useSfxStore((s) => s.enabled);
+  const toggleSfx = useSfxStore((s) => s.toggle);
   const isDark = findTheme(themeId).mode === 'dark';
 
   const [hasTeacher, setHasTeacher] = useState(false);
@@ -224,6 +229,17 @@ export function AppHeader() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
+            onClick={toggleSfx}
+            className="grid h-9 w-9 place-items-center rounded-xl text-secondary transition-colors hover:bg-surface-2"
+            title={sfxOn ? 'Desativar sons' : 'Ativar sons'}
+            aria-label={sfxOn ? 'Desativar sons' : 'Ativar sons'}
+            aria-pressed={sfxOn}
+          >
+            {sfxOn ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+          </button>
+
+          <button
+            type="button"
             onClick={toggleMode}
             className="grid h-9 w-9 place-items-center rounded-xl text-secondary transition-colors hover:bg-surface-2"
             title={isDark ? 'Mudar para tema claro' : 'Mudar para tema escuro'}
@@ -275,6 +291,17 @@ export function AppHeader() {
             aria-label="English Coach"
           >
             <MessagesSquare className="w-5 h-5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={toggleSfx}
+            className="grid h-9 w-9 place-items-center rounded-xl text-secondary transition-colors hover:bg-surface-2"
+            title={sfxOn ? 'Desativar sons' : 'Ativar sons'}
+            aria-label={sfxOn ? 'Desativar sons' : 'Ativar sons'}
+            aria-pressed={sfxOn}
+          >
+            {sfxOn ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
           </button>
 
           <button

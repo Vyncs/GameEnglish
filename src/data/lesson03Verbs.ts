@@ -11,6 +11,7 @@ export const TOPIC_VERBS_2: Topic = {
   title: 'Verbos · 26–50',
   subtitle: 'fall → like',
   emoji: '🏃',
+  category: 'verbos',
   level: 2,
   stages: ['study', 'meaning', 'forms'],
   items: [

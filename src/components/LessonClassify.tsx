@@ -8,6 +8,7 @@ import { useLessonStore } from '../store/useLessonStore';
 import {
   LESSON_01, CLASSIFY_CATEGORIES, CATEGORY_LABEL, type ClassifyCategory,
 } from '../data/lessonClassify';
+import { playCorrect, playWrong } from '../utils/sfx';
 
 const EMPTY_ANSWERS: Record<number, ClassifyCategory> = {};
 
@@ -37,6 +38,8 @@ export function LessonClassify() {
 
   const handleAnswer = (cat: ClassifyCategory) => {
     if (isAnswered) return;
+    if (cat === current.answer) playCorrect();
+    else playWrong();
     answerQuestion(lesson.id, current.id, cat);
   };
 

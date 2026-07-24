@@ -19,6 +19,7 @@ export const TOPIC_VERBS_1: Topic = {
   title: 'Verbos · 1–25',
   subtitle: 'arrive → eat',
   emoji: '🏃',
+  category: 'verbos',
   level: 1,
   stages: ['study', 'meaning', 'forms'],
   imageFor: (item) => verbImg(item.id),
