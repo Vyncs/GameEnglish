@@ -3,9 +3,11 @@ import {
   FolderPlus, Pencil, Trash2, Check, X, Folder,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import { useT } from '../i18n/useT';
 
 /** Painel de gerenciamento de grupos (ex.: na tela de cards / grupos). */
 export function GroupsManagerPanel() {
+  const t = useT();
   const {
     groups, selectedGroupId, selectGroup, addGroup, renameGroup, deleteGroup,
     viewMode, getCardsForReviewCount,
@@ -33,7 +35,7 @@ export function GroupsManagerPanel() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Excluir este grupo e todos os seus cards?')) {
+    if (confirm(t('groups.deleteConfirm'))) {
       deleteGroup(id);
     }
   };
@@ -41,12 +43,12 @@ export function GroupsManagerPanel() {
   return (
     <div className="w-full rounded-2xl border border-line bg-surface shadow-sm overflow-hidden">
       <div className="p-3 border-b border-line flex items-center justify-between">
-        <span className="text-sm font-semibold text-secondary">Meus Grupos</span>
+        <span className="text-sm font-semibold text-secondary">{t('groups.mine')}</span>
         <button
           type="button"
           onClick={() => setIsAdding(true)}
           className="p-1.5 rounded-lg bg-cyan-50 text-cyan-600 hover:bg-cyan-100 transition-colors"
-          title="Novo grupo"
+          title={t('groups.newShort')}
         >
           <FolderPlus className="w-4 h-4" />
         </button>
@@ -59,7 +61,7 @@ export function GroupsManagerPanel() {
               type="text"
               value={newGroupName}
               onChange={(e) => setNewGroupName(e.target.value)}
-              placeholder="Nome do grupo..."
+              placeholder={t('groups.namePlaceholder')}
               className="flex-1 px-3 py-1.5 bg-surface-2 border border-line rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40"
               autoFocus
               onKeyDown={(e) => {
@@ -81,7 +83,7 @@ export function GroupsManagerPanel() {
         {groups.length === 0 ? (
           <div className="text-center py-6 text-faint">
             <Folder className="w-8 h-8 mx-auto mb-1.5 opacity-50" />
-            <p className="text-xs">Nenhum grupo criado</p>
+            <p className="text-xs">{t('groups.emptyNone')}</p>
           </div>
         ) : (
           groups.map((group) => {
@@ -141,7 +143,7 @@ export function GroupsManagerPanel() {
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); setEditingId(group.id); setEditingName(group.name); }}
-                    aria-label={`Renomear ${group.name}`}
+                    aria-label={t('groups.rename', { name: group.name })}
                     className="p-1.5 rounded hover:bg-surface-2 text-faint hover:text-secondary transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
@@ -149,7 +151,7 @@ export function GroupsManagerPanel() {
                   <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); handleDelete(group.id); }}
-                    aria-label={`Excluir ${group.name}`}
+                    aria-label={t('groups.delete', { name: group.name })}
                     className="p-1.5 rounded hover:bg-red-50 text-faint hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -163,7 +165,7 @@ export function GroupsManagerPanel() {
 
       <div className="p-2 border-t border-line">
         <p className="text-[10px] text-faint text-center">
-          {groups.length} grupo{groups.length !== 1 ? 's' : ''}
+          {t('groups.count', { n: groups.length })}
         </p>
       </div>
     </div>
