@@ -524,12 +524,42 @@ export function PlayMode() {
           </div>
         </div>
         
-        <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl">
-          <CheckCircle className="w-4 h-4 text-emerald-400" />
-          <span className="font-bold text-emerald-400">{sessionStats.correct}</span>
-          <span className="text-white/40">|</span>
-          <XCircle className="w-4 h-4 text-red-400" />
-          <span className="font-bold text-red-400">{sessionStats.incorrect}</span>
+        <div className="flex items-center gap-2">
+          {/* Troca de modo no meio do jogo, sem precisar voltar ao início.
+              Fica travado enquanto a resposta está aberta, para o card não ser
+              avaliado duas vezes no Leitner. */}
+          <div className={`flex rounded-xl bg-white/10 p-1 ${showResult ? 'opacity-40' : ''}`}>
+            <button
+              onClick={() => setAnswerMode('flip')}
+              disabled={showResult}
+              title={showResult ? 'Termine este card para trocar' : 'Virar a carta: você marca se acertou'}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                answerMode === 'flip' ? 'bg-white/90 text-slate-900' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              Virar
+            </button>
+            <button
+              onClick={() => setAnswerMode('type')}
+              disabled={showResult}
+              title={showResult ? 'Termine este card para trocar' : 'Escrever a tradução'}
+              className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                answerMode === 'type' ? 'bg-white/90 text-slate-900' : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <Keyboard className="w-3.5 h-3.5" />
+              Escrever
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl">
+            <CheckCircle className="w-4 h-4 text-emerald-400" />
+            <span className="font-bold text-emerald-400">{sessionStats.correct}</span>
+            <span className="text-white/40">|</span>
+            <XCircle className="w-4 h-4 text-red-400" />
+            <span className="font-bold text-red-400">{sessionStats.incorrect}</span>
+          </div>
         </div>
       </div>
 
