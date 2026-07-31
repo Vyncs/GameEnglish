@@ -25,6 +25,20 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 /**
+ * Dica que vai junto no card de revisão: as três formas (quando for verbo),
+ * qual anda com did e qual anda com have, e a dica original do tópico.
+ */
+function cardTips(item: TopicItem): string {
+  const f = verbForms(item);
+  if (!f) return item.tip;
+  const line = `${item.base} – ${f.did}${f.have && !f.same ? ` – ${f.have}` : ''}`;
+  const usage = f.have
+    ? `did → ${f.did}  ·  have → ${f.have}`
+    : `did → ${f.did}  ·  sem particípio (modal)`;
+  return `${line}\n${usage}\n${item.tip}`;
+}
+
+/**
  * As duas formas coloridas da folha: vermelho anda com DID (passado simples),
  * azul anda com HAVE (particípio). Quando as duas são iguais, aparece o aviso.
  */
@@ -110,7 +124,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
         const it = topic.items[i];
         await (useStore
           .getState()
-          .addCard(it.pt, it.base, groupId, 'pt-en', undefined, it.tip) as unknown as Promise<void>);
+          .addCard(it.pt, it.base, groupId, 'pt-en', topic.imageFor?.(it), cardTips(it)) as unknown as Promise<void>);
         setAddProgress(i + 1);
       }
       const added = useStore.getState().cards.filter((c) => c.groupId === groupId).length;
