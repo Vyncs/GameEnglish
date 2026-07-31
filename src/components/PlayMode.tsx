@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useStore } from '../store/useStore';
+import { useReviewModeStore } from '../store/useReviewModeStore';
 import { useSpeech } from '../hooks/useSpeech';
 import { fuzzyCompare } from '../utils/fuzzyMatch';
 import type { FlashCard, PlayModeDirection } from '../types';
@@ -23,7 +24,10 @@ import {
   Play,
   Shuffle,
   Settings,
-  Lightbulb
+  Lightbulb,
+  Eye,
+  Keyboard,
+  RefreshCw
 } from 'lucide-react';
 import { playCorrect, playWrong } from '../utils/sfx';
 
@@ -39,6 +43,10 @@ export function PlayMode() {
     goToHome
   } = useStore();
   const { speak, isSpeaking, isSupported } = useSpeech();
+  // Como responder: virar a carta (padrão) ou digitar — a preferência é a mesma
+  // usada na Sessão de Revisão.
+  const answerMode = useReviewModeStore((s) => s.mode);
+  const setAnswerMode = useReviewModeStore((s) => s.setMode);
 
   // Estado de seleção de modo (tela inicial)
   const [gameStarted, setGameStarted] = useState(false);
@@ -149,6 +157,36 @@ export function PlayMode() {
     }
   };
 
+  /** Virar a carta: só revela o verso e toca o áudio; quem julga é você. */
+  const handleReveal = () => {
+    if (!currentCard) return;
+    setShowResult(true);
+    if (isSupported && currentCard.englishPhrase) {
+      speak(currentCard.englishPhrase, 'en-US');
+    }
+  };
+
+  /** Virar a carta: "Errei"/"Acertei" alimenta o Leitner e já pula para o próximo. */
+  const handleSelfGrade = (correct: boolean) => {
+    if (!currentCard) return;
+    (correct ? playCorrect : playWrong)();
+    setSessionStats(prev => {
+      const newStreak = correct ? prev.streak + 1 : 0;
+      if (correct && newStreak > 0 && newStreak % 3 === 0) {
+        setShowStreakAnimation(true);
+        setTimeout(() => setShowStreakAnimation(false), 1500);
+      }
+      return {
+        correct: prev.correct + (correct ? 1 : 0),
+        incorrect: prev.incorrect + (correct ? 0 : 1),
+        streak: newStreak,
+        maxStreak: Math.max(prev.maxStreak, newStreak),
+      };
+    });
+    reviewCard(currentCard.id, correct);
+    handleNext();
+  };
+
   const handleRestart = () => {
     setGameStarted(false);
     setCardsToPlay([]);
@@ -237,11 +275,53 @@ export function PlayMode() {
             </button>
           </div>
 
-          {/* Info sobre fuzzy matching */}
+          {/* Como responder */}
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-faint">Como responder</p>
+          <div className="mb-4 grid grid-cols-2 gap-3">
+            <button
+              onClick={() => setAnswerMode('flip')}
+              className={`flex items-center gap-3 rounded-2xl border-2 p-4 transition-all ${
+                answerMode === 'flip'
+                  ? 'border-cyan-500 bg-cyan-500/20 text-white'
+                  : 'border-white/20 bg-white/5 text-slate-300 hover:border-white/40'
+              }`}
+            >
+              <RefreshCw className="w-5 h-5 shrink-0" />
+              <span className="text-left">
+                <span className="block font-semibold">Virar a carta</span>
+                <span className="block text-xs text-faint">Você marca se acertou</span>
+              </span>
+            </button>
+            <button
+              onClick={() => setAnswerMode('type')}
+              className={`flex items-center gap-3 rounded-2xl border-2 p-4 transition-all ${
+                answerMode === 'type'
+                  ? 'border-cyan-500 bg-cyan-500/20 text-white'
+                  : 'border-white/20 bg-white/5 text-slate-300 hover:border-white/40'
+              }`}
+            >
+              <Keyboard className="w-5 h-5 shrink-0" />
+              <span className="text-left">
+                <span className="block font-semibold">Escrever</span>
+                <span className="block text-xs text-faint">Digitar a tradução</span>
+              </span>
+            </button>
+          </div>
+
+          {/* Info do modo escolhido */}
           <div className="p-4 bg-white/5 rounded-xl border border-white/10 mb-6">
             <p className="text-sm text-faint text-center">
-              💡 <span className="text-slate-300">Respostas aproximadas são aceitas!</span><br />
-              Pequenos erros de digitação não contam como erro.
+              {answerMode === 'flip' ? (
+                <>
+                  💡 <span className="text-slate-300">Sem digitar!</span><br />
+                  Responda de cabeça, vire a carta e marque Errei ou Acertei.
+                </>
+              ) : (
+                <>
+                  💡 <span className="text-slate-300">Respostas aproximadas são aceitas!</span><br />
+                  Pequenos erros de digitação não contam como erro.
+                </>
+              )}
             </p>
           </div>
 
@@ -508,8 +588,19 @@ export function PlayMode() {
                   </p>
                 </div>
 
+                {/* Virar a carta: responde de cabeça e revela */}
+                {answerMode === 'flip' && !showResult && (
+                  <button
+                    onClick={handleReveal}
+                    className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 py-5 text-xl font-bold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-600 hover:to-blue-600"
+                  >
+                    <Eye className="w-6 h-6" />
+                    Ver resposta
+                  </button>
+                )}
+
                 {/* Input de resposta */}
-                {!showResult && (
+                {answerMode === 'type' && !showResult && (
                   <div className="space-y-4">
                     <div className="relative">
                       <input
@@ -542,7 +633,8 @@ export function PlayMode() {
                 {/* Resultado */}
                 {showResult && (
                   <div className="space-y-6 animate-fade-in">
-                    {/* Feedback visual grande */}
+                    {/* Feedback visual grande — só quando o app corrigiu a digitação */}
+                    {answerMode === 'type' && (
                     <div className={`p-6 rounded-2xl flex items-center justify-center gap-4 ${
                       isCorrect
                         ? 'bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-200'
@@ -575,9 +667,10 @@ export function PlayMode() {
                         </>
                       )}
                     </div>
+                    )}
 
                     {/* Comparação de respostas */}
-                    {(!isCorrect || (isCorrect && !fuzzyResult?.isExact)) && (
+                    {answerMode === 'type' && (!isCorrect || (isCorrect && !fuzzyResult?.isExact)) && (
                       <div className={`p-4 rounded-xl border ${
                         isCorrect 
                           ? 'bg-amber-50 border-amber-200' 
@@ -641,32 +734,58 @@ export function PlayMode() {
                           <Lightbulb className="w-5 h-5 text-amber-500" />
                           <p className="text-sm font-medium text-amber-700">Dica</p>
                         </div>
-                        <p className="text-amber-800">{currentCard.tips}</p>
+                        <p className="whitespace-pre-line text-amber-800">{currentCard.tips}</p>
                       </div>
                     )}
 
                     {/* Próxima revisão */}
-                    <p className="text-center text-sm text-tertiary">
-                      Próxima revisão em {LEITNER_INTERVALS[isCorrect ? Math.min(currentCard.level + 1, 5) : 1]} dia{LEITNER_INTERVALS[isCorrect ? Math.min(currentCard.level + 1, 5) : 1] !== 1 ? 's' : ''}
-                    </p>
+                    {answerMode === 'type' && (
+                      <p className="text-center text-sm text-tertiary">
+                        Próxima revisão em {LEITNER_INTERVALS[isCorrect ? Math.min(currentCard.level + 1, 5) : 1]} dia{LEITNER_INTERVALS[isCorrect ? Math.min(currentCard.level + 1, 5) : 1] !== 1 ? 's' : ''}
+                      </p>
+                    )}
 
-                    {/* Botão próximo */}
-                    <button
-                      onClick={handleNext}
-                      className="w-full py-5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xl font-bold rounded-2xl hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-3"
-                    >
-                      {currentIndex < cardsToPlay.length - 1 ? (
-                        <>
-                          Próximo Card
-                          <ChevronRight className="w-6 h-6" />
-                        </>
-                      ) : (
-                        <>
-                          Ver Resultados
-                          <Trophy className="w-6 h-6" />
-                        </>
-                      )}
-                    </button>
+                    {/* Autoavaliação (virar) ou seguir em frente (escrever) */}
+                    {answerMode === 'flip' ? (
+                      <>
+                        <p className="text-center text-sm text-tertiary">
+                          Acertou de cabeça? É a sua resposta que decide quando o card volta.
+                        </p>
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => handleSelfGrade(false)}
+                            className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 border-red-200 bg-red-50 py-5 text-xl font-bold text-red-600 transition-colors hover:bg-red-100"
+                          >
+                            <XCircle className="w-6 h-6" />
+                            Errei
+                          </button>
+                          <button
+                            onClick={() => handleSelfGrade(true)}
+                            className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 py-5 text-xl font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:opacity-90"
+                          >
+                            <CheckCircle className="w-6 h-6" />
+                            Acertei
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <button
+                        onClick={handleNext}
+                        className="w-full py-5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xl font-bold rounded-2xl hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-3"
+                      >
+                        {currentIndex < cardsToPlay.length - 1 ? (
+                          <>
+                            Próximo Card
+                            <ChevronRight className="w-6 h-6" />
+                          </>
+                        ) : (
+                          <>
+                            Ver Resultados
+                            <Trophy className="w-6 h-6" />
+                          </>
+                        )}
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
