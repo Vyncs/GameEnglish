@@ -22,7 +22,14 @@ import { TermosDeUso } from './pages/TermosDeUso';
 import { PoliticaPrivacidade } from './pages/PoliticaPrivacidade';
 import { CookieBanner } from './components/CookieBanner';
 import { setToken } from './api/client';
+import { useAppVersionCheck } from './hooks/useAppVersionCheck';
 import { Toaster } from 'sonner';
+
+/** Avisa quando um deploy novo entrou no ar e a aba ainda está na versão antiga. */
+function VersionWatcher() {
+  useAppVersionCheck();
+  return null;
+}
 
 function AuthInit() {
   const initAuth = useAuthStore((s) => s.initAuth);
@@ -49,6 +56,7 @@ export default function App() {
   return (
     <>
       <Toaster position="top-center" richColors closeButton duration={4500} />
+      <VersionWatcher />
       <AuthInit />
       <CookieBanner />
       <Routes>
