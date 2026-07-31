@@ -1,15 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { ClassifyCategory } from '../data/lessonClassify';
 
 // Progresso de uma aula: mapa questionId -> resposta escolhida pelo aluno.
+// A resposta é guardada como string para servir a qualquer aula (as categorias
+// da Aula 01, "did"/"have" da Aula 02…).
 export interface LessonProgress {
-  answers: Record<number, ClassifyCategory>;
+  answers: Record<number, string>;
 }
 
 interface LessonState {
   progress: Record<string, LessonProgress>;
-  answerQuestion: (lessonId: string, questionId: number, choice: ClassifyCategory) => void;
+  answerQuestion: (lessonId: string, questionId: number, choice: string) => void;
   resetLesson: (lessonId: string) => void;
 }
 

@@ -14,6 +14,8 @@ import { GradedReaders } from './components/GradedReaders';
 import { Account } from './components/Account';
 import { InstallApp } from './components/InstallApp';
 import { LessonClassify } from './components/LessonClassify';
+import { LessonDidHave } from './components/LessonDidHave';
+import { PastTrainer } from './components/PastTrainer';
 import { TopicStudy } from './components/TopicStudy';
 import { findTopic } from './data/topics';
 import { useVerbLessonStore } from './store/useVerbLessonStore';
@@ -72,6 +74,8 @@ export function AppLayout() {
           {viewMode === 'account' && <Account />}
           {viewMode === 'install' && <InstallApp />}
           {viewMode === 'lesson-classify' && <LessonClassify />}
+          {viewMode === 'lesson-did-have' && <LessonDidHave />}
+          {viewMode === 'past-trainer' && <PastTrainer />}
           {viewMode === 'topic' && selectedTopic && <TopicStudy topic={selectedTopic} />}
           {viewMode === 'review-hub' && <ReviewHub />}
         </div>

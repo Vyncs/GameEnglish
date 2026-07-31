@@ -3,8 +3,10 @@ import { useStore } from '../store/useStore';
 import { useLessonStore } from '../store/useLessonStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { LESSON_01 } from '../data/lessonClassify';
+import { LESSON_DID_HAVE } from '../data/lessonDidHave';
 import { TOPICS } from '../data/topics';
 import { TOPIC_CATEGORIES } from '../data/topic';
+import { VERB_FAMILIES, IRREGULAR_VERBS } from '../data/verbFamilies';
 import { CardRail } from './CardRail';
 import { ImportExport } from './ImportExport';
 import { useT } from '../i18n/useT';
@@ -52,6 +54,20 @@ export function Home() {
     : 0;
   const lessonDone = lessonAnswered === lessonTotal;
 
+  // Progresso da Aula 02 (did vs have + os 3 tipos de "já")
+  const dhAnswers = useLessonStore((s) => s.progress[LESSON_DID_HAVE.id]?.answers);
+  const dhTotal = LESSON_DID_HAVE.questions.length;
+  const dhAnswered = dhAnswers ? Object.keys(dhAnswers).length : 0;
+  const dhCorrect = dhAnswers
+    ? LESSON_DID_HAVE.questions.filter((q) => dhAnswers[q.id] === q.answer).length
+    : 0;
+  const dhDone = dhAnswered === dhTotal;
+
+  // A "regra do dia": enquanto a Aula 01 não fecha ela é a sugerida; depois, a Aula 02.
+  const todayLesson = lessonDone
+    ? { id: LESSON_DID_HAVE.id, title: LESSON_DID_HAVE.title, view: 'lesson-did-have' as const, a: dhAnswered, b: dhTotal, done: dhDone }
+    : { id: LESSON_01.id, title: LESSON_01.title, view: 'lesson-classify' as const, a: lessonAnswered, b: lessonTotal, done: lessonDone };
+
   // Progresso dos tópicos de vocabulário
   const topicProgress = useVerbLessonStore((s) => s.progress);
   const setSelectedTopic = useVerbLessonStore((s) => s.setSelectedTopic);
@@ -59,6 +75,10 @@ export function Home() {
     setSelectedTopic(id);
     setViewMode('topic');
   };
+
+  // Treino de passado: cada família dominada conta como uma etapa.
+  const pastStages = useVerbLessonStore((s) => s.progress['past-trainer']?.stagesDone);
+  const pastDone = pastStages ? VERB_FAMILIES.filter((f) => pastStages.includes(f.id)).length : 0;
 
   // Sessão de hoje: sugere o próximo tópico não concluído (ou o primeiro).
   const nextTopic =
@@ -127,15 +147,15 @@ export function Home() {
                 n={2}
                 title={t('home.today.rule')}
                 subtitle={
-                  lessonDone
-                    ? t('home.today.ruleDone', { title: LESSON_01.title })
-                    : t('home.today.ruleProgress', { title: LESSON_01.title, a: lessonAnswered, b: lessonTotal })
+                  todayLesson.done
+                    ? t('home.today.ruleDone', { title: todayLesson.title })
+                    : t('home.today.ruleProgress', { title: todayLesson.title, a: todayLesson.a, b: todayLesson.b })
                 }
-                cta={lessonDone ? t('cta.reviewLesson') : lessonAnswered > 0 ? t('cta.continue') : t('cta.start')}
-                done={lessonDone}
+                cta={todayLesson.done ? t('cta.reviewLesson') : todayLesson.a > 0 ? t('cta.continue') : t('cta.start')}
+                done={todayLesson.done}
                 tint="from-cyan-500 to-blue-600"
                 icon={<GraduationCap className="h-4 w-4" />}
-                onClick={() => setViewMode('lesson-classify')}
+                onClick={() => setViewMode(todayLesson.view)}
               />
 
               {/* 3. Palavras do dia */}
@@ -242,6 +262,24 @@ export function Home() {
                     : t('home.rail.start')
               }
             />
+            <RailCard
+              onClick={() => setViewMode('lesson-did-have')}
+              emoji="🧭"
+              title={LESSON_DID_HAVE.title}
+              subtitle={LESSON_DID_HAVE.subtitle}
+              done={dhDone}
+              progress={dhAnswered}
+              total={dhTotal}
+              progressLabel={t('home.rail.answered', { a: dhAnswered, b: dhTotal })}
+              extraLabel={dhAnswered > 0 ? t('home.rail.correct', { n: dhCorrect }) : 'mapa mental'}
+              cta={
+                dhDone
+                  ? t('home.rail.seeResult')
+                  : dhAnswered > 0
+                    ? t('home.rail.continue')
+                    : t('home.rail.start')
+              }
+            />
           </CardRail>
 
           {/* TÓPICOS — uma prateleira por categoria */}
@@ -269,6 +307,28 @@ export function Home() {
                     />
                   );
                 })}
+
+                {/* Treino de passado — vive junto dos blocos de verbos */}
+                {cat.id === 'verbos' && (
+                  <RailCard
+                    onClick={() => setViewMode('past-trainer')}
+                    emoji="🧠"
+                    title="Verbos no passado"
+                    subtitle={`${IRREGULAR_VERBS.length} irregulares em ${VERB_FAMILIES.length} famílias`}
+                    done={pastDone === VERB_FAMILIES.length}
+                    progress={pastDone}
+                    total={VERB_FAMILIES.length}
+                    progressLabel={`${pastDone}/${VERB_FAMILIES.length} famílias`}
+                    extraLabel="digitação"
+                    cta={
+                      pastDone === VERB_FAMILIES.length
+                        ? t('home.rail.review')
+                        : pastDone > 0
+                          ? t('home.rail.continue')
+                          : t('home.rail.start')
+                    }
+                  />
+                )}
               </CardRail>
             );
           })}
