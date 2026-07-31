@@ -10,7 +10,8 @@ import {
 } from '../data/lessonClassify';
 import { playCorrect, playWrong } from '../utils/sfx';
 
-const EMPTY_ANSWERS: Record<number, ClassifyCategory> = {};
+const EMPTY_ANSWERS: Record<number, string> = {};
+const label = (a: string | undefined) => (a ? CATEGORY_LABEL[a as ClassifyCategory] : '—');
 
 export function LessonClassify() {
   const goToHome = useStore((s) => s.goToHome);
@@ -113,7 +114,7 @@ export function LessonClassify() {
                             <>Você acertou: <strong className="text-emerald-700">{CATEGORY_LABEL[q.answer]}</strong></>
                           ) : (
                             <>
-                              Sua resposta: <strong className="text-red-600">{a ? CATEGORY_LABEL[a] : '—'}</strong> · Correta:{' '}
+                              Sua resposta: <strong className="text-red-600">{label(a)}</strong> · Correta:{' '}
                               <strong className="text-emerald-700">{CATEGORY_LABEL[q.answer]}</strong>
                             </>
                           )}

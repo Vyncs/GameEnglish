@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { useStore } from '../store/useStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { useSpeech } from '../hooks/useSpeech';
-import { STAGE_INFO, type Topic, type TopicItem, type TopicStage } from '../data/topic';
+import { STAGE_INFO, verbForms, type Topic, type TopicItem, type TopicStage } from '../data/topic';
 import { MatchGame, BlitzGame, MemoryGame } from './VerbGames';
 import { playCorrect, playWrong } from '../utils/sfx';
 
@@ -22,6 +22,33 @@ function shuffle<T>(arr: T[]): T[] {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+/**
+ * As duas formas coloridas da folha: vermelho anda com DID (passado simples),
+ * azul anda com HAVE (particípio). Quando as duas são iguais, aparece o aviso.
+ */
+function FormChips({ item, size = 'md' }: { item: TopicItem; size?: 'sm' | 'md' }) {
+  const f = verbForms(item);
+  if (!f) return null;
+  const box = size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-2.5 py-1 text-sm';
+  const tag = size === 'sm' ? 'text-[9px]' : 'text-[10px]';
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-1.5">
+      <span className={`inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 font-bold text-red-600 ${box}`}>
+        <span className={`font-extrabold uppercase tracking-wide text-red-400 ${tag}`}>did</span>
+        {f.did}
+      </span>
+      {f.have && (
+        <span className={`inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 font-bold text-blue-600 ${box}`}>
+          <span className={`font-extrabold uppercase tracking-wide text-blue-400 ${tag}`}>have</span>
+          {f.have}
+        </span>
+      )}
+      {f.same && <span className="text-[10px] font-medium text-faint">mesma forma nos dois</span>}
+      {!f.have && <span className="text-[10px] font-medium text-faint">modal — não tem particípio</span>}
+    </div>
+  );
 }
 
 function ruleBadge(rule: NonNullable<TopicItem['rule']>) {
@@ -140,6 +167,21 @@ export function TopicStudy({ topic }: { topic: Topic }) {
             <p className="font-bold text-emerald-800">Tópico concluído! 🎉</p>
             <p className="text-sm text-emerald-700">Você passou por todas as etapas.</p>
           </div>
+        </div>
+      )}
+
+      {/* Legenda das cores da folha original */}
+      {topic.stages.includes('forms') && (
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border border-line bg-surface-2/60 px-3.5 py-2.5 text-xs">
+          <span className="font-semibold text-secondary">Como ler as cores:</span>
+          <span className="inline-flex items-center gap-1.5 text-tertiary">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
+            <b className="text-red-600">vermelho</b> = passado, anda com <b>did</b>
+          </span>
+          <span className="inline-flex items-center gap-1.5 text-tertiary">
+            <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />
+            <b className="text-blue-600">azul</b> = particípio, anda com <b>have</b>
+          </span>
         </div>
       )}
 
@@ -342,20 +384,12 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
         {!flipped ? (
           <>
             {img && (
-              <img src={img} alt="" className="mb-2 h-24 w-auto max-w-[220px] object-contain" draggable={false} />
+              <img src={img} alt="" className="mb-2 h-28 w-auto max-w-[220px] object-contain" draggable={false} />
             )}
             <p className="text-3xl font-extrabold tracking-tight text-primary">{v.base}</p>
-            {v.past && (
-              <p className="mt-2 text-base text-tertiary">
-                <span className="font-semibold text-red-500">{v.past}</span>
-                {v.participle && (
-                  <>
-                    {' · '}
-                    <span className="font-semibold text-blue-600">{v.participle}</span>
-                  </>
-                )}
-              </p>
-            )}
+            <div className="mt-2.5">
+              <FormChips item={v} />
+            </div>
             {v.rule && <span className={`mt-4 ${ruleBadge(v.rule)}`}>Regra {v.rule}</span>}
             <p className="mt-4 text-xs text-faint">Toque para ver o significado</p>
           </>
@@ -443,12 +477,9 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
       <div className="mt-4 rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-xl">
         <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Qual o significado?</p>
         <p className="mt-1 text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
-        {v.past && (
-          <p className="mb-4 text-sm text-faint">
-            <span className="text-red-500">{v.past}</span>
-            {v.participle && <> · <span className="text-blue-600">{v.participle}</span></>}
-          </p>
-        )}
+        <div className="mb-4 mt-1.5 flex justify-start">
+          <FormChips item={v} size="sm" />
+        </div>
 
         <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
           {options.map((opt) => {
@@ -530,7 +561,9 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
       <Bar value={mastered} total={total} />
 
       <div className="mt-4 rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Passado e particípio de:</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">
+          Formas do <span className="text-red-500">did</span> e do <span className="text-blue-600">have</span> para:
+        </p>
         <div className="mt-1 flex items-baseline gap-2">
           <p className="text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
           <span className="text-sm text-faint">({v.pt})</span>

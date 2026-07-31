@@ -10,6 +10,17 @@
 
 export type VerbRule = 'A' | 'B' | 'B2' | 'C';
 
+/**
+ * Ilustração de cada verbo, recortada da folha "100 verbs" (public/100 verbs.png).
+ * Os arquivos são gerados por `scripts/crop-verbs.py` e servidos de public/verbs/.
+ * O número do arquivo é o mesmo número do verbo na folha (1–100).
+ */
+export const verbImg = (id: number) => {
+  // hate usa o id 155 e divide a célula 55 da folha com love.
+  const n = id > 100 ? id - 100 : id;
+  return `/verbs/verb-${String(n).padStart(2, '0')}.png`;
+};
+
 export interface TopicItem {
   id: number;
   /** Termo em inglês (forma base, no caso de verbos). */
@@ -23,6 +34,21 @@ export interface TopicItem {
   participle?: string;
   irregular?: boolean;
   rule?: VerbRule;
+}
+
+/**
+ * As duas formas que a folha original destaca com cor:
+ *   vermelho = forma que anda com DID  (passado simples — I ate)
+ *   azul     = forma que anda com HAVE (particípio — I have eaten)
+ * Quando as duas são iguais (brought, bought, found…) a folha mostra só a vermelha.
+ */
+export function verbForms(item: TopicItem) {
+  if (!item.past) return null;
+  return {
+    did: item.past,
+    have: item.participle,
+    same: Boolean(item.participle && item.participle === item.past),
+  };
 }
 
 export type TopicStage = 'study' | 'meaning' | 'forms';
