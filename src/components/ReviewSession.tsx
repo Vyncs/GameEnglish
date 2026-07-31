@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useStore } from '../store/useStore';
+import { useReviewModeStore } from '../store/useReviewModeStore';
 import { useSpeech } from '../hooks/useSpeech';
 import type { FlashCard } from '../types';
 import { LEITNER_INTERVALS } from '../types';
-import { 
-  Volume2, 
-  CheckCircle, 
-  XCircle, 
-  ArrowRight, 
+import {
+  Volume2,
+  CheckCircle,
+  XCircle,
+  ArrowRight,
   Trophy,
   RotateCcw,
   Home,
@@ -15,7 +16,11 @@ import {
   Flame,
   Target,
   Image as ImageIcon,
-  Languages
+  Languages,
+  Eye,
+  Keyboard,
+  Lightbulb,
+  RefreshCw
 } from 'lucide-react';
 import { playCorrect, playWrong } from '../utils/sfx';
 
@@ -28,6 +33,8 @@ export function ReviewSession() {
     goToHome
   } = useStore();
   const { speak, isSpeaking, isSupported } = useSpeech();
+  const mode = useReviewModeStore((s) => s.mode);
+  const setMode = useReviewModeStore((s) => s.setMode);
 
   const [cardsToReview, setCardsToReview] = useState<FlashCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -93,6 +100,27 @@ export function ReviewSession() {
     } else {
       setIsComplete(true);
     }
+  };
+
+  /** Modo virar a carta: só revela o verso, quem julga é o aluno. */
+  const handleReveal = () => {
+    if (!currentCard) return;
+    setShowResult(true);
+    if (isSupported && currentCard.englishPhrase) {
+      speak(currentCard.englishPhrase, 'en-US');
+    }
+  };
+
+  /** Modo virar a carta: "acertei"/"errei" alimenta o Leitner e já pula para o próximo. */
+  const handleSelfGrade = (correct: boolean) => {
+    if (!currentCard) return;
+    (correct ? playCorrect : playWrong)();
+    setSessionResults(prev => ({
+      correct: prev.correct + (correct ? 1 : 0),
+      incorrect: prev.incorrect + (correct ? 0 : 1),
+    }));
+    reviewCard(currentCard.id, correct);
+    handleNext();
   };
 
   const handleRestart = () => {
@@ -230,12 +258,37 @@ export function ReviewSession() {
               {selectedGroup ? selectedGroup.name : 'Todos os grupos'}
             </p>
           </div>
-          <button
-            onClick={goToHome}
-            className="px-4 py-2 text-tertiary hover:text-secondary hover:bg-surface-2 rounded-xl transition-colors"
-          >
-            Sair
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Como responder: virar a carta ou digitar */}
+            <div className="flex rounded-xl border border-line bg-surface-2 p-0.5">
+              <button
+                onClick={() => setMode('flip')}
+                title="Vira a carta e você marca se acertou"
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  mode === 'flip' ? 'bg-surface text-primary shadow-sm' : 'text-tertiary hover:text-secondary'
+                }`}
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                Virar
+              </button>
+              <button
+                onClick={() => setMode('type')}
+                title="Digitar a tradução"
+                className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  mode === 'type' ? 'bg-surface text-primary shadow-sm' : 'text-tertiary hover:text-secondary'
+                }`}
+              >
+                <Keyboard className="w-3.5 h-3.5" />
+                Escrever
+              </button>
+            </div>
+            <button
+              onClick={goToHome}
+              className="px-4 py-2 text-tertiary hover:text-secondary hover:bg-surface-2 rounded-xl transition-colors"
+            >
+              Sair
+            </button>
+          </div>
         </div>
 
         {/* Progress */}
@@ -283,15 +336,28 @@ export function ReviewSession() {
               {/* Frase de pergunta */}
               <div className="mb-6">
                 <span className="inline-block px-3 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-lg mb-3">
-                  Traduza para {answerLang.toLowerCase()} {answerFlag}
+                  {mode === 'flip'
+                    ? `Lembra em ${answerLang.toLowerCase()}? ${answerFlag}`
+                    : `Traduza para ${answerLang.toLowerCase()} ${answerFlag}`}
                 </span>
                 <p className="text-xl text-primary font-medium leading-relaxed">
                   {questionPhrase}
                 </p>
               </div>
 
+              {/* Virar a carta: responde na cabeça e revela */}
+              {mode === 'flip' && !showResult && (
+                <button
+                  onClick={handleReveal}
+                  className="mb-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 py-4 text-lg font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-600 hover:to-blue-600"
+                >
+                  <Eye className="w-5 h-5" />
+                  Ver resposta
+                </button>
+              )}
+
               {/* Input de resposta */}
-              {!showResult && (
+              {mode === 'type' && !showResult && (
                 <div className="mb-4">
                   <div className="relative">
                     <input
@@ -321,7 +387,8 @@ export function ReviewSession() {
               {/* Resultado */}
               {showResult && (
                 <div className="space-y-4 animate-fade-in">
-                  {/* Feedback */}
+                  {/* Feedback (só faz sentido quando o app corrigiu a digitação) */}
+                  {mode === 'type' && (
                   <div className={`p-4 rounded-xl flex items-center gap-3 ${
                     isCorrect
                       ? 'bg-emerald-50 border-2 border-emerald-200'
@@ -347,9 +414,10 @@ export function ReviewSession() {
                       </>
                     )}
                   </div>
+                  )}
 
                   {/* Sua resposta */}
-                  {!isCorrect && (
+                  {mode === 'type' && !isCorrect && (
                     <div className="p-4 rounded-xl bg-red-50">
                       <p className="text-xs font-medium text-tertiary mb-1">Sua resposta:</p>
                       <p className="font-medium text-red-700">{userAnswer || '(vazio)'}</p>
@@ -380,6 +448,14 @@ export function ReviewSession() {
                     </div>
                   </div>
 
+                  {/* Dica do card — nos verbos, traz as três formas (did · have) */}
+                  {currentCard.tips && (
+                    <div className="flex gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                      <Lightbulb className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500" />
+                      <p className="whitespace-pre-line text-sm text-amber-900">{currentCard.tips}</p>
+                    </div>
+                  )}
+
                   {/* Imagem associada */}
                   {currentCard.imageUrl && (
                     <div className="rounded-xl overflow-hidden border border-line">
@@ -398,23 +474,47 @@ export function ReviewSession() {
                     </div>
                   )}
 
-                  {/* Botão próximo */}
-                  <button
-                    onClick={handleNext}
-                    className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-lg font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-3"
-                  >
-                    {currentIndex < cardsToReview.length - 1 ? (
-                      <>
-                        Próximo Card
-                        <ArrowRight className="w-5 h-5" />
-                      </>
-                    ) : (
-                      <>
-                        Ver Resultados
-                        <Trophy className="w-5 h-5" />
-                      </>
-                    )}
-                  </button>
+                  {/* Autoavaliação (virar) ou seguir em frente (escrever) */}
+                  {mode === 'flip' ? (
+                    <>
+                      <p className="text-center text-xs text-tertiary">
+                        Você acertou de cabeça? Seja honesto — é isso que define quando o card volta.
+                      </p>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => handleSelfGrade(false)}
+                          className="flex flex-1 items-center justify-center gap-2 rounded-xl border-2 border-red-200 bg-red-50 py-4 text-lg font-semibold text-red-600 transition-colors hover:bg-red-100"
+                        >
+                          <XCircle className="w-5 h-5" />
+                          Errei
+                        </button>
+                        <button
+                          onClick={() => handleSelfGrade(true)}
+                          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 py-4 text-lg font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:opacity-90"
+                        >
+                          <CheckCircle className="w-5 h-5" />
+                          Acertei
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <button
+                      onClick={handleNext}
+                      className="w-full py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-lg font-semibold rounded-xl hover:from-cyan-600 hover:to-blue-600 transition-all shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-3"
+                    >
+                      {currentIndex < cardsToReview.length - 1 ? (
+                        <>
+                          Próximo Card
+                          <ArrowRight className="w-5 h-5" />
+                        </>
+                      ) : (
+                        <>
+                          Ver Resultados
+                          <Trophy className="w-5 h-5" />
+                        </>
+                      )}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
