@@ -449,8 +449,16 @@ function CellDossier({ cell, done, onBack, onTrain }: {
 }) {
   const { speak, isSupported } = useSpeech();
   const markStageDone = useVerbLessonStore((s) => s.markStageDone);
+  const setSelectedTopic = useVerbLessonStore((s) => s.setSelectedTopic);
+  const setViewMode = useStore((s) => s.setViewMode);
   const tint = tintOf(cell);
   const [whIndex, setWhIndex] = useState(0);
+
+  /** O deck que alimenta a célula: os marcadores são os gatilhos das colunas. */
+  const openMarkersDeck = () => {
+    setSelectedTopic('time-markers-01-25');
+    setViewMode('topic');
+  };
   const wh = cell.whQuestions[whIndex] ?? cell.whQuestions[0];
 
   const say = (text: string) => speak(text.replace(/…/g, ''), 'en-US');
@@ -533,6 +541,14 @@ function CellDossier({ cell, done, onBack, onTrain }: {
               <span key={m} className={`rounded-lg px-2.5 py-1 text-xs font-semibold ${tint.chip}`}>{m}</span>
             ))}
           </div>
+          <button
+            type="button"
+            onClick={openMarkersDeck}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-xl border border-line bg-surface-2/60 px-3 py-1.5 text-xs font-semibold text-secondary transition-colors hover:bg-cyan-50 hover:text-cyan-700"
+          >
+            📚 Decorar os gatilhos: deck Marcadores de tempo
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
         </div>
       )}
 
