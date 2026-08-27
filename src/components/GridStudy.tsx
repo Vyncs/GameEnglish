@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   ChevronLeft, Check, Volume2, AlertTriangle, ListChecks, Target,
-  Moon, HelpCircle, ArrowRight, CalendarDays, Sparkles,
+  Moon, HelpCircle, ArrowRight, CalendarDays, Sparkles, Dumbbell,
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
@@ -13,6 +13,14 @@ import {
   TIME_WORDS, findCell, cellAt, weekIsDone, currentWeek,
   type GridCell, type RowId, type StudyWeek,
 } from '../data/grid4v5t2s';
+import { questionsFor } from '../data/gridTrainer';
+import { GridTrainer } from './GridTrainer';
+
+/** Células treináveis de uma semana; a de revisão treina tudo o que veio antes. */
+function weekTrainerCells(week: StudyWeek): string[] {
+  if (week.cellIds.length > 0) return week.cellIds;
+  return GRID_WEEKS.filter((w) => w.n < week.n).flatMap((w) => w.cellIds);
+}
 
 // Cores por linha/faixa, seguindo o mapa físico: A cinza, B verde, B2 verde-escuro,
 // C laranja, B3 a seta verde, D1–D3 as faixas azuis do perfect, D4 as roxas.
@@ -34,14 +42,34 @@ const tintOf = (cell: GridCell): Tint => TINTS[cell.row ?? cell.band ?? 'A'];
 
 const EMPTY_STAGES: string[] = [];
 
+interface TrainerConfig {
+  title: string;
+  cellIds: string[];
+  masterCellId?: string;
+  max?: number;
+}
+
 export function GridStudy() {
   const goToHome = useStore((s) => s.goToHome);
   const stagesDone = useVerbLessonStore((s) => s.progress[GRID_LESSON_ID]?.stagesDone) ?? EMPTY_STAGES;
   const [cellId, setCellId] = useState<string | null>(null);
+  const [trainer, setTrainer] = useState<TrainerConfig | null>(null);
 
   const cell = cellId ? findCell(cellId) : null;
   const week = currentWeek(stagesDone);
   const weeksDone = GRID_WEEKS.filter((w) => weekIsDone(w, stagesDone)).length;
+
+  if (trainer) {
+    return (
+      <GridTrainer
+        title={trainer.title}
+        questions={questionsFor(trainer.cellIds)}
+        max={trainer.max}
+        masterCellId={trainer.masterCellId}
+        onClose={() => setTrainer(null)}
+      />
+    );
+  }
 
   if (cell) {
     return (
@@ -49,6 +77,9 @@ export function GridStudy() {
         cell={cell}
         done={stagesDone.includes(cell.id)}
         onBack={() => setCellId(null)}
+        onTrain={() =>
+          setTrainer({ title: cell.opener, cellIds: [cell.id], masterCellId: cell.id })
+        }
       />
     );
   }
@@ -90,7 +121,18 @@ export function GridStudy() {
         </p>
       </div>
 
-      <WeekCard week={week} stagesDone={stagesDone} onOpenCell={setCellId} />
+      <WeekCard
+        week={week}
+        stagesDone={stagesDone}
+        onOpenCell={setCellId}
+        onTrainWeek={() =>
+          setTrainer({
+            title: `Semana ${week.n} · ${week.title}`,
+            cellIds: weekTrainerCells(week),
+            max: 16,
+          })
+        }
+      />
 
       <MainGrid stagesDone={stagesDone} onOpenCell={setCellId} />
 
@@ -106,10 +148,11 @@ export function GridStudy() {
 // ============================================================================
 // Semana atual: o trilho de 12 + a rotina do dia
 
-function WeekCard({ week, stagesDone, onOpenCell }: {
+function WeekCard({ week, stagesDone, onOpenCell, onTrainWeek }: {
   week: StudyWeek;
   stagesDone: string[];
   onOpenCell: (id: string) => void;
+  onTrainWeek: () => void;
 }) {
   const markStageDone = useVerbLessonStore((s) => s.markStageDone);
   const routineDate = useGridRoutineStore((s) => s.date);
@@ -170,6 +213,16 @@ function WeekCard({ week, stagesDone, onOpenCell }: {
           })}
         </div>
       )}
+
+      {/* Treinar as células da semana (a de revisão treina tudo o que veio antes) */}
+      <button
+        type="button"
+        onClick={onTrainWeek}
+        className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-600 hover:to-blue-600"
+      >
+        <Dumbbell className="h-4 w-4" />
+        Treinar a semana
+      </button>
 
       {/* Semana de revisão: concluída pelo botão */}
       {week.extraStageId && (
@@ -388,10 +441,11 @@ function BedtimeCard() {
 // ============================================================================
 // Dossiê de uma célula
 
-function CellDossier({ cell, done, onBack }: {
+function CellDossier({ cell, done, onBack, onTrain }: {
   cell: GridCell;
   done: boolean;
   onBack: () => void;
+  onTrain: () => void;
 }) {
   const { speak, isSupported } = useSpeech();
   const markStageDone = useVerbLessonStore((s) => s.markStageDone);
@@ -611,8 +665,18 @@ function CellDossier({ cell, done, onBack }: {
         </div>
       )}
 
+      {/* Treinar a célula: abertura certa · ordenar · caça-erro */}
+      <button
+        type="button"
+        onClick={onTrain}
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 py-3.5 font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:from-cyan-600 hover:to-blue-600"
+      >
+        <Dumbbell className="h-5 w-5" />
+        Treinar esta célula ({questionsFor([cell.id]).length} questões)
+      </button>
+
       {/* Dominar a célula */}
-      <div className="mt-5 rounded-2xl border border-line bg-surface p-4 shadow-sm">
+      <div className="mt-3 rounded-2xl border border-line bg-surface p-4 shadow-sm">
         {done ? (
           <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700">
             <Check className="h-4 w-4" />
