@@ -16,6 +16,7 @@ import { InstallApp } from './components/InstallApp';
 import { LessonClassify } from './components/LessonClassify';
 import { LessonDidHave } from './components/LessonDidHave';
 import { PastTrainer } from './components/PastTrainer';
+import { GridStudy } from './components/GridStudy';
 import { TopicStudy } from './components/TopicStudy';
 import { findTopic } from './data/topics';
 import { useVerbLessonStore } from './store/useVerbLessonStore';
@@ -76,6 +77,7 @@ export function AppLayout() {
           {viewMode === 'lesson-classify' && <LessonClassify />}
           {viewMode === 'lesson-did-have' && <LessonDidHave />}
           {viewMode === 'past-trainer' && <PastTrainer />}
+          {viewMode === 'grid-4v5t2s' && <GridStudy />}
           {viewMode === 'topic' && selectedTopic && <TopicStudy topic={selectedTopic} />}
           {viewMode === 'review-hub' && <ReviewHub />}
         </div>

@@ -7,6 +7,7 @@ import { LESSON_DID_HAVE } from '../data/lessonDidHave';
 import { TOPICS } from '../data/topics';
 import { TOPIC_CATEGORIES } from '../data/topic';
 import { VERB_FAMILIES, IRREGULAR_VERBS } from '../data/verbFamilies';
+import { GRID_LESSON_ID, GRID_TITLE, GRID_SUBTITLE, GRID_WEEKS, weekIsDone } from '../data/grid4v5t2s';
 import { CardRail } from './CardRail';
 import { ImportExport } from './ImportExport';
 import { useT } from '../i18n/useT';
@@ -63,10 +64,17 @@ export function Home() {
     : 0;
   const dhDone = dhAnswered === dhTotal;
 
-  // A "regra do dia": enquanto a Aula 01 não fecha ela é a sugerida; depois, a Aula 02.
-  const todayLesson = lessonDone
-    ? { id: LESSON_DID_HAVE.id, title: LESSON_DID_HAVE.title, view: 'lesson-did-have' as const, a: dhAnswered, b: dhTotal, done: dhDone }
-    : { id: LESSON_01.id, title: LESSON_01.title, view: 'lesson-classify' as const, a: lessonAnswered, b: lessonTotal, done: lessonDone };
+  // Grade 4V5T2S: o progresso é medido em semanas do cronograma concluídas.
+  const gridStages = useVerbLessonStore((s) => s.progress[GRID_LESSON_ID]?.stagesDone);
+  const gridWeeksDone = GRID_WEEKS.filter((w) => weekIsDone(w, gridStages)).length;
+  const gridDone = gridWeeksDone === GRID_WEEKS.length;
+
+  // A "regra do dia": Aula 01 → Aula 02 → Grade 4V5T2S.
+  const todayLesson = !lessonDone
+    ? { id: LESSON_01.id, title: LESSON_01.title, view: 'lesson-classify' as const, a: lessonAnswered, b: lessonTotal, done: lessonDone }
+    : !dhDone
+      ? { id: LESSON_DID_HAVE.id, title: LESSON_DID_HAVE.title, view: 'lesson-did-have' as const, a: dhAnswered, b: dhTotal, done: dhDone }
+      : { id: GRID_LESSON_ID, title: GRID_TITLE, view: 'grid-4v5t2s' as const, a: gridWeeksDone, b: GRID_WEEKS.length, done: gridDone };
 
   // Progresso dos tópicos de vocabulário
   const topicProgress = useVerbLessonStore((s) => s.progress);
@@ -279,6 +287,18 @@ export function Home() {
                     ? t('home.rail.continue')
                     : t('home.rail.start')
               }
+            />
+            <RailCard
+              onClick={() => setViewMode('grid-4v5t2s')}
+              emoji="🗺️"
+              title={GRID_TITLE}
+              subtitle={GRID_SUBTITLE}
+              done={gridDone}
+              progress={gridWeeksDone}
+              total={GRID_WEEKS.length}
+              progressLabel={`${gridWeeksDone}/${GRID_WEEKS.length} semanas`}
+              extraLabel="cronograma de 12 semanas"
+              cta={gridDone ? t('home.rail.review') : gridWeeksDone > 0 ? t('home.rail.continue') : t('home.rail.start')}
             />
           </CardRail>
 
