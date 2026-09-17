@@ -8,6 +8,7 @@ import { TOPICS } from '../data/topics';
 import { TOPIC_CATEGORIES } from '../data/topic';
 import { VERB_FAMILIES, IRREGULAR_VERBS } from '../data/verbFamilies';
 import { GRID_LESSON_ID, GRID_TITLE, GRID_SUBTITLE, GRID_WEEKS, weekIsDone } from '../data/grid4v5t2s';
+import { SPEAKING_PROMPTS } from '../data/speakingPrompts';
 import { CardRail } from './CardRail';
 import { ImportExport } from './ImportExport';
 import { useT } from '../i18n/useT';
@@ -297,8 +298,20 @@ export function Home() {
               progress={gridWeeksDone}
               total={GRID_WEEKS.length}
               progressLabel={`${gridWeeksDone}/${GRID_WEEKS.length} semanas`}
-              extraLabel="cronograma de 12 semanas"
+              extraLabel={`cronograma de ${GRID_WEEKS.length} semanas`}
               cta={gridDone ? t('home.rail.review') : gridWeeksDone > 0 ? t('home.rail.continue') : t('home.rail.start')}
+            />
+            <RailCard
+              onClick={() => setViewMode('speaking')}
+              emoji="🎙️"
+              title="Prática falada"
+              subtitle="O app pergunta em voz, você responde falando"
+              done={false}
+              progress={0}
+              total={SPEAKING_PROMPTS.length}
+              progressLabel={`${SPEAKING_PROMPTS.length} perguntas`}
+              extraLabel="corrige palavra por palavra"
+              cta="Praticar"
             />
           </CardRail>
 
