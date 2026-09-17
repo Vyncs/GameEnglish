@@ -61,7 +61,9 @@ export const TOPIC_CATEGORIES: { id: string; label: string; emoji: string; desc:
   { id: 'verbos', label: 'Verbos', emoji: '🏃', desc: 'Os verbos mais usados, em blocos de 25' },
   { id: 'adjetivos', label: 'Adjetivos', emoji: '✨', desc: 'Como descrever coisas, pessoas e situações' },
   { id: 'tempos', label: 'Tempos verbais', emoji: '⏳', desc: 'Passado, presente e futuro na prática' },
-  { id: 'outros', label: 'Outros temas', emoji: '🗂️', desc: 'Clima, comida, casa e mais' },
+  { id: 'cotidiano', label: 'Dia a dia', emoji: '🧭', desc: 'Comida, casa, trabalho, viagem, saúde e compras' },
+  { id: 'conversacao', label: 'Conversação', emoji: '💬', desc: 'As palavras que ligam as ideias e soam naturais' },
+  { id: 'outros', label: 'Outros temas', emoji: '🗂️', desc: 'Clima e temas avulsos' },
 ];
 
 export interface Topic {
