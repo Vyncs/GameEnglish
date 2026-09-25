@@ -111,8 +111,12 @@ export const translations = {
   'home.cat.adjetivos.desc': { pt: 'Como descrever coisas, pessoas e situações', en: 'How to describe things, people and situations' },
   'home.cat.tempos.label': { pt: 'Tempos verbais', en: 'Verb tenses' },
   'home.cat.tempos.desc': { pt: 'Passado, presente e futuro na prática', en: 'Past, present and future in practice' },
+  'home.cat.cotidiano.label': { pt: 'Dia a dia', en: 'Everyday life' },
+  'home.cat.cotidiano.desc': { pt: 'Comida, casa, trabalho, viagem, saúde e compras', en: 'Food, home, work, travel, health and shopping' },
+  'home.cat.conversacao.label': { pt: 'Conversação', en: 'Conversation' },
+  'home.cat.conversacao.desc': { pt: 'As palavras que ligam as ideias e soam naturais', en: 'The words that link ideas and sound natural' },
   'home.cat.outros.label': { pt: 'Outros temas', en: 'Other topics' },
-  'home.cat.outros.desc': { pt: 'Clima, comida, casa e mais', en: 'Weather, food, home and more' },
+  'home.cat.outros.desc': { pt: 'Clima e temas avulsos', en: 'Weather and other topics' },
 
   // ---- Grupos ----
   'groups.mine': { pt: 'Meus Grupos', en: 'My Groups' },

@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "check:grid": "node scripts/check-grid.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

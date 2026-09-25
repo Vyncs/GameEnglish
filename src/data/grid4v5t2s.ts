@@ -12,7 +12,7 @@ export const GRID_TITLE = 'Grade 4V5T2S';
 export const GRID_SUBTITLE = 'Linha × coluna: a pergunta sai pronta';
 
 export type RowId = 'A' | 'B' | 'B2' | 'C';
-export type ColId = 'past' | 'present' | 'would' | 'future';
+export type ColId = 'past' | 'present' | 'perfect' | 'would' | 'future';
 export type BandId = 'B3' | 'D1' | 'D2' | 'D3' | 'D4';
 
 export interface Example {
@@ -74,6 +74,7 @@ export const GRID_ROWS: { id: RowId; name: string; sub: string; pt: string }[] =
 export const GRID_COLS: { id: ColId; name: string; sub: string; markers: string[] }[] = [
   { id: 'past', name: 'Passado', sub: 'did', markers: ['yesterday', 'ago', 'in 1975', 'last + …'] },
   { id: 'present', name: 'Presente', sub: 'do / does', markers: ['every + …', 'always · often'] },
+  { id: 'perfect', name: 'Perfect', sub: 'have / has', markers: ['already · yet · ever', 'today · recently', 'since · for'] },
   { id: 'would', name: 'V+RIA', sub: 'would', markers: ['if you had…', 'if you were…'] },
   { id: 'future', name: 'Futuro', sub: 'will', markers: ['tomorrow', 'next + …'] },
 ];
@@ -82,7 +83,8 @@ export const GRID_COLS: { id: ColId; name: string; sub: string; markers: string[
 export const TIME_WORDS = ['time', 'day', 'week', 'month', 'year'];
 
 // ============================================================================
-// As 16 células da grade principal
+// As células da grade principal — 4 linhas × 5 colunas.
+// A única que não mora aqui é A × perfect: ela é o D1, lá nas faixas.
 
 const CELLS_MAIN: GridCell[] = [
   // ---------------------------------------------------------------- Linha A
@@ -316,6 +318,38 @@ const CELLS_MAIN: GridCell[] = [
     ],
   },
 
+  {
+    id: 'B-perfect',
+    row: 'B',
+    col: 'perfect',
+    opener: 'have you been…?',
+    title: 'Perfect · ser/estar',
+    rule: 'BEEN é o V3 do be. have/has + been + adjetivo, lugar ou V+ING — nunca "have was".',
+    structure: {
+      q: { en: 'Have you been sick?', pt: 'Você esteve doente?' },
+      a: { en: 'He has been here since May.', pt: 'Ele está aqui desde maio.' },
+      n: { en: "I haven't been well lately.", pt: 'Eu não tenho passado bem ultimamente.' },
+    },
+    markers: ['lately', 'recently', 'all week', 'since + ponto de partida', 'for + duração'],
+    notes: [
+      'O be tem V3 próprio: been. Depois de have não entra was nem is — só been.',
+      'have been + V+ING = começou antes e continua agora: I have been working all day.',
+      '"How have you been?" é o cumprimento de quem não vê você há tempo — "como você tem passado?".',
+    ],
+    examples: [
+      { en: 'She has been busy all week.', pt: 'Ela esteve ocupada a semana toda.' },
+      { en: "They haven't been at home since Friday.", pt: 'Eles não estão em casa desde sexta.' },
+    ],
+    errors: [
+      { wrong: 'Have you was sick?', right: 'Have you been sick?', why: 'Depois de have entra o V3 — e o V3 do be é been.' },
+      { wrong: 'I am here since May.', right: 'I have been here since May.', why: 'Com since/for a ponte passado→presente pede o perfect: have been.' },
+    ],
+    whQuestions: [
+      { wh: 'how', en: 'How have you been lately?', pt: 'Como você tem passado ultimamente?' },
+      { wh: 'how long', en: 'How long have you been married?', pt: 'Há quanto tempo você é casado?' },
+      { wh: 'where', en: 'Where has she been all this time?', pt: 'Onde ela esteve esse tempo todo?' },
+    ],
+  },
   // ---------------------------------------------------------------- Linha B2
   {
     id: 'B2-past',
@@ -413,6 +447,37 @@ const CELLS_MAIN: GridCell[] = [
     ],
   },
 
+  {
+    id: 'B2-perfect',
+    row: 'B2',
+    col: 'perfect',
+    opener: 'has there been any…?',
+    title: 'Perfect · haver/existir',
+    rule: 'A existência também entra no perfect: there has been (singular) / there have been (plural).',
+    structure: {
+      q: { en: 'Has there been any news?', pt: 'Teve alguma novidade?' },
+      a: { en: 'There have been many changes.', pt: 'Houve muitas mudanças.' },
+      n: { en: "There hasn't been any answer.", pt: 'Não houve resposta nenhuma.' },
+    },
+    markers: ['any', 'so far', 'recently', 'lately', 'this week'],
+    notes: [
+      'A concordância olha para a frente: there HAS been a problem · there HAVE been problems.',
+      'Continua sendo there be — o "ter" de existência não vira have em tempo nenhum.',
+    ],
+    examples: [
+      { en: 'Have there been any problems so far?', pt: 'Houve algum problema até agora?' },
+      { en: "There hasn't been any rain this month.", pt: 'Não choveu nada este mês.' },
+    ],
+    errors: [
+      { wrong: 'Has there had any news?', right: 'Has there been any news?', why: 'A existência é there BE em qualquer tempo — no perfect, been.' },
+      { wrong: 'There have been a problem.', right: 'There has been a problem.', why: 'a problem é singular → has been. O verbo concorda com o que vem depois.' },
+    ],
+    whQuestions: [
+      { wh: 'how many', en: 'How many complaints have there been?', pt: 'Quantas reclamações houve?' },
+      { wh: 'how much', en: 'How much progress has there been?', pt: 'Quanto progresso houve?' },
+      { wh: 'why', en: 'Why has there been no answer?', pt: 'Por que não houve resposta?' },
+    ],
+  },
   // ---------------------------------------------------------------- Linha C
   {
     id: 'C-past',
@@ -512,10 +577,42 @@ const CELLS_MAIN: GridCell[] = [
       { wh: 'when', en: 'When will you be able to visit?', pt: 'Quando você vai conseguir visitar?' },
     ],
   },
+  {
+    id: 'C-perfect',
+    row: 'C',
+    col: 'perfect',
+    opener: 'have you been able to…?',
+    title: 'Perfect · modais',
+    rule: 'CAN não tem V3. Para entrar no perfect ele troca de pele: have/has been able to. E must vira have had to.',
+    structure: {
+      q: { en: 'Have you been able to sleep?', pt: 'Você tem conseguido dormir?' },
+      a: { en: 'She has been able to fix it.', pt: 'Ela conseguiu consertar.' },
+      n: { en: "I haven't been able to call him.", pt: 'Eu não consegui ligar para ele.' },
+    },
+    markers: ['lately', 'so far', 'yet', 'this week'],
+    notes: [
+      'A mesma manobra do futuro: lá o can vira will be able to; aqui, have been able to.',
+      'must → have had to: I have had to work every weekend — "tenho tido que trabalhar".',
+      'Dois auxiliares nunca se encostam: "have can" não existe, como "will can" não existe.',
+    ],
+    examples: [
+      { en: "I haven't been able to finish it yet.", pt: 'Ainda não consegui terminar.' },
+      { en: 'Have you been able to talk to her?', pt: 'Você conseguiu falar com ela?' },
+    ],
+    errors: [
+      { wrong: 'Have you could sleep?', right: 'Have you been able to sleep?', why: 'Could não é particípio — no perfect o can vira been able to.' },
+      { wrong: "I haven't can call him.", right: "I haven't been able to call him.", why: 'have + can não existe: dois auxiliares não se encostam.' },
+    ],
+    whQuestions: [
+      { wh: 'how long', en: 'How long have you been able to drive?', pt: 'Há quanto tempo você sabe dirigir?' },
+      { wh: 'why', en: "Why haven't you been able to come?", pt: 'Por que você não tem conseguido vir?' },
+    ],
+  },
 ];
 
 // ============================================================================
-// As faixas — B3 (os três "vou"), perfect (D1–D3) e how long (D4)
+// As faixas — B3 (os três "vou"), o perfect aprofundado (D2, D3) e how long (D4).
+// O D1 também é a célula A × perfect: aparece na grade, não aqui.
 
 const CELLS_BANDS: GridCell[] = [
   {
@@ -562,9 +659,13 @@ const CELLS_BANDS: GridCell[] = [
   },
   {
     id: 'D1',
+    // Esta é também a célula A × perfect da grade — o perfect dos verbos comuns.
+    // O id continua 'D1' para não invalidar o progresso salvo nem o cronograma.
+    row: 'A',
+    col: 'perfect',
     band: 'D1',
     opener: 'have you… (v3)?',
-    title: 'Perfect · a base',
+    title: 'Perfect · verbos comuns',
     rule: 'HAVE + V3 (particípio). Sem tempo definido na frase — o resultado importa, não o quando.',
     structure: {
       q: { en: 'Have you eaten today?', pt: 'Você já comeu hoje?' },
@@ -766,6 +867,12 @@ export const GRID_WEEKS: StudyWeek[] = [
     cellIds: ['A-would', 'B-would', 'B2-would', 'C-would'],
     extraStageId: 'extras-12',
     extraLabel: 'Revisei os blocos soltos: comparativo/superlativo · may-might-could · some/every',
+  },
+  {
+    n: 13,
+    title: 'Perfect · linhas B, B2 e C',
+    goal: 'have you been / has there been / been able to',
+    cellIds: ['B-perfect', 'B2-perfect', 'C-perfect'],
   },
 ];
 

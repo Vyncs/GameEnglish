@@ -1,0 +1,41 @@
+import type { Topic } from './topic';
+
+// Tópico: 25 palavras de comida e bebida — o vocabulário de restaurante,
+// mercado e cozinha. Sem passado/particípio → não usa a etapa "Formas".
+
+export const TOPIC_FOOD: Topic = {
+  id: 'food-01-25',
+  title: 'Comida e bebida',
+  subtitle: 'breakfast → bill · 25 palavras',
+  emoji: '🍽️',
+  category: 'cotidiano',
+  level: 1,
+  stages: ['study', 'meaning'],
+  items: [
+    { id: 1, base: 'breakfast', pt: 'café da manhã', example: 'I have breakfast at seven.', tip: 'Não se "toma" breakfast: o verbo é have. break + fast = quebrar o jejum.' },
+    { id: 2, base: 'lunch', pt: 'almoço', example: 'What did you have for lunch?', tip: 'Almoçar = have lunch. Não existe o verbo "to lunch" no uso comum.' },
+    { id: 3, base: 'dinner', pt: 'jantar', example: 'Dinner is ready.', tip: 'É a refeição principal da noite. "Supper" é mais antigo e regional.' },
+    { id: 4, base: 'meal', pt: 'refeição', example: 'This is my favorite meal.', tip: 'Cuidado: meal = refeição. Farinha é "flour".' },
+    { id: 5, base: 'meat', pt: 'carne', example: "I don't eat meat.", tip: 'Som longo, igual a "meet". Carne bovina especificamente é "beef".' },
+    { id: 6, base: 'chicken', pt: 'frango, galinha', example: 'I ordered grilled chicken.', tip: 'Serve para o animal e para a carne — diferente de cow/beef e pig/pork.' },
+    { id: 7, base: 'fish', pt: 'peixe', example: 'We had fish for dinner.', tip: 'O plural normalmente é "fish" também, não "fishes".' },
+    { id: 8, base: 'rice', pt: 'arroz', example: 'I eat rice every day.', tip: 'Incontável: nunca "rices". Diga "a lot of rice".' },
+    { id: 9, base: 'beans', pt: 'feijão', example: 'Rice and beans is a classic.', tip: 'Em inglês é sempre plural: beans. Um grão só é "a bean".' },
+    { id: 10, base: 'bread', pt: 'pão', example: 'I bought fresh bread.', tip: 'Incontável. Um pão = "a loaf of bread"; um pãozinho = "a roll".' },
+    { id: 11, base: 'cheese', pt: 'queijo', example: 'Do you want cheese on it?', tip: 'Incontável. Uma fatia = "a slice of cheese".' },
+    { id: 12, base: 'egg', pt: 'ovo', example: 'I want two eggs, please.', tip: 'Contável, ao contrário de bread e cheese: one egg, two eggs.' },
+    { id: 13, base: 'fruit', pt: 'fruta', example: 'You should eat more fruit.', tip: 'Normalmente incontável quando é o grupo: "eat more fruit", sem -s.' },
+    { id: 14, base: 'vegetable', pt: 'legume, verdura', example: 'She only eats vegetables.', tip: 'Pronuncia-se "VÉJ-ta-bol" — três sílabas, não quatro.' },
+    { id: 15, base: 'salt', pt: 'sal', example: 'This needs more salt.', tip: 'Incontável. Salgado = "salty".' },
+    { id: 16, base: 'sugar', pt: 'açúcar', example: 'I drink coffee without sugar.', tip: 'Começa com som de "SH": "SHU-gar".' },
+    { id: 17, base: 'water', pt: 'água', example: 'Can I have some water?', tip: 'Incontável: "some water", não "a water" (embora se peça "a water" num bar).' },
+    { id: 18, base: 'juice', pt: 'suco', example: 'Orange juice, please.', tip: 'Pronuncia-se "djus".' },
+    { id: 19, base: 'drink', pt: 'bebida; beber', example: 'What would you like to drink?', tip: 'Substantivo e verbo. Passado: drank. Particípio: drunk.' },
+    { id: 20, base: 'taste', pt: 'gosto, sabor; provar', example: 'This tastes good.', tip: 'Como verbo de ligação não leva -ing: "it tastes good", não "it is tasting".' },
+    { id: 21, base: 'hungry', pt: 'com fome', example: 'I am hungry.', tip: 'Usa BE, não have: "I am hungry", nunca "I have hunger".' },
+    { id: 22, base: 'thirsty', pt: 'com sede', example: 'Are you thirsty?', tip: 'Mesma regra de hungry: com o verbo BE.' },
+    { id: 23, base: 'order', pt: 'pedido; pedir', example: 'I would like to order now.', tip: 'No restaurante é order, não "ask". Ask = perguntar.' },
+    { id: 24, base: 'waiter', pt: 'garçom', example: 'The waiter brought the menu.', tip: 'Feminino: waitress. Para chamar, diga "excuse me".' },
+    { id: 25, base: 'bill', pt: 'conta', example: 'Can we have the bill, please?', tip: 'No inglês americano se diz "check". Bill também é "boleto/fatura".' },
+  ],
+};

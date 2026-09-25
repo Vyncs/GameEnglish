@@ -275,7 +275,7 @@ function WeekCard({ week, stagesDone, onOpenCell, onTrainWeek }: {
 }
 
 // ============================================================================
-// A grade principal 4 × 4
+// A grade principal 4 × 5
 
 function MainGrid({ stagesDone, onOpenCell }: {
   stagesDone: string[];
@@ -283,7 +283,7 @@ function MainGrid({ stagesDone, onOpenCell }: {
 }) {
   return (
     <div className="mt-5 overflow-x-auto rounded-2xl border border-line bg-surface p-3 shadow-sm">
-      <div className="grid min-w-[640px] grid-cols-[7.5rem_repeat(4,1fr)] gap-1.5">
+      <div className="grid min-w-[780px] grid-cols-[7.5rem_repeat(5,1fr)] gap-1.5">
         {/* Cabeçalho: colunas = tempos, com os marcadores */}
         <div className="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-faint">
           linha × coluna
@@ -349,7 +349,8 @@ function Row({ rowId, stagesDone, onOpenCell }: {
 }
 
 // ============================================================================
-// As faixas: B3, perfect (D1–D3) e how long (D4)
+// As faixas: B3, o perfect por dentro (D2, D3) e how long (D4).
+// O D1 mudou de lugar — virou a célula A × perfect da grade.
 
 function Bands({ stagesDone, onOpenCell }: {
   stagesDone: string[];
@@ -382,11 +383,10 @@ function Bands({ stagesDone, onOpenCell }: {
   return (
     <div className="mt-4 space-y-2">
       <p className="text-[11px] font-semibold uppercase tracking-wide text-faint">
-        As faixas — os "vou", o perfect e o how long
+        As faixas — os "vou", o perfect por dentro e o how long
       </p>
       {band('B3')}
       <div className="flex flex-col gap-2 sm:flex-row">
-        {band('D1')}
         {band('D2')}
         {band('D3')}
       </div>

@@ -5,7 +5,7 @@
 //   error  — tocar na palavra errada (os erros riscados do mapa)
 //
 // Nos "error", wrongIndex aponta a palavra errada em wrong.split(' ') e
-// wrongWord repete o token — o script de sanidade confere que os dois batem.
+// wrongWord repete o token — `npm run check:grid` confere que os dois batem.
 
 export interface OpenerQ {
   kind: 'opener';
@@ -187,6 +187,28 @@ export const GRID_TRAINER_QUESTIONS: TrainerQuestion[] = [
   { kind: 'order', id: 'D4-r1', cellId: 'D4', pt: 'Há quanto tempo você estuda inglês?', answer: 'How long have you been studying English?' },
   { kind: 'error', id: 'D4-e1', cellId: 'D4', wrong: 'How long have you been knowing her?', wrongIndex: 5, wrongWord: 'knowing', right: 'How long have you known her?', why: 'Know é verbo de estado — não usa -ing.' },
   { kind: 'error', id: 'D4-e2', cellId: 'D4', wrong: 'I live here since 2004.', wrongIndex: 1, wrongWord: 'live', right: 'I have lived here since 2004.', why: 'Com since/for a ponte passado→presente pede o perfect: have lived.' },
+
+  // ---------------------------------------------------------------- B-perfect
+  { kind: 'opener', id: 'B-perfect-o1', cellId: 'B-perfect', pt: 'Você esteve doente?', blanked: 'Have you ___ sick?', options: ['been', 'was', 'were', 'being'], answer: 'been', why: 'Depois de have entra o V3 — e o V3 do be é been.' },
+  { kind: 'opener', id: 'B-perfect-o2', cellId: 'B-perfect', pt: 'Ele está aqui desde maio.', blanked: 'He ___ here since May.', options: ['has been', 'is', 'was', 'have been'], answer: 'has been', why: 'Com since a ponte passado→presente pede o perfect — e he leva has.' },
+  { kind: 'order', id: 'B-perfect-r1', cellId: 'B-perfect', pt: 'Como você tem passado ultimamente?', answer: 'How have you been lately?', why: 'wh + have + sujeito + been.' },
+  { kind: 'order', id: 'B-perfect-r2', cellId: 'B-perfect', pt: 'Há quanto tempo você é casado?', answer: 'How long have you been married?' },
+  { kind: 'error', id: 'B-perfect-e1', cellId: 'B-perfect', wrong: 'Have you was sick?', wrongIndex: 2, wrongWord: 'was', right: 'Have you been sick?', why: 'O V3 do be é been — was é a forma do passado simples.' },
+  { kind: 'error', id: 'B-perfect-e2', cellId: 'B-perfect', wrong: 'I am here since May.', wrongIndex: 1, wrongWord: 'am', right: 'I have been here since May.', why: 'Com since/for o presente não basta: I have been here.' },
+
+  // ---------------------------------------------------------------- B2-perfect
+  { kind: 'opener', id: 'B2-perfect-o1', cellId: 'B2-perfect', pt: 'Teve alguma novidade?', blanked: '___ any news?', options: ['Has there been', 'Have there been', 'Has there had', 'Did there have'], answer: 'Has there been', why: 'Existência no perfect = there has/have been. news é incontável → has.' },
+  { kind: 'opener', id: 'B2-perfect-o2', cellId: 'B2-perfect', pt: 'Houve muitas mudanças.', blanked: 'There ___ many changes.', options: ['have been', 'has been', 'have had', 'was'], answer: 'have been', why: 'O verbo concorda com o que vem depois: many changes é plural → have been.' },
+  { kind: 'order', id: 'B2-perfect-r1', cellId: 'B2-perfect', pt: 'Quantas reclamações houve?', answer: 'How many complaints have there been?' },
+  { kind: 'error', id: 'B2-perfect-e1', cellId: 'B2-perfect', wrong: 'Has there had any news?', wrongIndex: 2, wrongWord: 'had', right: 'Has there been any news?', why: 'A existência é there BE em qualquer tempo — no perfect, been.' },
+  { kind: 'error', id: 'B2-perfect-e2', cellId: 'B2-perfect', wrong: 'There have been a problem.', wrongIndex: 1, wrongWord: 'have', right: 'There has been a problem.', why: 'a problem é singular → has been.' },
+
+  // ---------------------------------------------------------------- C-perfect
+  { kind: 'opener', id: 'C-perfect-o1', cellId: 'C-perfect', pt: 'Você tem conseguido dormir?', blanked: 'Have you ___ sleep?', options: ['been able to', 'could', 'can', 'been able'], answer: 'been able to', why: 'Can não tem particípio — no perfect ele vira been able to.' },
+  { kind: 'opener', id: 'C-perfect-o2', cellId: 'C-perfect', pt: 'Eu tenho tido que trabalhar todo fim de semana.', blanked: 'I ___ work every weekend.', options: ['have had to', 'have must', 'has had to', 'have must to'], answer: 'have had to', why: 'Must também não tem particípio — no perfect vira have had to.' },
+  { kind: 'order', id: 'C-perfect-r1', cellId: 'C-perfect', pt: 'Há quanto tempo você sabe dirigir?', answer: 'How long have you been able to drive?' },
+  { kind: 'error', id: 'C-perfect-e1', cellId: 'C-perfect', wrong: 'Have you could sleep?', wrongIndex: 2, wrongWord: 'could', right: 'Have you been able to sleep?', why: 'Could não é particípio: depois de have entra been able to.' },
+  { kind: 'error', id: 'C-perfect-e2', cellId: 'C-perfect', wrong: "I haven't can call him.", wrongIndex: 2, wrongWord: 'can', right: "I haven't been able to call him.", why: 'have + can não existe — dois auxiliares não se encostam.' },
 ];
 
 /** Questões de um conjunto de células, na ordem do banco. */

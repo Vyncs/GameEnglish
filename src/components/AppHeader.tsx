@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  Home, RefreshCw, Blocks, Puzzle, Mic, Library, Lock,
+  Home, RefreshCw, Blocks, Puzzle, Mic, Library, Lock, Speech,
   GraduationCap, BookOpen, MessagesSquare, Moon, Sun,
   Volume2,
   VolumeX,
@@ -129,6 +129,14 @@ export function AppHeader() {
       viewModes: ['memory'],
       action: () => startMemoryGame(),
       gradient: 'from-pink-500 to-rose-500',
+    },
+    {
+      id: 'speaking',
+      label: 'Falar',
+      icon: <Speech className="w-4 h-4" />,
+      viewModes: ['speaking'],
+      action: () => setViewMode('speaking'),
+      gradient: 'from-cyan-500 to-sky-600',
     },
     {
       id: 'karaoke',
