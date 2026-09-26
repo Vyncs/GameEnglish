@@ -319,7 +319,7 @@ function buildMemCards(topic: Topic): MemCard[] {
   return shuffle(cards);
 }
 
-export function MemoryGame({ topic, onBack }: { topic: Topic; onBack: () => void }) {
+export function MemoryGame({ topic, onBack, onDone }: { topic: Topic; onBack: () => void; onDone?: () => void }) {
   const [gameId, setGameId] = useState(0);
   const best = useVerbLessonStore((s) => s.progress[topic.id]?.bestMemory);
   return (
@@ -332,12 +332,12 @@ export function MemoryGame({ topic, onBack }: { topic: Topic; onBack: () => void
       <p className="mb-3 text-sm text-tertiary">
         Vire as cartas e ache os pares termo ↔ significado. Quanto menos jogadas, melhor!
       </p>
-      <MemoryRound key={gameId} topic={topic} onReplay={() => setGameId((g) => g + 1)} />
+      <MemoryRound key={gameId} topic={topic} onReplay={() => setGameId((g) => g + 1)} onDone={onDone} />
     </div>
   );
 }
 
-function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }) {
+function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () => void; onDone?: () => void }) {
   const saveMemoryMoves = useVerbLessonStore((s) => s.saveMemoryMoves);
   const [cards] = useState<MemCard[]>(() => buildMemCards(topic));
   const [flipped, setFlipped] = useState<string[]>([]);
@@ -392,6 +392,15 @@ function MemoryRound({ topic, onReplay }: { topic: Topic; onReplay: () => void }
         <p className="text-sm text-emerald-700">
           Você terminou em <strong>{moves} jogadas</strong>.
         </p>
+        {onDone && (
+          <button
+            type="button"
+            onClick={onDone}
+            className="mx-auto mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
+          >
+            Concluir etapa
+          </button>
+        )}
         <button
           type="button"
           onClick={onReplay}

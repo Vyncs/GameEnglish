@@ -9,6 +9,7 @@ import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { useSpeech } from '../hooks/useSpeech';
 import { STAGE_INFO, verbForms, type Topic, type TopicItem, type TopicStage } from '../data/topic';
 import { MatchGame, BlitzGame, MemoryGame } from './VerbGames';
+import { SentenceStage } from './SentenceStage';
 import { playCorrect, playWrong } from '../utils/sfx';
 
 const EMPTY_STAGES: string[] = [];
@@ -85,7 +86,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
   const markStageDone = useVerbLessonStore((s) => s.markStageDone);
   const resetLesson = useVerbLessonStore((s) => s.resetLesson);
 
-  const [mode, setMode] = useState<'hub' | TopicStage | 'match' | 'blitz' | 'memory'>('hub');
+  const [mode, setMode] = useState<'hub' | TopicStage | 'match' | 'blitz' | 'game-memory'>('hub');
   const [adding, setAdding] = useState(false);
   const [addProgress, setAddProgress] = useState(0);
 
@@ -134,12 +135,14 @@ export function TopicStudy({ topic }: { topic: Topic }) {
     }
   };
 
+  if (mode === 'memory') return <MemoryGame topic={topic} onDone={() => finish('memory')} onBack={() => setMode('hub')} />;
+  if (mode === 'sentences') return <SentenceStage topic={topic} onDone={() => finish('sentences')} onBack={() => setMode('hub')} />;
   if (mode === 'study') return <Study topic={topic} onDone={() => finish('study')} onBack={() => setMode('hub')} />;
   if (mode === 'meaning') return <Meaning topic={topic} onDone={() => finish('meaning')} onBack={() => setMode('hub')} />;
   if (mode === 'forms') return <Forms topic={topic} onDone={() => finish('forms')} onBack={() => setMode('hub')} />;
   if (mode === 'match') return <MatchGame topic={topic} onBack={() => setMode('hub')} />;
   if (mode === 'blitz') return <BlitzGame topic={topic} onBack={() => setMode('hub')} />;
-  if (mode === 'memory') return <MemoryGame topic={topic} onBack={() => setMode('hub')} />;
+  if (mode === 'game-memory') return <MemoryGame topic={topic} onBack={() => setMode('hub')} />;
 
   const doneCount = topic.stages.filter((s) => stagesDone.includes(s)).length;
   const allDone = doneCount === topic.stages.length;
@@ -261,7 +264,7 @@ export function TopicStudy({ topic }: { topic: Topic }) {
             best={bestMatch !== undefined ? `${(bestMatch / 1000).toFixed(1)}s` : undefined}
           />
           <GameCard
-            onClick={() => setMode('memory')}
+            onClick={() => setMode('game-memory')}
             icon={<Brain className="h-5 w-5" />}
             tint="from-accent to-accent-strong"
             title="Memória"

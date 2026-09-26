@@ -11,7 +11,8 @@
 //   can -> Regra C (modal: poder/saber/conseguir/dever)
 //   demais -> Regra A (verbos de ação com do/does/did)
 
-import { verbImg, type Topic } from './topic';
+import { verbImg, withSentences, type Topic } from './topic';
+import { SENTENCES_VERBS_1 } from './sentencesVerbs1';
 
 // id mantido ('verbs-01-25') para preservar o progresso já salvo do usuário.
 export const TOPIC_VERBS_1: Topic = {
@@ -21,9 +22,11 @@ export const TOPIC_VERBS_1: Topic = {
   emoji: '🏃',
   category: 'verbos',
   level: 1,
-  stages: ['study', 'meaning', 'forms'],
+  // Trilha nova: memória primeiro, depois a frase falada. As frases substituem
+  // o antigo 'study' (palavra solta) e o quiz de significado.
+  stages: ['memory', 'sentences', 'forms'],
   imageFor: (item) => verbImg(item.id),
-  items: [
+  items: withSentences([
     { id: 1, base: 'arrive', past: 'arrived', participle: 'arrived', pt: 'chegar', example: 'What time did you arrive there?', irregular: false, rule: 'A', tip: 'Regular: passado e particípio com -ed (arrive → arrived).' },
     { id: 2, base: 'ask', past: 'asked', participle: 'asked', pt: 'pedir, perguntar, chamar', example: "Why don't you ask your father?", irregular: false, rule: 'A', tip: 'Regular: ask → asked.' },
     { id: 3, base: 'be', past: 'was/were', participle: 'been', pt: 'ser, estar', example: 'I want to be your friend.', irregular: true, rule: 'B', tip: 'Regra B (ser/estar). Irregular: was/were – been.' },
@@ -49,5 +52,5 @@ export const TOPIC_VERBS_1: Topic = {
     { id: 23, base: 'drink', past: 'drank', participle: 'drunk', pt: 'tomar, beber', example: 'Do you drink beer?', irregular: true, rule: 'A', tip: 'Irregular: drink – drank – drunk (i → a → u).' },
     { id: 24, base: 'drive', past: 'drove', participle: 'driven', pt: 'dirigir', example: 'Do you know how to drive?', irregular: true, rule: 'A', tip: 'Irregular: drive – drove – driven.' },
     { id: 25, base: 'eat', past: 'ate', participle: 'eaten', pt: 'comer', example: "Let's eat!", irregular: true, rule: 'A', tip: 'Irregular: eat – ate – eaten. I ate (did) / I have eaten (have).' },
-  ],
+  ], SENTENCES_VERBS_1),
 };

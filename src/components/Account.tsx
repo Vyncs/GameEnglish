@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../api/client';
-import { User, CreditCard, LogOut, Loader2, Palette } from 'lucide-react';
+import { User, CreditCard, LogOut, Loader2, Palette, Volume2, VolumeX } from 'lucide-react';
 import { SubscriptionModal } from './SubscriptionModal';
 import { THEMES } from '../data/themes';
+import { useVoicePrefStore } from '../store/useVoicePrefStore';
 import { useThemeStore } from '../store/useThemeStore';
 
 const isDev = import.meta.env.DEV;
@@ -15,6 +16,8 @@ export function Account() {
   const { setViewMode } = useStore();
   const { user, logout, initAuth } = useAuthStore();
   const themeId = useThemeStore((s) => s.themeId);
+  const voiceEnabled = useVoicePrefStore((s) => s.voiceEnabled);
+  const toggleVoice = useVoicePrefStore((s) => s.toggleVoice);
   const setTheme = useThemeStore((s) => s.setTheme);
   const [error, setError] = useState('');
   const [paymentLoading, setPaymentLoading] = useState(false);
@@ -136,6 +139,55 @@ export function Account() {
                 Gerenciar assinatura
               </button>
             )}
+          </div>
+
+          {/* Voz das etapas faladas */}
+          <div className="rounded-2xl border border-line bg-surface-2 p-4">
+            <div className="mb-1 flex items-center gap-2">
+              {voiceEnabled ? (
+                <Volume2 className="h-4 w-4 text-accent-text" />
+              ) : (
+                <VolumeX className="h-4 w-4 text-tertiary" />
+              )}
+              <span className="text-sm font-semibold text-primary">Voz nas frases</span>
+            </div>
+            <p className="mb-3 text-xs text-tertiary">
+              Na etapa <b>Frases</b>, o áudio toca sozinho quando o card abre e você repete a frase
+              falando — é assim que a pronúncia entra. Desligue aqui se estiver sem fone ou em
+              lugar público: a etapa vira leitura silenciosa e o microfone não é pedido.
+            </p>
+            <button
+              type="button"
+              onClick={toggleVoice}
+              aria-pressed={voiceEnabled}
+              className={`flex w-full items-center justify-between rounded-xl border p-3 text-left transition-all ${
+                voiceEnabled
+                  ? 'border-emerald-300 bg-emerald-50'
+                  : 'border-line bg-surface'
+              }`}
+            >
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-primary">
+                  {voiceEnabled ? 'Ligada' : 'Desligada'}
+                </span>
+                <span className="block text-xs text-tertiary">
+                  {voiceEnabled
+                    ? 'Ouvir e repetir falando'
+                    : 'Sem áudio e sem microfone'}
+                </span>
+              </span>
+              <span
+                className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+                  voiceEnabled ? 'bg-emerald-500' : 'bg-surface-2 ring-1 ring-line'
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${
+                    voiceEnabled ? 'left-[22px]' : 'left-0.5'
+                  }`}
+                />
+              </span>
+            </button>
           </div>
 
           {/* Seletor de tema */}
