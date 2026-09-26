@@ -115,6 +115,8 @@ export const translations = {
   'home.cat.cotidiano.desc': { pt: 'Comida, casa, trabalho, viagem, saúde e compras', en: 'Food, home, work, travel, health and shopping' },
   'home.cat.conversacao.label': { pt: 'Conversação', en: 'Conversation' },
   'home.cat.conversacao.desc': { pt: 'As palavras que ligam as ideias e soam naturais', en: 'The words that link ideas and sound natural' },
+  'home.cat.gramatica.label': { pt: 'Gramática', en: 'Grammar' },
+  'home.cat.gramatica.desc': { pt: 'Preposições e as peças que montam a frase', en: 'Prepositions and the pieces that build a sentence' },
   'home.cat.outros.label': { pt: 'Outros temas', en: 'Other topics' },
   'home.cat.outros.desc': { pt: 'Clima e temas avulsos', en: 'Weather and other topics' },
 

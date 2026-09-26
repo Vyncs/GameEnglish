@@ -14,6 +14,9 @@ interface VerbLessonState {
   /** Tópico aberto no momento (usado pela view 'topic'). */
   selectedTopicId: string | null;
   setSelectedTopic: (topicId: string) => void;
+  /** Célula da Grade que a trilha da Home pediu para abrir direto. */
+  selectedGridCellId: string | null;
+  setSelectedGridCell: (cellId: string | null) => void;
   markStageDone: (lessonId: string, stage: string) => void;
   saveMatchTime: (lessonId: string, ms: number) => void;
   saveBlitzScore: (lessonId: string, score: number) => void;
@@ -29,6 +32,8 @@ export const useVerbLessonStore = create<VerbLessonState>()(
       progress: {},
       selectedTopicId: null,
       setSelectedTopic: (topicId) => set({ selectedTopicId: topicId }),
+      selectedGridCellId: null,
+      setSelectedGridCell: (cellId) => set({ selectedGridCellId: cellId }),
       markStageDone: (lessonId, stage) =>
         set((state) => {
           const current = state.progress[lessonId] ?? empty();

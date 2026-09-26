@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../api/client';
-import { User, CreditCard, LogOut, Loader2, Palette, Volume2, VolumeX } from 'lucide-react';
+import { User, CreditCard, LogOut, Loader2, Palette, Volume2, VolumeX, BarChart3 } from 'lucide-react';
 import { SubscriptionModal } from './SubscriptionModal';
 import { THEMES } from '../data/themes';
 import { useVoicePrefStore } from '../store/useVoicePrefStore';
+import { StatsPanel } from './StatsPanel';
+import { ImportExport } from './ImportExport';
 import { useThemeStore } from '../store/useThemeStore';
 
 const isDev = import.meta.env.DEV;
@@ -16,6 +18,7 @@ export function Account() {
   const { setViewMode } = useStore();
   const { user, logout, initAuth } = useAuthStore();
   const themeId = useThemeStore((s) => s.themeId);
+  const [showImportExport, setShowImportExport] = useState(false);
   const voiceEnabled = useVoicePrefStore((s) => s.voiceEnabled);
   const toggleVoice = useVoicePrefStore((s) => s.toggleVoice);
   const setTheme = useThemeStore((s) => s.setTheme);
@@ -139,6 +142,22 @@ export function Account() {
                 Gerenciar assinatura
               </button>
             )}
+          </div>
+
+          {/* Os números do estudo, vindos da antiga tela inicial */}
+          <div className="rounded-2xl border border-line bg-surface-2 p-4">
+            <div className="mb-3 flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-accent-text" />
+              <span className="text-sm font-semibold text-primary">Seu progresso</span>
+            </div>
+            <StatsPanel />
+            <button
+              type="button"
+              onClick={() => setShowImportExport(true)}
+              className="mt-3 w-full rounded-xl border border-line bg-surface py-2.5 text-sm font-semibold text-secondary hover:bg-surface-2"
+            >
+              Backup e restauração
+            </button>
           </div>
 
           {/* Voz das etapas faladas */}
@@ -268,6 +287,7 @@ export function Account() {
         </div>
       </div>
     </div>
+      {showImportExport && <ImportExport onClose={() => setShowImportExport(false)} />}
     </>
   );
 }
