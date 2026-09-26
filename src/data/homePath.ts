@@ -10,7 +10,7 @@
 //
 // A ordem daqui é a ordem da trilha na tela.
 
-export type PathKind = 'today' | 'topics' | 'cell';
+export type PathKind = 'today' | 'topics' | 'cell' | 'grid';
 
 export interface PathUnit {
   id: string;
@@ -112,5 +112,12 @@ export const HOME_PATH: PathUnit[] = [
     emoji: '🌀',
     kind: 'cell',
     cellId: 'A-would',
+  },
+  {
+    id: 'grade',
+    label: 'A Grade inteira',
+    hint: 'O mapa 4×5 com as 24 células e o cronograma',
+    emoji: '🗺️',
+    kind: 'grid',
   },
 ];
