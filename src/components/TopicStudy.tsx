@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft, Check, X, Volume2, RotateCcw, ArrowLeft, ArrowRight,
   Trophy, Lightbulb, Gamepad2, Puzzle, Zap, Brain, Plus, Loader2,
@@ -403,6 +403,7 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
 // ============================================================================
 // Etapa 2 — Significado (inglês → PT), estilo Cram
 function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; onBack: () => void }) {
+  const { speak } = useSpeech();
   const items = topic.items;
   const total = items.length;
   const [queue, setQueue] = useState<number[]>(() => shuffle(items.map((i) => i.id)));
@@ -418,6 +419,13 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
 
   const mastered = total - queue.length;
   const isRight = chosen === v.pt;
+
+  const say = useCallback(() => speak(v.base, 'en-US'), [speak, v.base]);
+
+  // Fala a palavra ao abrir cada item — só conversa com a síntese de voz.
+  useEffect(() => {
+    say();
+  }, [say]);
 
   const advance = () => {
     const rest = queue.slice(1);
@@ -437,7 +445,17 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
 
       <div className="mt-4 rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-xl">
         <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Qual o significado?</p>
-        <p className="mt-1 text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
+        <div className="mt-1 flex items-center gap-2">
+          <p className="text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
+          <button
+            type="button"
+            onClick={say}
+            aria-label={`Ouvir ${v.base}`}
+            className="rounded-lg border border-line bg-surface-2 p-2 text-tertiary transition-colors hover:text-accent"
+          >
+            <Volume2 className="h-4 w-4" />
+          </button>
+        </div>
         <div className="mb-4 mt-1.5 flex justify-start">
           <FormChips item={v} size="sm" />
         </div>

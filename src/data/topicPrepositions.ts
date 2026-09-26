@@ -7,7 +7,7 @@ import type { Topic } from './topic';
 export const TOPIC_PREPOSITIONS: Topic = {
   id: 'prepositions-01-25',
   title: 'Preposições',
-  subtitle: 'in → without · 25 palavras',
+  subtitle: 'in → without',
   emoji: '🧭',
   category: 'gramatica',
   level: 2,

@@ -6,7 +6,7 @@ import type { Topic } from './topic';
 export const TOPIC_HOME: Topic = {
   id: 'home-01-25',
   title: 'Casa e móveis',
-  subtitle: 'house → rent · 25 palavras',
+  subtitle: 'house → rent',
   emoji: '🏠',
   category: 'cotidiano',
   level: 1,

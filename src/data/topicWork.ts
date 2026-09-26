@@ -6,7 +6,7 @@ import type { Topic } from './topic';
 export const TOPIC_WORK: Topic = {
   id: 'work-01-25',
   title: 'Trabalho e escritório',
-  subtitle: 'job → deadline · 25 palavras',
+  subtitle: 'job → deadline',
   emoji: '💼',
   category: 'cotidiano',
   level: 2,

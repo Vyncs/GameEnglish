@@ -6,7 +6,7 @@ import type { Topic } from './topic';
 export const TOPIC_TRAVEL: Topic = {
   id: 'travel-01-25',
   title: 'Viagem e transporte',
-  subtitle: 'trip → abroad · 25 palavras',
+  subtitle: 'trip → abroad',
   emoji: '✈️',
   category: 'cotidiano',
   level: 2,
