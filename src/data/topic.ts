@@ -29,6 +29,8 @@ export interface TopicItem {
   pt: string;
   example: string;
   tip: string;
+  /** Frase para decorar (etapa "sentences"). Sem ela o item é pulado nessa etapa. */
+  sentence?: TopicSentence;
   // ---- específico de verbos ----
   past?: string;
   participle?: string;
@@ -51,7 +53,45 @@ export function verbForms(item: TopicItem) {
   };
 }
 
-export type TopicStage = 'study' | 'meaning' | 'forms';
+/** Classe gramatical das palavras novas destacadas numa frase. */
+export type WordKind = 'adj' | 'prep' | 'subst' | 'adv' | 'verbo' | 'pron' | 'conj' | 'expr';
+
+export const WORD_KIND_LABEL: Record<WordKind, string> = {
+  adj: 'adjetivo',
+  prep: 'preposição',
+  subst: 'substantivo',
+  adv: 'advérbio',
+  verbo: 'verbo',
+  pron: 'pronome',
+  conj: 'conjunção',
+  expr: 'expressão',
+};
+
+/** Palavra nova que aparece na frase e ainda não foi estudada. */
+export interface NewWord {
+  word: string;
+  pt: string;
+  kind: WordKind;
+}
+
+/**
+ * Frase curta para decorar o item — a etapa "sentences" mostra esta frase,
+ * não a palavra solta. O aluno ouve, lê o sentido e repete falando.
+ */
+export interface TopicSentence {
+  en: string;
+  pt: string;
+  /** Palavras da frase que valem uma nota à parte (adjetivo, preposição…). */
+  newWords?: NewWord[];
+}
+
+/** Casa as frases da etapa "Frases" com os itens do tópico, pelo id. */
+export const withSentences = (
+  items: TopicItem[],
+  map: Record<number, TopicSentence>,
+): TopicItem[] => items.map((it) => (map[it.id] ? { ...it, sentence: map[it.id] } : it));
+
+export type TopicStage = 'memory' | 'sentences' | 'study' | 'meaning' | 'forms';
 
 /**
  * Categorias exibidas na Home, cada uma como uma "prateleira" com scroll
@@ -83,6 +123,8 @@ export interface Topic {
 }
 
 export const STAGE_INFO: Record<TopicStage, { label: string; desc: string; emoji: string }> = {
+  memory: { label: 'Memória', desc: 'Ache os pares e fixe o vocabulário do bloco', emoji: '🧠' },
+  sentences: { label: 'Frases', desc: 'Ouça, entenda e repita falando — uma frase por palavra', emoji: '🗣️' },
   study: { label: 'Estudar', desc: 'Conheça as palavras (flashcards + áudio)', emoji: '📖' },
   meaning: { label: 'Significado', desc: 'Termo em inglês → escolha o significado', emoji: '🎯' },
   forms: { label: 'Formas', desc: 'Passado e particípio dos irregulares', emoji: '🔁' },

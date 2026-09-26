@@ -179,6 +179,40 @@ for (const f of topicFiles) {
 
 console.log(`Vocabulário: ${topicCount} tópicos · ${itemCount} itens · ${knownCats.length} prateleiras`);
 
+
+// ---------------------------------------------------------------- frases da trilha
+const KINDS = ["adj","prep","subst","adv","verbo","pron","conj","expr"];
+const sentenceFiles = readdirSync(resolve(ROOT, "src/data")).filter((f) => /^sentences[A-Z]/.test(f) && f.endsWith(".ts"));
+let sentenceCount = 0;
+for (const f of sentenceFiles) {
+  const mod = await load(`src/data/${f}`);
+  const map = Object.values(mod)[0];
+  if (!map || typeof map !== "object") { fail.push(`${f}: nao exporta um mapa de frases`); continue; }
+  for (const [id, sen] of Object.entries(map)) {
+    sentenceCount++;
+    if (!sen.en?.trim()) fail.push(`${f} #${id}: frase em inglês vazia`);
+    if (!sen.pt?.trim()) fail.push(`${f} #${id}: tradução vazia`);
+    for (const w of sen.newWords ?? []) {
+      if (!KINDS.includes(w.kind)) fail.push(`${f} #${id}: classe "${w.kind}" invalida em "${w.word}"`);
+      // A palavra marcada precisa aparecer na frase, senão o chip nao faz sentido.
+      if (!sen.en.toLowerCase().includes(w.word.toLowerCase().split(" ")[0])) {
+        fail.push(`${f} #${id}: "${w.word}" esta marcada mas nao aparece na frase`);
+      }
+    }
+  }
+}
+
+// Todo tópico que declara a etapa de frases precisa ter frases de verdade.
+for (const f of topicFiles) {
+  const src = readFileSync(resolve(ROOT, "src/data", f), "utf8");
+  if (!/stages:.*sentences/.test(src)) continue;
+  if (!src.includes("withSentences(")) {
+    fail.push(`${f}: declara a etapa "sentences" mas nao aplica withSentences — a etapa abriria vazia`);
+  }
+}
+
+console.log(`Frases da trilha: ${sentenceCount} em ${sentenceFiles.length} bloco(s)`);
+
 console.log(`Grade: ${grid.GRID_ROWS.length} linhas × ${grid.GRID_COLS.length} colunas`);
 console.log(`Células: ${grid.GRID_CELLS.length} · etapas: ${grid.GRID_TOTAL_STAGES} · semanas: ${grid.GRID_WEEKS.length}`);
 console.log(`Exercícios: ${trainer.GRID_TRAINER_QUESTIONS.length}`);
