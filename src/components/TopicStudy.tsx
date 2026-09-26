@@ -506,6 +506,7 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
 // ============================================================================
 // Etapa 3 — Formas (irregulares): passado – particípio
 function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; onBack: () => void }) {
+  const { speak } = useSpeech();
   const pairLabel = (x: TopicItem) => `${x.past ?? ''} – ${x.participle ?? ''}`;
   const items = useMemo(() => formsItems(topic), [topic]);
   const total = items.length;
@@ -574,6 +575,38 @@ function Forms({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
               {isRight ? 'Boa! ✅' : `Correto: ${v.base} – ${v.past} – ${v.participle}`}
             </p>
             <p className="mt-0.5 text-secondary">{v.tip}</p>
+          </div>
+        )}
+
+        {/* As duas frases para falar junto: did na 1ª pessoa, have na 3ª. */}
+        {chosen && v.formSentences && (
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {(["did", "have"] as const).map((kind) => {
+              const f = v.formSentences![kind];
+              const isDid = kind === "did";
+              return (
+                <div
+                  key={kind}
+                  className={`rounded-xl border p-3 ${isDid ? "border-red-200 bg-red-50/60" : "border-blue-200 bg-blue-50/60"}`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className={`text-[11px] font-extrabold uppercase tracking-wide ${isDid ? "text-red-600" : "text-blue-600"}`}>
+                      {isDid ? "did · 1ª pessoa" : "have · 3ª pessoa"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => speak(f.en, "en-US")}
+                      aria-label={`Ouvir: ${f.en}`}
+                      className="rounded-lg border border-line bg-surface p-1.5 text-tertiary hover:text-accent"
+                    >
+                      <Volume2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <p className="mt-1 text-[15px] font-bold leading-snug text-primary">{f.en}</p>
+                  <p className="text-xs text-tertiary">{f.pt}</p>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

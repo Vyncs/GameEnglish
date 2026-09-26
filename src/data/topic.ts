@@ -31,6 +31,8 @@ export interface TopicItem {
   tip: string;
   /** Frase para decorar (etapa "sentences"). Sem ela o item é pulado nessa etapa. */
   sentence?: TopicSentence;
+  /** As duas frases da etapa "Formas" — did na 1ª pessoa, have na 3ª. */
+  formSentences?: FormSentences;
   // ---- específico de verbos ----
   past?: string;
   participle?: string;
@@ -85,6 +87,22 @@ export interface TopicSentence {
   newWords?: NewWord[];
 }
 
+/**
+ * As duas frases da etapa "Formas": uma com did (1ª pessoa) e outra com
+ * have (3ª pessoa) — onde o particípio mais aparece e onde o -s do has
+ * costuma escapar.
+ */
+export interface FormSentences {
+  did: { en: string; pt: string };
+  have: { en: string; pt: string };
+}
+
+/** Casa as frases das formas com os itens, pelo id. */
+export const withFormSentences = (
+  items: TopicItem[],
+  map: Record<number, FormSentences>,
+): TopicItem[] => items.map((it) => (map[it.id] ? { ...it, formSentences: map[it.id] } : it));
+
 /** Casa as frases da etapa "Frases" com os itens do tópico, pelo id. */
 export const withSentences = (
   items: TopicItem[],
@@ -103,6 +121,7 @@ export const TOPIC_CATEGORIES: { id: string; label: string; emoji: string; desc:
   { id: 'tempos', label: 'Tempos verbais', emoji: '⏳', desc: 'Passado, presente e futuro na prática' },
   { id: 'cotidiano', label: 'Dia a dia', emoji: '🧭', desc: 'Comida, casa, trabalho, viagem, saúde e compras' },
   { id: 'conversacao', label: 'Conversação', emoji: '💬', desc: 'As palavras que ligam as ideias e soam naturais' },
+  { id: 'gramatica', label: 'Gramática', emoji: '🧭', desc: 'Preposições e as peças que montam a frase' },
   { id: 'outros', label: 'Outros temas', emoji: '🗂️', desc: 'Clima e temas avulsos' },
 ];
 

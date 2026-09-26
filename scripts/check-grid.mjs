@@ -213,6 +213,28 @@ for (const f of topicFiles) {
 
 console.log(`Frases da trilha: ${sentenceCount} em ${sentenceFiles.length} bloco(s)`);
 
+
+// ---------------------------------------------------------------- trilha da Home
+const homePath = await load(`src/data/homePath.ts`);
+const topicsSrc = readFileSync(resolve(ROOT, "src/data/topics.ts"), "utf8");
+const allTopicIds = new Set();
+for (const f of topicFiles) {
+  const src = readFileSync(resolve(ROOT, "src/data", f), "utf8");
+  const idLine = src.split('\n').find((l) => l.startsWith('  id:'));
+  const m = idLine ? idLine.match(/'([^']+)'/) : null;
+  const exp = src.match(/export const (TOPIC_[A-Z0-9_]+)/);
+  if (m && exp && topicsSrc.includes(exp[1])) allTopicIds.add(m[1]);
+}
+for (const u of homePath.HOME_PATH) {
+  for (const id of u.topicIds ?? []) {
+    if (!allTopicIds.has(id)) fail.push(`trilha da Home, "${u.label}": o bloco "${id}" nao existe ou nao esta registrado — o circulo abriria vazio`);
+  }
+  if (u.cellId && !grid.findCell(u.cellId)) {
+    fail.push(`trilha da Home, "${u.label}": a celula "${u.cellId}" nao existe na Grade`);
+  }
+}
+console.log(`Trilha da Home: ${homePath.HOME_PATH.length} circulos`);
+
 console.log(`Grade: ${grid.GRID_ROWS.length} linhas × ${grid.GRID_COLS.length} colunas`);
 console.log(`Células: ${grid.GRID_CELLS.length} · etapas: ${grid.GRID_TOTAL_STAGES} · semanas: ${grid.GRID_WEEKS.length}`);
 console.log(`Exercícios: ${trainer.GRID_TRAINER_QUESTIONS.length}`);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ChevronLeft, Check, Volume2, AlertTriangle, ListChecks, Target,
   Moon, HelpCircle, ArrowRight, CalendarDays, Sparkles, Dumbbell,
@@ -52,7 +52,16 @@ interface TrainerConfig {
 export function GridStudy() {
   const goToHome = useStore((s) => s.goToHome);
   const stagesDone = useVerbLessonStore((s) => s.progress[GRID_LESSON_ID]?.stagesDone) ?? EMPTY_STAGES;
-  const [cellId, setCellId] = useState<string | null>(null);
+  // A trilha da Home pode pedir uma célula específica; abrimos direto no
+  // dossiê dela em vez de cair na grade inteira.
+  const pendingCell = useVerbLessonStore((s) => s.selectedGridCellId);
+  const setSelectedGridCell = useVerbLessonStore((s) => s.setSelectedGridCell);
+  const [cellId, setCellId] = useState<string | null>(() => pendingCell);
+
+  // Consome o pedido para não reabrir na próxima visita.
+  useEffect(() => {
+    if (pendingCell) setSelectedGridCell(null);
+  }, [pendingCell, setSelectedGridCell]);
   const [trainer, setTrainer] = useState<TrainerConfig | null>(null);
 
   const cell = cellId ? findCell(cellId) : null;

@@ -17,6 +17,7 @@ import { TOPIC_TRAVEL } from './topicTravel';
 import { TOPIC_HEALTH } from './topicHealth';
 import { TOPIC_SHOPPING } from './topicShopping';
 import { TOPIC_CONNECTORS } from './topicConnectors';
+import { TOPIC_PREPOSITIONS } from './topicPrepositions';
 
 // Registro de todos os tópicos de vocabulário, do mais fácil para o mais difícil.
 // A ordem deste array é a ordem exibida na Home.
@@ -38,6 +39,7 @@ export const TOPICS: Topic[] = [
   TOPIC_HEALTH,
   TOPIC_SHOPPING,
   TOPIC_PHRASAL,
+  TOPIC_PREPOSITIONS,
   TOPIC_CONNECTORS,
   TOPIC_VERBS_3,
   TOPIC_VERBS_4,
