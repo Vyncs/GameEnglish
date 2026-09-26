@@ -44,7 +44,7 @@ export const HOME_PATH: PathUnit[] = [
   {
     id: 'substantivos',
     label: 'Substantivos',
-    hint: 'Comida, casa, trabalho, viagem, saúde, compras',
+    hint: 'Comida, casa, trabalho, viagem, saúde, compras e clima',
     emoji: '🧱',
     kind: 'topics',
     topicIds: [
