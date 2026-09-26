@@ -18,6 +18,7 @@ import { LessonDidHave } from './components/LessonDidHave';
 import { PastTrainer } from './components/PastTrainer';
 import { GridStudy } from './components/GridStudy';
 import { SpeakingPractice } from './components/SpeakingPractice';
+import { UnitPath } from './components/UnitPath';
 import { TopicStudy } from './components/TopicStudy';
 import { findTopic } from './data/topics';
 import { useVerbLessonStore } from './store/useVerbLessonStore';
@@ -80,6 +81,7 @@ export function AppLayout() {
           {viewMode === 'past-trainer' && <PastTrainer />}
           {viewMode === 'grid-4v5t2s' && <GridStudy />}
           {viewMode === 'speaking' && <SpeakingPractice />}
+          {viewMode === 'unit' && <UnitPath />}
           {viewMode === 'topic' && selectedTopic && <TopicStudy topic={selectedTopic} />}
           {viewMode === 'review-hub' && <ReviewHub />}
         </div>
