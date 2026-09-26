@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft, Check, X, Volume2, RotateCcw, ArrowLeft, ArrowRight,
   Trophy, Lightbulb, Gamepad2, Puzzle, Zap, Brain, Plus, Loader2,
@@ -158,25 +158,6 @@ export function TopicStudy({ topic }: { topic: Topic }) {
         <ChevronLeft className="h-4 w-4" />
         Início
       </button>
-
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-lg font-bold text-primary">
-          {topic.emoji} {topic.title}
-        </h1>
-        <span className="shrink-0 rounded-full bg-accent-soft px-3 py-1 text-xs font-bold tabular-nums text-accent-text">
-          {doneCount}/{topic.stages.length} etapas
-        </span>
-      </div>
-      <p className="mt-0.5 text-sm text-tertiary">
-        {topic.subtitle} · {topic.items.length} palavras
-      </p>
-
-      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
-          style={{ width: `${(doneCount / topic.stages.length) * 100}%` }}
-        />
-      </div>
 
       {allDone && (
         <div className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
@@ -422,6 +403,7 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
 // ============================================================================
 // Etapa 2 — Significado (inglês → PT), estilo Cram
 function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; onBack: () => void }) {
+  const { speak } = useSpeech();
   const items = topic.items;
   const total = items.length;
   const [queue, setQueue] = useState<number[]>(() => shuffle(items.map((i) => i.id)));
@@ -437,6 +419,13 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
 
   const mastered = total - queue.length;
   const isRight = chosen === v.pt;
+
+  const say = useCallback(() => speak(v.base, 'en-US'), [speak, v.base]);
+
+  // Fala a palavra ao abrir cada item — só conversa com a síntese de voz.
+  useEffect(() => {
+    say();
+  }, [say]);
 
   const advance = () => {
     const rest = queue.slice(1);
@@ -456,7 +445,17 @@ function Meaning({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; 
 
       <div className="mt-4 rounded-2xl border border-line bg-surface backdrop-blur-md p-5 shadow-xl">
         <p className="text-xs font-semibold uppercase tracking-wide text-accent-text">Qual o significado?</p>
-        <p className="mt-1 text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
+        <div className="mt-1 flex items-center gap-2">
+          <p className="text-2xl font-extrabold tracking-tight text-primary">{v.base}</p>
+          <button
+            type="button"
+            onClick={say}
+            aria-label={`Ouvir ${v.base}`}
+            className="rounded-lg border border-line bg-surface-2 p-2 text-tertiary transition-colors hover:text-accent"
+          >
+            <Volume2 className="h-4 w-4" />
+          </button>
+        </div>
         <div className="mb-4 mt-1.5 flex justify-start">
           <FormChips item={v} size="sm" />
         </div>

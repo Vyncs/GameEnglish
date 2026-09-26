@@ -7,7 +7,7 @@ import type { Topic } from './topic';
 export const TOPIC_FREQUENCY: Topic = {
   id: 'freq-adverbs-01-16',
   title: 'Advérbios de frequência',
-  subtitle: 'always → how often · 16 palavras',
+  subtitle: 'always → how often',
   emoji: '🔁',
   category: 'tempos',
   level: 1,

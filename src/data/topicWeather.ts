@@ -6,7 +6,7 @@ import type { Topic } from './topic';
 export const TOPIC_WEATHER: Topic = {
   id: 'weather-01-25',
   title: 'Clima e tempo',
-  subtitle: 'weather → autumn · 25 palavras',
+  subtitle: 'weather → autumn',
   emoji: '🌤️',
   category: 'outros',
   level: 1,

@@ -7,7 +7,7 @@ import type { Topic } from './topic';
 export const TOPIC_CONNECTORS: Topic = {
   id: 'connectors-01-25',
   title: 'Conectivos e conversa',
-  subtitle: 'however → I mean · 25 expressões',
+  subtitle: 'however → I mean',
   emoji: '🔗',
   category: 'conversacao',
   level: 2,

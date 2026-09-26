@@ -6,7 +6,7 @@ import type { Topic } from './topic';
 export const TOPIC_HEALTH: Topic = {
   id: 'health-01-25',
   title: 'Corpo e saúde',
-  subtitle: 'head → appointment · 25 palavras',
+  subtitle: 'head → appointment',
   emoji: '🩺',
   category: 'cotidiano',
   level: 2,

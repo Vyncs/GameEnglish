@@ -5,7 +5,11 @@ import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { playCorrect, playWrong, playFinish } from '../utils/sfx';
 
 const MATCH_PAIRS = 6;
-const MEMORY_PAIRS = 12;
+/** Opções de tamanho da partida — limitadas ao que o bloco tem. */
+const MEMORY_PAIR_OPTIONS = [5, 10, 15, 20, 25];
+/** Padrão: 5 pares (10 cartas) cabem numa tela de celular sem rolar; 10 no resto. */
+const defaultPairs = () =>
+  typeof window !== 'undefined' && window.innerWidth < 640 ? 5 : 10;
 const BLITZ_SECONDS = 60;
 
 function shuffle<T>(arr: T[]): T[] {
@@ -307,8 +311,8 @@ interface MemCard {
   img?: string;
 }
 
-function buildMemCards(topic: Topic): MemCard[] {
-  const picked = shuffle(topic.items).slice(0, MEMORY_PAIRS);
+function buildMemCards(topic: Topic, pairs: number): MemCard[] {
+  const picked = shuffle(topic.items).slice(0, pairs);
   const cards: MemCard[] = [];
   picked.forEach((it) => {
     cards.push({ key: `term-${it.id}`, itemId: it.id, kind: 'term', label: it.base, img: topic.imageFor?.(it) });
@@ -341,7 +345,13 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
   // cartas viram e o jogo começa. A espiada cronometrada de antes saiu — ler
   // com calma e apertar "Começar" vale mais que correr contra 3 segundos.
   const [phase, setPhase] = useState<'study' | 'play'>('study');
-  const [cards] = useState<MemCard[]>(() => buildMemCards(topic));
+  const [pairCount, setPairCount] = useState(() => Math.min(defaultPairs(), topic.items.length));
+  const [cards, setCards] = useState<MemCard[]>([]);
+
+  const startPlaying = () => {
+    setCards(buildMemCards(topic, pairCount));
+    setPhase('play');
+  };
   const [flipped, setFlipped] = useState<string[]>([]);
   const [matched, setMatched] = useState<string[]>([]);
   const [moves, setMoves] = useState(0);
@@ -393,12 +403,37 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
           </div>
           <button
             type="button"
-            onClick={() => setPhase('play')}
+            onClick={startPlaying}
             className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-6 py-3 text-base font-bold text-white shadow-lg transition-all hover:opacity-90 active:translate-y-0.5"
           >
             <Play className="h-5 w-5" fill="currentColor" />
             Começar
           </button>
+        </div>
+
+        {/* Quantos pares jogar — partida curta cabe na tela do celular. */}
+        <div className="mb-4 rounded-xl border border-line bg-surface-2 p-3">
+          <p className="text-xs font-semibold text-secondary">Tamanho da partida</p>
+          <p className="mt-0.5 text-[11px] text-faint">
+            {pairCount} pares = {pairCount * 2} cartas na tela.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {MEMORY_PAIR_OPTIONS.filter((p) => p <= topic.items.length).map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPairCount(p)}
+                aria-pressed={p === pairCount}
+                className={`min-w-[52px] rounded-lg border-2 px-3 py-1.5 text-sm font-bold transition-all ${
+                  p === pairCount
+                    ? 'border-accent bg-accent text-white'
+                    : 'border-line bg-surface text-secondary hover:border-accent-line'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
@@ -428,11 +463,11 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
 
         <button
           type="button"
-          onClick={() => setPhase('play')}
+          onClick={startPlaying}
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-accent to-accent-strong py-4 text-lg font-bold text-white shadow-lg transition-all hover:opacity-90 active:translate-y-0.5"
         >
           <Play className="h-5 w-5" fill="currentColor" />
-          Começar a memorização
+          Começar com {pairCount} {pairCount === 1 ? 'par' : 'pares'}
         </button>
       </>
     );
@@ -475,7 +510,7 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
         <Timer className="h-4 w-4 text-accent" />
         {moves} jogadas
       </div>
-      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 lg:grid-cols-6">
+      <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 lg:grid-cols-6">
         {cards.map((c, i) => {
           const isUp = flipped.includes(c.key) || matched.includes(c.key);
           const isMatched = matched.includes(c.key);
@@ -487,7 +522,7 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
               disabled={isUp}
               // O atraso escalonado faz as cartas virarem em cascata na entrada.
               style={{ ['--flip-delay' as string]: `${Math.min(i, 12) * 0.035}s` }}
-              className={`card-flip-in flex min-h-[104px] items-center justify-center overflow-hidden rounded-xl border p-1 text-center text-sm font-medium transition-all ${
+              className={`card-flip-in flex min-h-[76px] items-center justify-center overflow-hidden rounded-xl border p-1 text-center text-sm font-medium transition-all sm:min-h-[96px] ${
                 isMatched
                   ? 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
                   : isUp
@@ -498,7 +533,7 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
               {!isUp ? (
                 '?'
               ) : c.kind === 'term' && c.img ? (
-                <img src={c.img} alt="" className="max-h-[92px] w-full object-contain" draggable={false} />
+                <img src={c.img} alt="" className="max-h-[68px] w-full object-contain sm:max-h-[88px]" draggable={false} />
               ) : (
                 <span className="px-1">{c.label}</span>
               )}

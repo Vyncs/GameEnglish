@@ -6,7 +6,7 @@ import type { Topic } from './topic';
 export const TOPIC_SHOPPING: Topic = {
   id: 'shopping-01-25',
   title: 'Compras e dinheiro',
-  subtitle: 'shop → afford · 25 palavras',
+  subtitle: 'shop → afford',
   emoji: '🛒',
   category: 'cotidiano',
   level: 2,
