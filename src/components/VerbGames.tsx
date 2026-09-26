@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, Trophy, RotateCcw, Timer, Zap } from 'lucide-react';
+import { ChevronLeft, Trophy, RotateCcw, Timer, Zap, Play } from 'lucide-react';
 import type { Topic, TopicItem } from '../data/topic';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { playCorrect, playWrong, playFinish } from '../utils/sfx';
 
 const MATCH_PAIRS = 6;
-const MEMORY_PAIRS = 6;
-/** Segundos de "espiada" nas cartas antes de começar a memória. */
-const MEMORY_PREVIEW_SECONDS = 3;
+const MEMORY_PAIRS = 12;
 const BLITZ_SECONDS = 60;
 
 function shuffle<T>(arr: T[]): T[] {
@@ -323,7 +321,7 @@ export function MemoryGame({ topic, onBack, onDone }: { topic: Topic; onBack: ()
   const [gameId, setGameId] = useState(0);
   const best = useVerbLessonStore((s) => s.progress[topic.id]?.bestMemory);
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6">
+    <div className="mx-auto max-w-6xl px-4 py-6">
       <GameHeader
         onBack={onBack}
         title="Jogo · Memória"
@@ -339,21 +337,16 @@ export function MemoryGame({ topic, onBack, onDone }: { topic: Topic; onBack: ()
 
 function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () => void; onDone?: () => void }) {
   const saveMemoryMoves = useVerbLessonStore((s) => s.saveMemoryMoves);
+  // Duas fases: primeiro o aluno LÊ o bloco inteiro numerado, e só depois as
+  // cartas viram e o jogo começa. A espiada cronometrada de antes saiu — ler
+  // com calma e apertar "Começar" vale mais que correr contra 3 segundos.
+  const [phase, setPhase] = useState<'study' | 'play'>('study');
   const [cards] = useState<MemCard[]>(() => buildMemCards(topic));
   const [flipped, setFlipped] = useState<string[]>([]);
   const [matched, setMatched] = useState<string[]>([]);
   const [moves, setMoves] = useState(0);
   const [busy, setBusy] = useState(false);
-  // Espiada inicial: começa já com o contador cheio (o round é remontado a cada partida).
-  const [previewLeft, setPreviewLeft] = useState(MEMORY_PREVIEW_SECONDS);
 
-  useEffect(() => {
-    if (previewLeft <= 0) return;
-    const id = setTimeout(() => setPreviewLeft((p) => p - 1), 1000);
-    return () => clearTimeout(id);
-  }, [previewLeft]);
-
-  const isPreviewing = previewLeft > 0;
   const done = matched.length === cards.length;
 
   useEffect(() => {
@@ -362,7 +355,7 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
   }, [done]);
 
   const handleFlip = (c: MemCard) => {
-    if (isPreviewing || busy || done || flipped.includes(c.key) || matched.includes(c.key)) return;
+    if (busy || done || flipped.includes(c.key) || matched.includes(c.key)) return;
     if (flipped.length === 0) {
       setFlipped([c.key]);
       return;
@@ -384,6 +377,68 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
     }
   };
 
+  // ---------------------------------------------------------------- estudo
+  // O bloco inteiro na tela, numerado, para ler antes de jogar.
+  if (phase === 'study') {
+    return (
+      <>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-sm font-bold text-primary">
+              Leia os {topic.items.length} termos do bloco
+            </p>
+            <p className="text-xs text-tertiary">
+              Quando apertar Começar, as cartas viram e você procura os pares.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setPhase('play')}
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-accent to-accent-strong px-6 py-3 text-base font-bold text-white shadow-lg transition-all hover:opacity-90 active:translate-y-0.5"
+          >
+            <Play className="h-5 w-5" fill="currentColor" />
+            Começar
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {topic.items.map((it, i) => (
+            <div
+              key={it.id}
+              className="relative flex min-h-[96px] flex-col justify-center rounded-xl border border-accent-line bg-surface p-3 text-center"
+            >
+              <span className="absolute left-2 top-1.5 text-[11px] font-bold tabular-nums text-faint">
+                {i + 1}
+              </span>
+              {topic.imageFor?.(it) && (
+                <img
+                  src={topic.imageFor(it)}
+                  alt=""
+                  className="mx-auto mb-1 h-10 w-full object-contain"
+                  draggable={false}
+                />
+              )}
+              <span className="text-[15px] font-extrabold leading-tight text-primary">{it.base}</span>
+              <span className="mt-0.5 text-[11px] leading-tight text-tertiary">
+                {firstMeaning(it.pt)}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setPhase('play')}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-accent to-accent-strong py-4 text-lg font-bold text-white shadow-lg transition-all hover:opacity-90 active:translate-y-0.5"
+        >
+          <Play className="h-5 w-5" fill="currentColor" />
+          Começar a memorização
+        </button>
+      </>
+    );
+  }
+
+  // ---------------------------------------------------------------- vitória
   if (done) {
     return (
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center">
@@ -413,30 +468,16 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
     );
   }
 
+  // ---------------------------------------------------------------- jogo
   return (
     <>
-      {isPreviewing ? (
-        <div className="mb-3 flex flex-col items-start gap-1.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-accent to-accent-strong px-4 py-1.5 text-sm font-bold text-white shadow-md shadow-slate-900/10">
-            <Timer className="h-4 w-4" />
-            Memorize! {previewLeft}s
-          </span>
-          <div className="h-1.5 w-40 overflow-hidden rounded-full bg-accent-soft">
-            <div
-              className="h-full rounded-full bg-accent transition-all duration-1000 ease-linear"
-              style={{ width: `${(previewLeft / MEMORY_PREVIEW_SECONDS) * 100}%` }}
-            />
-          </div>
-        </div>
-      ) : (
-        <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-sm font-semibold tabular-nums text-secondary">
-          <Timer className="h-4 w-4 text-accent" />
-          {moves} jogadas
-        </div>
-      )}
-      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
-        {cards.map((c) => {
-          const isUp = isPreviewing || flipped.includes(c.key) || matched.includes(c.key);
+      <div className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1 text-sm font-semibold tabular-nums text-secondary">
+        <Timer className="h-4 w-4 text-accent" />
+        {moves} jogadas
+      </div>
+      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 lg:grid-cols-6">
+        {cards.map((c, i) => {
+          const isUp = flipped.includes(c.key) || matched.includes(c.key);
           const isMatched = matched.includes(c.key);
           return (
             <button
@@ -444,7 +485,9 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
               type="button"
               onClick={() => handleFlip(c)}
               disabled={isUp}
-              className={`flex min-h-[84px] items-center justify-center overflow-hidden rounded-xl border p-1 text-center text-sm font-medium transition-all ${
+              // O atraso escalonado faz as cartas virarem em cascata na entrada.
+              style={{ ['--flip-delay' as string]: `${Math.min(i, 12) * 0.035}s` }}
+              className={`card-flip-in flex min-h-[104px] items-center justify-center overflow-hidden rounded-xl border p-1 text-center text-sm font-medium transition-all ${
                 isMatched
                   ? 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200'
                   : isUp
@@ -455,7 +498,7 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
               {!isUp ? (
                 '?'
               ) : c.kind === 'term' && c.img ? (
-                <img src={c.img} alt="" className="max-h-[76px] w-full object-contain" draggable={false} />
+                <img src={c.img} alt="" className="max-h-[92px] w-full object-contain" draggable={false} />
               ) : (
                 <span className="px-1">{c.label}</span>
               )}
