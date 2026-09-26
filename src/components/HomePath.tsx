@@ -59,6 +59,7 @@ export function HomePath() {
   const progress = useVerbLessonStore((s) => s.progress);
   const setSelectedTopic = useVerbLessonStore((s) => s.setSelectedTopic);
   const setSelectedGridCell = useVerbLessonStore((s) => s.setSelectedGridCell);
+  const setSelectedUnit = useVerbLessonStore((s) => s.setSelectedUnit);
 
   const theme = THEMES.find((t) => t.id === themeId) ?? THEMES[0];
   const spark = theme.scene.particle;
@@ -75,6 +76,12 @@ export function HomePath() {
     if (unit.kind === 'cell') {
       setSelectedGridCell(unit.cellId!);
       setViewMode('grid-4v5t2s');
+      return;
+    }
+    // Com vários blocos, mostra a fileira da unidade; com um só, entra nele.
+    if ((unit.topicIds?.length ?? 0) > 1) {
+      setSelectedUnit(unit.id);
+      setViewMode('unit');
       return;
     }
     const target = nextTopicId ?? unit.topicIds?.[0];

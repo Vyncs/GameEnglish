@@ -17,6 +17,9 @@ interface VerbLessonState {
   /** Célula da Grade que a trilha da Home pediu para abrir direto. */
   selectedGridCellId: string | null;
   setSelectedGridCell: (cellId: string | null) => void;
+  /** Unidade da trilha aberta na view 'unit' (ex.: 'substantivos'). */
+  selectedUnitId: string | null;
+  setSelectedUnit: (unitId: string) => void;
   markStageDone: (lessonId: string, stage: string) => void;
   saveMatchTime: (lessonId: string, ms: number) => void;
   saveBlitzScore: (lessonId: string, score: number) => void;
@@ -34,6 +37,8 @@ export const useVerbLessonStore = create<VerbLessonState>()(
       setSelectedTopic: (topicId) => set({ selectedTopicId: topicId }),
       selectedGridCellId: null,
       setSelectedGridCell: (cellId) => set({ selectedGridCellId: cellId }),
+      selectedUnitId: null,
+      setSelectedUnit: (unitId) => set({ selectedUnitId: unitId }),
       markStageDone: (lessonId, stage) =>
         set((state) => {
           const current = state.progress[lessonId] ?? empty();

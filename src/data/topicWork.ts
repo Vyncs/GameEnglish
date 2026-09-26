@@ -1,4 +1,5 @@
-import type { Topic } from './topic';
+import { withSentences, type Topic } from './topic';
+import { SENTENCES_WORK } from './sentencesWork';
 
 // Tópico: 25 palavras de trabalho — o vocabulário de escritório, reunião e
 // currículo. Sem passado/particípio → não usa a etapa "Formas".
@@ -10,8 +11,9 @@ export const TOPIC_WORK: Topic = {
   emoji: '💼',
   category: 'cotidiano',
   level: 2,
-  stages: ['study', 'meaning'],
-  items: [
+  // Memória para fixar, frases para falar, e o quiz fecha conferindo.
+  stages: ['memory', 'sentences', 'meaning'],
+  items: withSentences([
     { id: 1, base: 'job', pt: 'emprego, vaga', example: 'She got a new job.', tip: 'Job é o emprego (contável); work é o trabalho em si (incontável).' },
     { id: 2, base: 'work', pt: 'trabalho; trabalhar', example: 'I have a lot of work today.', tip: 'Incontável: nunca "works" no sentido de trabalho. Dois empregos = "two jobs".' },
     { id: 3, base: 'boss', pt: 'chefe', example: 'My boss is on vacation.', tip: 'Mais formal: "manager" ou "supervisor".' },
@@ -37,5 +39,5 @@ export const TOPIC_WORK: Topic = {
     { id: 23, base: 'overtime', pt: 'hora extra', example: 'I worked overtime last week.', tip: 'Usa-se sem artigo: "work overtime".' },
     { id: 24, base: 'schedule', pt: 'agenda, cronograma; agendar', example: 'My schedule is full.', tip: 'Pronúncia americana "SKÉ-djul"; britânica "SHÉ-djul".' },
     { id: 25, base: 'deadline', pt: 'prazo final', example: 'The deadline is Friday.', tip: 'Cumprir o prazo = "meet the deadline"; perder = "miss the deadline".' },
-  ],
+  ], SENTENCES_WORK),
 };
