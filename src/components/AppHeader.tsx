@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  Home, RefreshCw, Blocks, Puzzle, Mic, Library, Lock, Speech,
+  Home, RefreshCw, Blocks, Puzzle, Mic, Library, Lock, Speech, Grid3x3,
   GraduationCap, BookOpen, MessagesSquare, Moon, Sun,
   Volume2,
   VolumeX,
@@ -129,6 +129,14 @@ export function AppHeader() {
       viewModes: ['memory'],
       action: () => startMemoryGame(),
       gradient: 'from-pink-500 to-rose-500',
+    },
+    {
+      id: 'grid-4v5t2s',
+      label: 'Grade',
+      icon: <Grid3x3 className="w-4 h-4" />,
+      viewModes: ['grid-4v5t2s'],
+      action: () => setViewMode('grid-4v5t2s'),
+      gradient: 'from-amber-500 to-orange-600',
     },
     {
       id: 'speaking',

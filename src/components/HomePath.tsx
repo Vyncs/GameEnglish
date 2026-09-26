@@ -16,7 +16,7 @@ import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { THEMES } from '../data/themes';
 import { HOME_PATH, type PathUnit } from '../data/homePath';
 import { findTopic } from '../data/topics';
-import { findCell } from '../data/grid4v5t2s';
+import { findCell, GRID_CELLS } from '../data/grid4v5t2s';
 
 /** Serpentina: o desvio lateral alterna a cada círculo. */
 const offsetOf = (i: number) => Math.round(Math.sin((i * Math.PI) / 2) * 56);
@@ -38,6 +38,10 @@ function unitProgress(
   if (unit.kind === 'cell') {
     const done = progress['grid-4v5t2s']?.stagesDone.includes(unit.cellId!) ? 1 : 0;
     return { done, total: 1 };
+  }
+  if (unit.kind === 'grid') {
+    const done = (progress['grid-4v5t2s']?.stagesDone ?? []).length;
+    return { done, total: GRID_CELLS.length };
   }
   const ids = unit.topicIds ?? [];
   let done = 0;
@@ -78,6 +82,12 @@ export function HomePath() {
       setViewMode('grid-4v5t2s');
       return;
     }
+    if (unit.kind === 'grid') {
+      // Sem célula pedida: abre o mapa inteiro.
+      setSelectedGridCell(null);
+      setViewMode('grid-4v5t2s');
+      return;
+    }
     // Com vários blocos, mostra a fileira da unidade; com um só, entra nele.
     if ((unit.topicIds?.length ?? 0) > 1) {
       setSelectedUnit(unit.id);
@@ -101,9 +111,11 @@ export function HomePath() {
         const label =
           unit.kind === 'cell'
             ? findCell(unit.cellId!)?.opener ?? unit.hint
-            : total > 1
-              ? `${done}/${total} blocos`
-              : unit.hint;
+            : unit.kind === 'grid'
+              ? `${done}/${total} células dominadas`
+              : total > 1
+                ? `${done}/${total} blocos`
+                : unit.hint;
 
         return (
           <div
