@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ChevronLeft, Check, X, Volume2, RotateCcw, ArrowLeft, ArrowRight,
-  Trophy, Lightbulb, Lock, CheckCircle2, Gamepad2, Puzzle, Zap, Brain, Plus, Loader2,
+  Trophy, Lightbulb, Gamepad2, Puzzle, Zap, Brain, Plus, Loader2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useStore } from '../store/useStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
 import { useSpeech } from '../hooks/useSpeech';
-import { STAGE_INFO, verbForms, type Topic, type TopicItem, type TopicStage } from '../data/topic';
+import { verbForms, type Topic, type TopicItem, type TopicStage } from '../data/topic';
 import { MatchGame, BlitzGame, MemoryGame } from './VerbGames';
 import { SentenceStage } from './SentenceStage';
+import { StagePath } from './StagePath';
 import { playCorrect, playWrong } from '../utils/sfx';
 
 const EMPTY_STAGES: string[] = [];
@@ -202,50 +203,12 @@ export function TopicStudy({ topic }: { topic: Topic }) {
         </div>
       )}
 
-      {/* Etapas */}
-      <div className="mt-5 space-y-3">
-        {topic.stages.map((stage, i) => {
-          const info = STAGE_INFO[stage];
-          const done = stagesDone.includes(stage);
-          const locked = i > 0 && !stagesDone.includes(topic.stages[i - 1]);
-          return (
-            <button
-              key={stage}
-              type="button"
-              disabled={locked}
-              onClick={() => setMode(stage)}
-              className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-all ${
-                locked
-                  ? 'cursor-not-allowed border-line bg-surface-2 opacity-60'
-                  : done
-                    ? 'border-emerald-200 bg-emerald-50 hover:border-emerald-300'
-                    : 'border-line bg-surface backdrop-blur-md hover:-translate-y-0.5 hover:border-accent-line hover:shadow-md'
-              }`}
-            >
-              <div
-                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl ${
-                  done ? 'bg-emerald-100' : 'bg-accent-soft'
-                }`}
-              >
-                {done ? <CheckCircle2 className="h-6 w-6 text-emerald-500" /> : <span>{info.emoji}</span>}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-wide text-faint">Etapa {i + 1}</span>
-                  {done && <span className="text-xs font-semibold text-emerald-600">✓ concluída</span>}
-                </div>
-                <p className="text-base font-semibold text-primary">{info.label}</p>
-                <p className="text-sm text-tertiary">{info.desc}</p>
-              </div>
-              {locked ? (
-                <Lock className="h-5 w-5 shrink-0 text-faint" />
-              ) : (
-                <ArrowRight className="h-5 w-5 shrink-0 text-accent" />
-              )}
-            </button>
-          );
-        })}
-      </div>
+      {/* Etapas — trilha serpenteante, no espírito do Duolingo */}
+      <StagePath
+        stages={topic.stages}
+        stagesDone={stagesDone}
+        onOpen={(stage) => setMode(stage)}
+      />
 
       {/* Jogos */}
       <div className="mt-8">

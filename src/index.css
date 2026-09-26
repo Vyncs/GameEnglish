@@ -138,9 +138,40 @@
   will-change: transform, opacity;
 }
 
+/* ---------------------------------------------------------------- trilha de etapas */
+
+/* Anel que pulsa no nó atual, chamando o clique. */
+@keyframes stage-ring {
+  0%, 100% { transform: scale(1);    opacity: 0.55; }
+  50%      { transform: scale(1.18); opacity: 0;    }
+}
+
+/* O balão "COMEÇAR" flutuando de leve sobre o nó. */
+@keyframes stage-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+/* Brasa do tema Masmorra: sobe do pé do nó, vira e apaga. */
+@keyframes stage-ember {
+  0%   { transform: translate3d(0, 0, 0) scale(1);   opacity: 0; }
+  15%  { opacity: 1; }
+  100% { transform: translate3d(var(--ember-drift, 6px), -46px, 0) scale(0.2); opacity: 0; }
+}
+
+.stage-ring  { animation: stage-ring 2.2s ease-out infinite; }
+.stage-float { animation: stage-float 2.4s ease-in-out infinite; }
+.stage-ember {
+  position: absolute;
+  border-radius: 9999px;
+  will-change: transform, opacity;
+  animation: stage-ember var(--ember-dur, 1.8s) ease-out var(--ember-delay, 0s) infinite;
+}
 /* Acessibilidade: quem pediu menos movimento não vê partículas se mexendo. */
 @media (prefers-reduced-motion: reduce) {
   .rpg-particle { display: none; }
+  .stage-ember { display: none; }
+  .stage-ring, .stage-float { animation: none !important; }
   .rpg-glow { animation: none !important; }
 }
 
