@@ -187,6 +187,17 @@
   .rpg-glow { animation: none !important; }
 }
 
+/* O Tailwind v4 deixou de dar cursor:pointer aos botões — o que fazia toda
+   a interface parecer não clicável. Reposto aqui, uma vez, para o app todo. */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+label[for],
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
 * { box-sizing: border-box; }
 
 html, body {

@@ -159,25 +159,6 @@ export function TopicStudy({ topic }: { topic: Topic }) {
         Início
       </button>
 
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="text-lg font-bold text-primary">
-          {topic.emoji} {topic.title}
-        </h1>
-        <span className="shrink-0 rounded-full bg-accent-soft px-3 py-1 text-xs font-bold tabular-nums text-accent-text">
-          {doneCount}/{topic.stages.length} etapas
-        </span>
-      </div>
-      <p className="mt-0.5 text-sm text-tertiary">
-        {topic.subtitle} · {topic.items.length} palavras
-      </p>
-
-      <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-surface-2">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-accent to-accent-strong transition-all duration-300"
-          style={{ width: `${(doneCount / topic.stages.length) * 100}%` }}
-        />
-      </div>
-
       {allDone && (
         <div className="mt-4 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
           <Trophy className="h-8 w-8 shrink-0 text-emerald-500" />
