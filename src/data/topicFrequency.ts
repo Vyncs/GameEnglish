@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_FREQUENCY } from './sentencesFrequency';
+import { EMOJIS_FREQUENCY } from './emojisFrequency';
 
 // Tópico: advérbios de frequência — as respostas de "How often…?".
 // Regra de posição: ANTES do verbo principal (I always work), DEPOIS do be
@@ -14,7 +15,7 @@ export const TOPIC_FREQUENCY: Topic = {
   level: 1,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'always', pt: 'sempre (100%)', example: 'I always drink coffee in the morning.', tip: 'Antes do verbo: I always drink. Depois do be: I am always late.' },
     { id: 2, base: 'usually', pt: 'geralmente (90%)', example: 'I usually wake up at 6.', tip: 'O mais usado para rotina. Mesma posição do always.' },
     { id: 3, base: 'normally', pt: 'normalmente', example: 'I normally have lunch at noon.', tip: 'Sinônimo de usually.' },
@@ -31,5 +32,5 @@ export const TOPIC_FREQUENCY: Topic = {
     { id: 14, base: 'every other day', pt: 'dia sim, dia não', example: 'She runs every other day.', tip: 'every other = alternado: every other week = semana sim, semana não.' },
     { id: 15, base: 'all the time', pt: 'o tempo todo', example: 'He complains all the time.', tip: 'Informal, no fim da frase.' },
     { id: 16, base: 'how often', pt: 'com que frequência?', example: 'How often do you read a book?', tip: 'A pergunta que todos estes respondem — coluna esquerda do mapa.' },
-  ], SENTENCES_FREQUENCY),
+  ], SENTENCES_FREQUENCY), EMOJIS_FREQUENCY),
 };

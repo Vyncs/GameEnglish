@@ -29,6 +29,16 @@ export interface TopicItem {
   pt: string;
   example: string;
   tip: string;
+  /**
+   * Apoio visual para os blocos que não têm ilustração.
+   *
+   * Os verbos 1–100 vêm com recorte da folha do professor (ver `imageFor`);
+   * os outros 365 itens não têm imagem nenhuma. Em vez de baixar fotos de
+   * banco — peso no repositório, licença a conferir e nenhuma garantia de que
+   * a foto casa com a palavra — cada item ganha um emoji escolhido a dedo.
+   * Pesa zero, funciona offline e não há foto errada para descobrir depois.
+   */
+  emoji?: string;
   /** Frase para decorar (etapa "sentences"). Sem ela o item é pulado nessa etapa. */
   sentence?: TopicSentence;
   /** As duas frases da etapa "Formas" — did na 1ª pessoa, have na 3ª. */
@@ -102,6 +112,12 @@ export const withFormSentences = (
   items: TopicItem[],
   map: Record<number, FormSentences>,
 ): TopicItem[] => items.map((it) => (map[it.id] ? { ...it, formSentences: map[it.id] } : it));
+
+/** Casa os emojis com os itens do tópico, pelo id. */
+export const withEmojis = (
+  items: TopicItem[],
+  map: Record<number, string>,
+): TopicItem[] => items.map((it) => (map[it.id] ? { ...it, emoji: map[it.id] } : it));
 
 /** Casa as frases da etapa "Frases" com os itens do tópico, pelo id. */
 export const withSentences = (

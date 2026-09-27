@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_ADJECTIVES_2 } from './sentencesAdjectives2';
+import { EMOJIS_ADJECTIVES_2 } from './emojisAdjectives2';
 
 // Tópico: mais 25 adjetivos, cada tip já com o comparativo e o superlativo —
 // a regra do canto do mapa: curto → +er / the +est · longo → more / the most.
@@ -14,7 +15,7 @@ export const TOPIC_ADJECTIVES_2: Topic = {
   level: 2,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'rich', pt: 'rico', example: 'He wants to be rich.', tip: 'Curto: richer → the richest. (Irregulares: good→better→the best, bad→worse→the worst.)' },
     { id: 2, base: 'poor', pt: 'pobre', example: 'They were very poor.', tip: 'poorer → the poorest. Também é "coitado": Poor thing!' },
     { id: 3, base: 'clean', pt: 'limpo', example: 'The kitchen is clean.', tip: 'cleaner → the cleanest. Também é o verbo limpar (verbo 11 da lista).' },
@@ -40,5 +41,5 @@ export const TOPIC_ADJECTIVES_2: Topic = {
     { id: 23, base: 'angry', pt: 'bravo, com raiva', example: 'Why is she angry with me?', tip: '-y → angrier → the angriest. angry WITH somebody.' },
     { id: 24, base: 'early', pt: 'cedo', example: 'I wake up early every day.', tip: 'earlier → the earliest. Could you come earlier? = Você poderia vir mais cedo?' },
     { id: 25, base: 'late', pt: 'tarde, atrasado', example: 'Sorry, I am late.', tip: 'later → the latest. See you later = até mais tarde.' },
-  ], SENTENCES_ADJECTIVES_2),
+  ], SENTENCES_ADJECTIVES_2), EMOJIS_ADJECTIVES_2),
 };

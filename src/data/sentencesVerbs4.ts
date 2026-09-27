@@ -24,7 +24,7 @@ export const SENTENCES_VERBS_4: Record<number, TopicSentence> = {
   },
   78: {
     en: 'How do you spell your name?',
-    pt: 'Como se soletra seu nome?',
+    pt: 'Como você soletra seu nome?',
     newWords: [
       { word: 'name', pt: 'nome', kind: 'subst' },
     ],
@@ -52,7 +52,7 @@ export const SENTENCES_VERBS_4: Record<number, TopicSentence> = {
   },
   82: {
     en: "Why didn't you stop them?",
-    pt: 'Por que você não parou eles?',
+    pt: 'Por que você não os parou?',
     newWords: [
       { word: 'them', pt: 'eles, elas', kind: 'pron' },
     ],
@@ -118,7 +118,7 @@ export const SENTENCES_VERBS_4: Record<number, TopicSentence> = {
   },
   91: {
     en: "Sorry, I don't understand your question.",
-    pt: 'Desculpa, não entendi sua pergunta.',
+    pt: 'Desculpa, não estou entendendo sua pergunta.',
     newWords: [
       { word: 'sorry', pt: 'desculpa', kind: 'expr' },
       { word: 'question', pt: 'pergunta', kind: 'subst' },
@@ -126,7 +126,7 @@ export const SENTENCES_VERBS_4: Record<number, TopicSentence> = {
   },
   92: {
     en: 'Would you like to visit her today?',
-    pt: 'Você gostaria de visitar ela hoje?',
+    pt: 'Você gostaria de visitá-la hoje?',
     newWords: [
       { word: 'today', pt: 'hoje', kind: 'adv' },
       { word: 'her', pt: 'ela, dela', kind: 'pron' },
@@ -148,11 +148,11 @@ export const SENTENCES_VERBS_4: Record<number, TopicSentence> = {
     ],
   },
   95: {
-    en: 'You need to walk daily.',
+    en: 'You need to walk every day.',
     pt: 'Você precisa caminhar todos os dias.',
     newWords: [
       { word: 'need', pt: 'precisar', kind: 'verbo' },
-      { word: 'daily', pt: 'diariamente', kind: 'adv' },
+      { word: 'every day', pt: 'todos os dias', kind: 'expr' },
     ],
   },
   96: {
@@ -179,14 +179,14 @@ export const SENTENCES_VERBS_4: Record<number, TopicSentence> = {
   },
   99: {
     en: 'I work from home on Fridays.',
-    pt: 'Eu trabalho de casa nas sextas.',
+    pt: 'Eu trabalho em casa nas sextas.',
     newWords: [
       { word: 'home', pt: 'casa', kind: 'subst' },
       { word: 'Fridays', pt: 'sextas-feiras', kind: 'subst' },
     ],
   },
   100: {
-    en: 'Do you prefer to write or to read?',
+    en: 'Do you prefer to write or read?',
     pt: 'Você prefere escrever ou ler?',
     newWords: [
       { word: 'prefer', pt: 'preferir', kind: 'verbo' },

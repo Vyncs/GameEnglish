@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_FOOD } from './sentencesFood';
+import { EMOJIS_FOOD } from './emojisFood';
 
 // Tópico: 25 palavras de comida e bebida — o vocabulário de restaurante,
 // mercado e cozinha. Sem passado/particípio → não usa a etapa "Formas".
@@ -13,7 +14,7 @@ export const TOPIC_FOOD: Topic = {
   level: 1,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'breakfast', pt: 'café da manhã', example: 'I have breakfast at seven.', tip: 'Não se "toma" breakfast: o verbo é have. break + fast = quebrar o jejum.' },
     { id: 2, base: 'lunch', pt: 'almoço', example: 'What did you have for lunch?', tip: 'Almoçar = have lunch. Não existe o verbo "to lunch" no uso comum.' },
     { id: 3, base: 'dinner', pt: 'jantar', example: 'Dinner is ready.', tip: 'É a refeição principal da noite. "Supper" é mais antigo e regional.' },
@@ -39,5 +40,5 @@ export const TOPIC_FOOD: Topic = {
     { id: 23, base: 'order', pt: 'pedido; pedir', example: 'I would like to order now.', tip: 'No restaurante é order, não "ask". Ask = perguntar.' },
     { id: 24, base: 'waiter', pt: 'garçom', example: 'The waiter brought the menu.', tip: 'Feminino: waitress. Para chamar, diga "excuse me".' },
     { id: 25, base: 'bill', pt: 'conta', example: 'Can we have the bill, please?', tip: 'No inglês americano se diz "check". Bill também é "boleto/fatura".' },
-  ], SENTENCES_FOOD),
+  ], SENTENCES_FOOD), EMOJIS_FOOD),
 };

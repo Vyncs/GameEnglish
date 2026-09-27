@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_ADJECTIVES } from './sentencesAdjectives';
+import { EMOJIS_ADJECTIVES } from './emojisAdjectives';
 
 // Tópico: 25 adjetivos essenciais, em pares de opostos (facilita decorar).
 // Não tem passado/particípio, então NÃO usa a etapa "Formas" — só Estudar
@@ -14,7 +15,7 @@ export const TOPIC_ADJECTIVES: Topic = {
   level: 1,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'good', pt: 'bom', example: 'That is a good idea.', tip: 'Oposto de bad. Cuidado: "well" é advérbio (I speak well).' },
     { id: 2, base: 'bad', pt: 'ruim, mau', example: 'The weather is bad today.', tip: 'Oposto de good.' },
     { id: 3, base: 'big', pt: 'grande', example: 'They live in a big house.', tip: 'Oposto de small. Sinônimo comum: large.' },
@@ -40,5 +41,5 @@ export const TOPIC_ADJECTIVES: Topic = {
     { id: 23, base: 'strong', pt: 'forte', example: 'He is very strong.', tip: 'Oposto de weak. Também para sabor: "strong coffee".' },
     { id: 24, base: 'tired', pt: 'cansado', example: 'I am tired today.', tip: 'Cuidado: "tired of" = cansado DE algo (I am tired of waiting).' },
     { id: 25, base: 'busy', pt: 'ocupado', example: 'Sorry, I am busy right now.', tip: 'Também para lugar cheio/movimentado: "a busy street".' },
-  ], SENTENCES_ADJECTIVES),
+  ], SENTENCES_ADJECTIVES), EMOJIS_ADJECTIVES),
 };
