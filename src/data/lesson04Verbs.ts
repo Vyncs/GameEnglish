@@ -4,7 +4,8 @@
 // A linha 55 da folha traz "love/hate" junta; aqui ela vira dois cards, porque
 // são verbos diferentes — hate usa o id 155 para não brigar com a numeração.
 
-import { verbImg, type Topic } from './topic';
+import { verbImg, withSentences, type Topic } from './topic';
+import { SENTENCES_VERBS_3 } from './sentencesVerbs3';
 
 export const TOPIC_VERBS_3: Topic = {
   id: 'verbs-51-75',
@@ -13,9 +14,10 @@ export const TOPIC_VERBS_3: Topic = {
   emoji: '🏃',
   category: 'verbos',
   level: 3,
-  stages: ['study', 'meaning', 'forms'],
+  // Memória para fixar, frases para falar, formas para fechar.
+  stages: ['memory', 'sentences', 'forms'],
   imageFor: (item) => verbImg(item.id),
-  items: [
+  items: withSentences([
     { id: 51, base: 'listen to', past: 'listened to', participle: 'listened to', pt: 'ouvir, escutar', example: 'Are you listening to me?', irregular: false, rule: 'A', tip: 'Anda sempre com "to": listen TO music. Sem o "to" a frase soa incompleta.' },
     { id: 52, base: 'live', past: 'lived', participle: 'lived', pt: 'morar', example: 'Where do you live?', irregular: false, rule: 'A', tip: 'Regular: live → lived. Morar e viver.' },
     { id: 53, base: 'look', past: 'looked', participle: 'looked', pt: 'olhar, ver', example: 'Look at me now.', irregular: false, rule: 'A', tip: 'look AT = olhar para. look FOR = procurar. Trocar a preposição muda o sentido.' },
@@ -42,5 +44,5 @@ export const TOPIC_VERBS_3: Topic = {
     { id: 73, base: 'send', past: 'sent', participle: 'sent', pt: 'mandar, enviar', example: 'Send her flowers!', irregular: true, rule: 'A', tip: 'Irregular: send – sent – sent.' },
     { id: 74, base: 'sing', past: 'sang', participle: 'sung', pt: 'cantar', example: 'Do you sing in the bathroom?', irregular: true, rule: 'A', tip: 'Irregular: sing – sang – sung. Mesmo padrão de drink – drank – drunk.' },
     { id: 75, base: 'sit', past: 'sat', participle: 'sat', pt: 'sentar (se)', example: 'Sit down, please.', irregular: true, rule: 'A', tip: 'Irregular: sit – sat – sat. "Sit down, please!" é Imperativo (Regra I): ordem direta, sem sujeito.' },
-  ],
+  ], SENTENCES_VERBS_3),
 };

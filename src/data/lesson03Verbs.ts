@@ -5,7 +5,8 @@
 //   have -> Regra B2 (ter/haver)
 //   demais -> Regra A (verbos de ação com do/does/did)
 
-import { verbImg, type Topic } from './topic';
+import { verbImg, withSentences, type Topic } from './topic';
+import { SENTENCES_VERBS_2 } from './sentencesVerbs2';
 
 // id mantido ('verbs-26-50') para preservar o progresso já salvo do usuário.
 export const TOPIC_VERBS_2: Topic = {
@@ -15,9 +16,10 @@ export const TOPIC_VERBS_2: Topic = {
   emoji: '🏃',
   category: 'verbos',
   level: 2,
-  stages: ['study', 'meaning', 'forms'],
+  // Memória para fixar, frases para falar, formas para fechar.
+  stages: ['memory', 'sentences', 'forms'],
   imageFor: (item) => verbImg(item.id),
-  items: [
+  items: withSentences([
     { id: 26, base: 'fall', past: 'fell', participle: 'fallen', pt: 'cair', example: 'How could he fall?', irregular: true, rule: 'A', tip: 'Irregular: fall – fell – fallen. "Fall in love" = se apaixonar.' },
     { id: 27, base: 'feel', past: 'felt', participle: 'felt', pt: 'sentir', example: 'Are you feeling better now?', irregular: true, rule: 'A', tip: 'Irregular: feel – felt – felt. Mesma forma para did e para have.' },
     { id: 28, base: 'find', past: 'found', participle: 'found', pt: 'achar, encontrar', example: 'I need to find a better job!', irregular: true, rule: 'A', tip: 'Irregular: passado = particípio (found). Não confunda com "found" de fundar.' },
@@ -43,5 +45,5 @@ export const TOPIC_VERBS_2: Topic = {
     { id: 48, base: 'lend', past: 'lent', participle: 'lent', pt: 'emprestar', example: 'Can you lend me some money?', irregular: true, rule: 'A', tip: 'Irregular: lend – lent – lent. lend = emprestar PARA alguém; borrow = pegar emprestado.' },
     { id: 49, base: 'let', past: 'let', participle: 'let', pt: 'deixar, permitir', example: 'Let me try again.', irregular: true, rule: 'A', tip: 'Irregular invariável: let – let – let.' },
     { id: 50, base: 'like', past: 'liked', participle: 'liked', pt: 'gostar', example: 'Do you like your work?', irregular: false, rule: 'A', tip: 'Regular: like → liked. Sublinhado na folha: gostar de algo é like + ing (I like reading).' },
-  ],
+  ], SENTENCES_VERBS_2),
 };

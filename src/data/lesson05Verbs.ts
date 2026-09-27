@@ -9,7 +9,8 @@
 //   there be -> Regra B2 (haver/existir)
 //   demais   -> Regra A
 
-import { verbImg, type Topic } from './topic';
+import { verbImg, withSentences, type Topic } from './topic';
+import { SENTENCES_VERBS_4 } from './sentencesVerbs4';
 
 export const TOPIC_VERBS_4: Topic = {
   id: 'verbs-76-100',
@@ -18,9 +19,10 @@ export const TOPIC_VERBS_4: Topic = {
   emoji: '🏃',
   category: 'verbos',
   level: 3,
-  stages: ['study', 'meaning', 'forms'],
+  // Memória para fixar, frases para falar, formas para fechar.
+  stages: ['memory', 'sentences', 'forms'],
   imageFor: (item) => verbImg(item.id),
-  items: [
+  items: withSentences([
     { id: 76, base: 'sleep', past: 'slept', participle: 'slept', pt: 'dormir', example: 'Did you sleep well last night?', irregular: true, rule: 'A', tip: 'Irregular: sleep – slept – slept. "Estou com sono" é "I am sleepy", não "I have sleep".' },
     { id: 77, base: 'speak', past: 'spoke', participle: 'spoken', pt: 'falar', example: 'Do you speak English?', irregular: true, rule: 'A', tip: 'Irregular: speak – spoke – spoken. speak = falar um idioma; talk = conversar.' },
     { id: 78, base: 'spell', past: 'spelt', participle: 'spelt', pt: 'soletrar', example: 'How do you spell your name?', irregular: true, rule: 'A', tip: 'spelt (britânico) ou spelled (americano) — os dois valem.' },
@@ -46,5 +48,5 @@ export const TOPIC_VERBS_4: Topic = {
     { id: 98, base: 'watch', past: 'watched', participle: 'watched', pt: 'assistir', example: 'Did you watch TV last night?', irregular: false, rule: 'A', tip: 'watch TV, mas see a movie (no cinema) e look at a photo. Três verbos para "ver".' },
     { id: 99, base: 'work', past: 'worked', participle: 'worked', pt: 'trabalhar, funcionar', example: 'Are you working there yet?', irregular: false, rule: 'A', tip: 'Também serve para máquinas: "It doesn’t work" = não está funcionando.' },
     { id: 100, base: 'write', past: 'wrote', participle: 'written', pt: 'escrever', example: 'Do you prefer to write or to read?', irregular: true, rule: 'A', tip: 'Irregular: write – wrote – written. O w inicial é mudo: "ráit".' },
-  ],
+  ], SENTENCES_VERBS_4),
 };
