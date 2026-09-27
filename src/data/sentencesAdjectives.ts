@@ -103,7 +103,7 @@ export const SENTENCES_ADJECTIVES: Record<number, TopicSentence> = {
   },
   14: {
     en: 'The traffic is slow every morning.',
-    pt: 'O trânsito está lento toda manhã.',
+    pt: 'O transito fica lento toda manha.',
     newWords: [
       { word: 'traffic', pt: 'trânsito', kind: 'subst' },
       { word: 'morning', pt: 'manhã', kind: 'subst' },

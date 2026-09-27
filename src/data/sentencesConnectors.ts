@@ -64,7 +64,7 @@ export const SENTENCES_CONNECTORS: Record<number, TopicSentence> = {
   },
   8: {
     en: 'I left early so that I could rest.',
-    pt: 'Saí cedo para que eu pudesse descansar.',
+    pt: 'Sai cedo pra poder descansar.',
     newWords: [
       { word: 'early', pt: 'cedo', kind: 'adv' },
       { word: 'rest', pt: 'descansar', kind: 'verbo' },
@@ -147,10 +147,10 @@ export const SENTENCES_CONNECTORS: Record<number, TopicSentence> = {
     ],
   },
   19: {
-    en: "I'm busy right now.",
-    pt: 'Estou ocupado agora mesmo.',
+    en: "I'll do it right now.",
+    pt: 'Vou fazer isso agora mesmo.',
     newWords: [
-      { word: 'busy', pt: 'ocupado', kind: 'adj' },
+      { word: "I'll", pt: 'eu vou (contração de I will)', kind: 'expr' },
     ],
   },
   20: {
@@ -169,15 +169,15 @@ export const SENTENCES_CONNECTORS: Record<number, TopicSentence> = {
     ],
   },
   22: {
-    en: "On the other hand, it's cheaper.",
-    pt: 'Por outro lado, é mais barato.',
+    en: "The hotel is far from the beach. On the other hand, it's cheaper.",
+    pt: 'O hotel e longe da praia. Por outro lado, e mais barato.',
     newWords: [
       { word: 'cheaper', pt: 'mais barato', kind: 'adj' },
     ],
   },
   23: {
-    en: 'That is why I bought two tickets.',
-    pt: 'É por isso que eu comprei dois ingressos.',
+    en: "The show sold out fast. That's why I bought two tickets.",
+    pt: 'O show esgotou rapido. Foi por isso que eu comprei dois ingressos.',
     newWords: [
       { word: 'bought', pt: 'comprei', kind: 'verbo' },
       { word: 'tickets', pt: 'ingressos, passagens', kind: 'subst' },

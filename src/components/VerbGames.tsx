@@ -445,6 +445,11 @@ function MemoryRound({ topic, onReplay, onDone }: { topic: Topic; onReplay: () =
               <span className="absolute left-2 top-1.5 text-[11px] font-bold tabular-nums text-faint">
                 {i + 1}
               </span>
+              {!topic.imageFor?.(it) && it.emoji && (
+                <span className="mb-1 block text-3xl leading-none" aria-hidden>
+                  {it.emoji}
+                </span>
+              )}
               {topic.imageFor?.(it) && (
                 <img
                   src={topic.imageFor(it)}

@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_HEALTH } from './sentencesHealth';
+import { EMOJIS_HEALTH } from './emojisHealth';
 
 // Tópico: 25 palavras de corpo e saúde — o que se diz no médico e na farmácia.
 // Sem passado/particípio → não usa a etapa "Formas".
@@ -13,7 +14,7 @@ export const TOPIC_HEALTH: Topic = {
   level: 2,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'head', pt: 'cabeça', example: 'My head hurts.', tip: 'Dor de cabeça tem palavra própria: "headache".' },
     { id: 2, base: 'face', pt: 'rosto', example: 'Wash your face.', tip: 'Como verbo significa encarar/enfrentar: "face the problem".' },
     { id: 3, base: 'eye', pt: 'olho', example: 'She has green eyes.', tip: 'Pronuncia-se igual à letra I ("ai").' },
@@ -39,5 +40,5 @@ export const TOPIC_HEALTH: Topic = {
     { id: 23, base: 'hospital', pt: 'hospital', example: 'She is in the hospital.', tip: 'No britânico, sem artigo: "in hospital".' },
     { id: 24, base: 'healthy', pt: 'saudável', example: 'He eats healthy food.', tip: 'Saúde (substantivo) é "health", sem o -y.' },
     { id: 25, base: 'appointment', pt: 'consulta, compromisso marcado', example: 'I have an appointment at four.', tip: 'Falso amigo: não é "apontamento". É o horário marcado.' },
-  ], SENTENCES_HEALTH),
+  ], SENTENCES_HEALTH), EMOJIS_HEALTH),
 };

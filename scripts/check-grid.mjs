@@ -235,6 +235,38 @@ for (const u of homePath.HOME_PATH) {
 }
 console.log(`Trilha da Home: ${homePath.HOME_PATH.length} circulos`);
 
+
+// ---------------------------------------------------------------- apoio visual
+// Cada item precisa de alguma âncora visual: o recorte da folha (verbos) ou um
+// emoji. Item sem nenhum dos dois aparece "pelado" no flashcard.
+const emojiFiles = readdirSync(resolve(ROOT, "src/data")).filter((f) => /^emojis[A-Z]/.test(f) && f.endsWith(".ts"));
+let emojiCount = 0;
+for (const f of emojiFiles) {
+  const mod = await load(`src/data/${f}`);
+  const map = Object.values(mod)[0];
+  if (!map || typeof map !== "object") { fail.push(`${f}: nao exporta um mapa`); continue; }
+  for (const [id, emoji] of Object.entries(map)) {
+    emojiCount++;
+    if (typeof emoji !== "string" || !emoji.trim()) {
+      fail.push(`${f} #${id}: emoji vazio`);
+      continue;
+    }
+    // Emoji com letra ou número solto costuma ser texto que vazou.
+    if (/[a-zA-Z]/.test(emoji)) fail.push(`${f} #${id}: "${emoji}" tem letra — texto vazou para o emoji`);
+    if ([...emoji].length > 8) fail.push(`${f} #${id}: "${emoji}" longo demais para um emoji`);
+  }
+}
+
+// Todo bloco que declara withEmojis precisa ter o arquivo correspondente.
+for (const f of topicFiles) {
+  const src = readFileSync(resolve(ROOT, "src/data", f), "utf8");
+  if (src.includes("withEmojis(") && !/import \{ EMOJIS_/.test(src)) {
+    fail.push(`${f}: usa withEmojis mas nao importa o mapa`);
+  }
+}
+
+console.log(`Apoio visual: ${emojiCount} emojis em ${emojiFiles.length} blocos`);
+
 console.log(`Grade: ${grid.GRID_ROWS.length} linhas × ${grid.GRID_COLS.length} colunas`);
 console.log(`Células: ${grid.GRID_CELLS.length} · etapas: ${grid.GRID_TOTAL_STAGES} · semanas: ${grid.GRID_WEEKS.length}`);
 console.log(`Exercícios: ${trainer.GRID_TRAINER_QUESTIONS.length}`);

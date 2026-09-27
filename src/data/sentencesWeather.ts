@@ -24,7 +24,7 @@ export const SENTENCES_WEATHER: Record<number, TopicSentence> = {
   },
   3: {
     en: "It's a sunny Saturday morning.",
-    pt: 'É uma manhã de sábado ensolarada.',
+    pt: 'É uma manhã ensolarada de sábado.',
     newWords: [
       { word: 'Saturday', pt: 'sábado', kind: 'subst' },
       { word: 'morning', pt: 'manhã', kind: 'subst' },
@@ -56,7 +56,7 @@ export const SENTENCES_WEATHER: Record<number, TopicSentence> = {
   },
   7: {
     en: "It's cloudy, maybe take your jacket.",
-    pt: 'Está nublado, talvez leve sua jaqueta.',
+    pt: 'Está nublado, é melhor levar uma jaqueta.',
     newWords: [
       { word: 'maybe', pt: 'talvez', kind: 'adv' },
       { word: 'jacket', pt: 'jaqueta', kind: 'subst' },
@@ -72,7 +72,7 @@ export const SENTENCES_WEATHER: Record<number, TopicSentence> = {
   },
   9: {
     en: "It's very windy outside.",
-    pt: 'Está muito ventoso lá fora.',
+    pt: 'Está ventando muito lá fora.',
     newWords: [
       { word: 'very', pt: 'muito', kind: 'adv' },
       { word: 'outside', pt: 'lá fora', kind: 'adv' },
@@ -96,7 +96,7 @@ export const SENTENCES_WEATHER: Record<number, TopicSentence> = {
   },
   12: {
     en: 'I heard thunder last night.',
-    pt: 'Eu ouvi trovão ontem à noite.',
+    pt: 'Ouvi trovões ontem à noite.',
     newWords: [
       { word: 'heard', pt: 'ouvi', kind: 'verbo' },
       { word: 'last night', pt: 'ontem à noite', kind: 'expr' },
@@ -165,14 +165,14 @@ export const SENTENCES_WEATHER: Record<number, TopicSentence> = {
   },
   21: {
     en: 'The temperature is thirty degrees.',
-    pt: 'A temperatura está trinta graus.',
+    pt: 'A temperatura está em trinta graus.',
     newWords: [
       { word: 'degrees', pt: 'graus', kind: 'subst' },
     ],
   },
   22: {
     en: 'The forecast says rain tomorrow.',
-    pt: 'A previsão diz que chove amanhã.',
+    pt: 'A previsão diz que vai chover amanhã.',
     newWords: [
       { word: 'says', pt: 'diz', kind: 'verbo' },
       { word: 'tomorrow', pt: 'amanhã', kind: 'adv' },

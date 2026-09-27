@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_TIME_MARKERS } from './sentencesTimeMarkers';
+import { EMOJIS_TIME_MARKERS } from './emojisTimeMarkers';
 
 // Tópico: os 25 marcadores de tempo — as palavras que escolhem a coluna da
 // Grade 4V5T2S. Cada tip diz qual abertura o marcador dispara.
@@ -13,7 +14,7 @@ export const TOPIC_TIME_MARKERS: Topic = {
   level: 1,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'yesterday', pt: 'ontem', example: 'What did you do yesterday?', tip: '→ DID (passado). O gatilho mais comum da coluna vermelha.' },
     { id: 2, base: 'ago', pt: 'atrás (tempo)', example: 'She left two hours ago.', tip: '→ DID. Vem DEPOIS do tempo: two hours ago, nunca "ago two hours".' },
     { id: 3, base: 'last night', pt: 'ontem à noite', example: 'Did you sleep well last night?', tip: '→ DID. last + night/week/month/year, sempre sem "the".' },
@@ -39,5 +40,5 @@ export const TOPIC_TIME_MARKERS: Topic = {
     { id: 23, base: 'ever', pt: 'alguma vez (na vida)', example: 'Have you ever been to Japan?', tip: '→ HAVE + V3. "Já alguma vez…?" = ever, entre o have e o V3.' },
     { id: 24, base: 'since', pt: 'desde', example: 'I have lived here since 2004.', tip: '→ HAVE + V3. Ponto de partida: since 2004, since Monday.' },
     { id: 25, base: 'for', pt: 'há / por (duração)', example: 'I have known him for 10 years.', tip: '→ HAVE + V3. Duração: for 10 years, for a long time.' },
-  ], SENTENCES_TIME_MARKERS),
+  ], SENTENCES_TIME_MARKERS), EMOJIS_TIME_MARKERS),
 };

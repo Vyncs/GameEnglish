@@ -88,7 +88,7 @@ export const SENTENCES_PHRASAL: Record<number, TopicSentence> = {
     ],
   },
   11: {
-    en: 'Never give up your dreams!',
+    en: 'Never give up on your dreams!',
     pt: 'Nunca desista dos seus sonhos!',
     newWords: [
       { word: 'never', pt: 'nunca', kind: 'adv' },

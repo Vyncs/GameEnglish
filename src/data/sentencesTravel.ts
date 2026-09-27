@@ -33,7 +33,7 @@ export const SENTENCES_TRAVEL: Record<number, TopicSentence> = {
   6: {
     en: 'Where is my luggage?',
     pt: 'Onde está minha bagagem?',
-    newWords: [{ word: 'where', pt: 'onde', kind: 'pron' }],
+    newWords: [{ word: 'where', pt: 'onde', kind: 'adv' }],
   },
   7: {
     en: 'My suitcase is heavy.',
@@ -58,7 +58,7 @@ export const SENTENCES_TRAVEL: Record<number, TopicSentence> = {
   11: {
     en: 'We check in at three.',
     pt: 'Nós fazemos check-in às três.',
-    newWords: [{ word: 'three', pt: 'três', kind: 'adj' }],
+    newWords: [{ word: 'at three', pt: 'às três (horas)', kind: 'expr' }],
   },
   12: {
     en: 'She lives abroad.',
@@ -81,7 +81,7 @@ export const SENTENCES_TRAVEL: Record<number, TopicSentence> = {
   15: {
     en: 'The bus leaves at eight.',
     pt: 'O ônibus sai às oito.',
-    newWords: [{ word: 'eight', pt: 'oito', kind: 'adj' }],
+    newWords: [{ word: 'at eight', pt: 'às oito (horas)', kind: 'expr' }],
   },
   16: {
     en: 'I take the train every day.',
@@ -100,7 +100,7 @@ export const SENTENCES_TRAVEL: Record<number, TopicSentence> = {
   },
   19: {
     en: 'I drive to work.',
-    pt: 'Eu dirijo para o trabalho.',
+    pt: 'Eu vou de carro para o trabalho.',
     newWords: [{ word: 'to', pt: 'para (direção)', kind: 'prep' }],
   },
   20: {

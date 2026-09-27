@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_WEATHER } from './sentencesWeather';
+import { EMOJIS_WEATHER } from './emojisWeather';
 
 // Tópico: 25 palavras de clima e tempo, incluindo as 4 estações.
 // Sem passado/particípio → não usa a etapa "Formas".
@@ -13,7 +14,7 @@ export const TOPIC_WEATHER: Topic = {
   level: 1,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'weather', pt: 'tempo (clima)', example: 'How is the weather today?', tip: 'Pegadinha clássica: weather = tempo do clima. "Time" = tempo de relógio.' },
     { id: 2, base: 'sun', pt: 'sol', example: 'The sun is shining.', tip: 'Substantivo. O adjetivo é "sunny".' },
     { id: 3, base: 'sunny', pt: 'ensolarado', example: 'It is sunny today.', tip: 'sun + ny. O mesmo padrão vale para rain→rainy, wind→windy, cloud→cloudy.' },
@@ -39,5 +40,5 @@ export const TOPIC_WEATHER: Topic = {
     { id: 23, base: 'summer', pt: 'verão', example: 'I love summer.', tip: 'As estações não levam artigo: "in summer".' },
     { id: 24, base: 'winter', pt: 'inverno', example: 'Winter is very cold here.', tip: 'Oposto de summer.' },
     { id: 25, base: 'autumn', pt: 'outono', example: 'Autumn is beautiful.', tip: 'No inglês americano se diz "fall". Primavera = spring.' },
-  ], SENTENCES_WEATHER),
+  ], SENTENCES_WEATHER), EMOJIS_WEATHER),
 };

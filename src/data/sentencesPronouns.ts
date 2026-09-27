@@ -90,11 +90,11 @@ export const SENTENCES_PRONOUNS: Record<number, TopicSentence> = {
     ],
   },
   12: {
-    en: 'The dog wags its tail.',
-    pt: 'O cachorro abana o rabo.',
+    en: 'The dog is wagging its tail.',
+    pt: 'O cachorro está abanando o rabo.',
     newWords: [
       { word: 'tail', pt: 'rabo, cauda', kind: 'subst' },
-      { word: 'wags', pt: 'abana', kind: 'verbo' },
+      { word: 'tail', pt: 'rabo, cauda', kind: 'subst' },
     ],
   },
   13: {

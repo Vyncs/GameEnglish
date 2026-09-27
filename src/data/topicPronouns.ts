@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_PRONOUNS } from './sentencesPronouns';
+import { EMOJIS_PRONOUNS } from './emojisPronouns';
 
 // Tópico: os pronomes do bloco lateral do mapa, nas três colunas —
 // sujeito (I) → possessivo (my) → objeto (me) — mais os reflexivos (-self).
@@ -14,7 +15,7 @@ export const TOPIC_PRONOUNS: Topic = {
   level: 1,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'I', pt: 'eu (sujeito)', example: 'I love you.', tip: 'Sempre maiúsculo. Trio: I – my – me.' },
     { id: 2, base: 'you', pt: 'você, vocês', example: 'You are my friend.', tip: 'Serve para singular E plural. Trio: you – your – you.' },
     { id: 3, base: 'he', pt: 'ele (sujeito)', example: 'He works a lot.', tip: 'Hexágono do mapa: com he/she/it o verbo leva -s (works).' },
@@ -39,5 +40,5 @@ export const TOPIC_PRONOUNS: Topic = {
     { id: 22, base: 'herself', pt: 'ela mesma', example: 'She made the dress herself.', tip: 'Feito por ela mesma.' },
     { id: 23, base: 'ourselves', pt: 'nós mesmos', example: 'We painted the house ourselves.', tip: 'No plural o self vira selves.' },
     { id: 24, base: 'themselves', pt: 'eles mesmos', example: 'They organized everything themselves.', tip: 'Plural de himself/herself.' },
-  ], SENTENCES_PRONOUNS),
+  ], SENTENCES_PRONOUNS), EMOJIS_PRONOUNS),
 };

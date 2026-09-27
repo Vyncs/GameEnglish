@@ -69,8 +69,8 @@ export const SENTENCES_PREPOSITIONS: Record<number, TopicSentence> = {
     ],
   },
   9: {
-    en: 'I drink coffee without sugar.',
-    pt: 'Eu tomo café sem açúcar.',
+    en: 'She drinks tea without sugar.',
+    pt: 'Ela toma cha sem acucar.',
     newWords: [
       { word: 'sugar', pt: 'açúcar', kind: 'subst' },
     ],
@@ -100,8 +100,8 @@ export const SENTENCES_PREPOSITIONS: Record<number, TopicSentence> = {
     ],
   },
   13: {
-    en: 'The bank is between the shops.',
-    pt: 'O banco fica entre as lojas.',
+    en: 'The bank is between two shops.',
+    pt: 'O banco fica entre duas lojas.',
     newWords: [
       { word: 'bank', pt: 'banco', kind: 'subst' },
       { word: 'shops', pt: 'lojas', kind: 'subst' },

@@ -347,6 +347,12 @@ function Study({ topic, onDone, onBack }: { topic: Topic; onDone: () => void; on
             {img && (
               <img src={img} alt="" className="mb-2 h-28 w-auto max-w-[220px] object-contain" draggable={false} />
             )}
+            {/* Blocos sem ilustracao usam o emoji do item como apoio visual. */}
+            {!img && v.emoji && (
+              <span className="mb-2 block text-6xl leading-none" aria-hidden>
+                {v.emoji}
+              </span>
+            )}
             <p className="text-3xl font-extrabold tracking-tight text-primary">{v.base}</p>
             <div className="mt-2.5">
               <FormChips item={v} />

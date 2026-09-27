@@ -1,5 +1,6 @@
-import { withSentences, type Topic } from './topic';
+import { withSentences, withEmojis, type Topic } from './topic';
 import { SENTENCES_HOME } from './sentencesHome';
+import { EMOJIS_HOME } from './emojisHome';
 
 // Tópico: 25 palavras de casa — cômodos, móveis e o que se usa todo dia.
 // Sem passado/particípio → não usa a etapa "Formas".
@@ -13,7 +14,7 @@ export const TOPIC_HOME: Topic = {
   level: 1,
   // Memória para fixar, frases para falar, e o quiz fecha conferindo.
   stages: ['memory', 'sentences', 'meaning'],
-  items: withSentences([
+  items: withEmojis(withSentences([
     { id: 1, base: 'house', pt: 'casa (o prédio)', example: 'They bought a new house.', tip: 'House é a construção; home é onde você mora, com o sentido de lar.' },
     { id: 2, base: 'home', pt: 'casa, lar', example: 'I am going home.', tip: 'Com home não se usa "to": "go home", nunca "go to home".' },
     { id: 3, base: 'apartment', pt: 'apartamento', example: 'She lives in a small apartment.', tip: 'No inglês britânico é "flat".' },
@@ -39,5 +40,5 @@ export const TOPIC_HOME: Topic = {
     { id: 23, base: 'garbage', pt: 'lixo', example: 'Take out the garbage.', tip: 'No inglês britânico é "rubbish"; a lixeira é "bin" ou "trash can".' },
     { id: 24, base: 'neighbor', pt: 'vizinho', example: 'My neighbor is very nice.', tip: 'O "gh" é mudo: "NEI-bor". No britânico escreve-se "neighbour".' },
     { id: 25, base: 'rent', pt: 'aluguel; alugar', example: 'The rent is too high.', tip: 'Substantivo e verbo. Alugar para alguém = "rent out".' },
-  ], SENTENCES_HOME),
+  ], SENTENCES_HOME), EMOJIS_HOME),
 };
