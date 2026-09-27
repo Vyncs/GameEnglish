@@ -42,7 +42,7 @@ export const SENTENCES_VERBS_2: Record<number, TopicSentence> = {
   },
   30: {
     en: 'We fly to Recife next Friday.',
-    pt: 'A gente voa pro Recife sexta que vem.',
+    pt: 'A gente vai de aviao pro Recife sexta que vem.',
     newWords: [
       { word: 'next', pt: 'que vem', kind: 'adj' },
       { word: 'Friday', pt: 'sexta-feira', kind: 'subst' },
@@ -102,11 +102,11 @@ export const SENTENCES_VERBS_2: Record<number, TopicSentence> = {
     ],
   },
   38: {
-    en: 'I have two brothers at home.',
-    pt: 'Eu tenho dois irmãos em casa.',
+    en: 'I have two brothers and one sister.',
+    pt: 'Eu tenho dois irmaos e uma irma.',
     newWords: [
       { word: 'brothers', pt: 'irmãos', kind: 'subst' },
-      { word: 'home', pt: 'casa', kind: 'subst' },
+      { word: 'sister', pt: 'irmã', kind: 'subst' },
     ],
   },
   39: {
@@ -149,11 +149,11 @@ export const SENTENCES_VERBS_2: Record<number, TopicSentence> = {
     ],
   },
   44: {
-    en: "Let's just kiss and say goodbye.",
-    pt: 'Vamos só nos beijar e dar tchau.',
+    en: 'Kiss me before you say goodbye.',
+    pt: 'Me beija antes de dar tchau.',
     newWords: [
       { word: 'say goodbye', pt: 'dar tchau, se despedir', kind: 'expr' },
-      { word: 'just', pt: 'só, apenas', kind: 'adv' },
+      { word: 'before', pt: 'antes de', kind: 'prep' },
     ],
   },
   45: {

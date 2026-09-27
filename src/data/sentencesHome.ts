@@ -41,7 +41,7 @@ export const SENTENCES_HOME: Record<number, TopicSentence> = {
   7: {
     en: 'Where is the bathroom?',
     pt: 'Onde fica o banheiro?',
-    newWords: [{ word: 'where', pt: 'onde', kind: 'pron' }],
+    newWords: [{ word: 'where', pt: 'onde', kind: 'adv' }],
   },
   8: {
     en: 'We watch TV in the living room.',
@@ -79,14 +79,14 @@ export const SENTENCES_HOME: Record<number, TopicSentence> = {
     newWords: [{ word: 'put', pt: 'colocar', kind: 'verbo' }],
   },
   15: {
-    en: 'Take a chair.',
-    pt: 'Pegue uma cadeira.',
-    newWords: [{ word: 'take', pt: 'pegar', kind: 'verbo' }],
+    en: 'Grab a chair and sit with us.',
+    pt: 'Pega uma cadeira e senta com a gente.',
+    newWords: [{ word: 'grab', pt: 'pegar', kind: 'verbo' }],
   },
   16: {
     en: 'I go to bed at eleven.',
-    pt: 'Eu vou dormir às onze.',
-    newWords: [{ word: 'eleven', pt: 'onze', kind: 'adj' }],
+    pt: 'Eu vou dormir as onze.',
+    newWords: [{ word: 'at eleven', pt: 'às onze (horas)', kind: 'expr' }],
   },
   17: {
     en: 'The milk is in the fridge.',

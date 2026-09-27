@@ -20,7 +20,7 @@ export const SENTENCES_VERBS_1: Record<number, TopicSentence> = {
   },
   2: {
     en: 'Ask her for help.',
-    pt: 'Peça ajuda a ela.',
+    pt: 'Peca ajuda a ela.',
     newWords: [
       { word: 'help', pt: 'ajuda', kind: 'subst' },
       { word: 'for', pt: 'por, para', kind: 'prep' },
@@ -35,11 +35,11 @@ export const SENTENCES_VERBS_1: Record<number, TopicSentence> = {
     ],
   },
   4: {
-    en: 'The movie begins now.',
-    pt: 'O filme começa agora.',
+    en: 'The movie begins in ten minutes.',
+    pt: 'O filme comeca em dez minutos.',
     newWords: [
       { word: 'movie', pt: 'filme', kind: 'subst' },
-      { word: 'now', pt: 'agora', kind: 'adv' },
+      { word: 'in ten minutes', pt: 'em dez minutos', kind: 'expr' },
     ],
   },
   5: {
@@ -49,7 +49,7 @@ export const SENTENCES_VERBS_1: Record<number, TopicSentence> = {
   },
   6: {
     en: 'Bring me a cold drink.',
-    pt: 'Traga-me uma bebida gelada.',
+    pt: 'Me traz uma bebida gelada.',
     newWords: [
       { word: 'cold', pt: 'gelado, frio', kind: 'adj' },
       { word: 'drink', pt: 'bebida', kind: 'subst' },
@@ -181,7 +181,7 @@ export const SENTENCES_VERBS_1: Record<number, TopicSentence> = {
   },
   24: {
     en: 'She drives to work early.',
-    pt: 'Ela dirige para o trabalho cedo.',
+    pt: 'Ela vai de carro pro trabalho cedo.',
     newWords: [
       { word: 'work', pt: 'trabalho', kind: 'subst' },
       { word: 'early', pt: 'cedo', kind: 'adv' },

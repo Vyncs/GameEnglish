@@ -122,10 +122,10 @@ export const SENTENCES_VERBS_3: Record<number, TopicSentence> = {
     ],
   },
   67: {
-    en: 'How much did you receive?',
-    pt: 'Quanto você recebeu?',
+    en: 'Did you receive the package?',
+    pt: 'Voce recebeu a encomenda?',
     newWords: [
-      { word: 'How much', pt: 'quanto', kind: 'expr' },
+      { word: 'package', pt: 'encomenda, pacote', kind: 'subst' },
     ],
   },
   68: {
@@ -137,7 +137,7 @@ export const SENTENCES_VERBS_3: Record<number, TopicSentence> = {
   },
   69: {
     en: 'I run in the park on Sundays.',
-    pt: 'Eu corro no parque nos domingos.',
+    pt: 'Eu corro no parque aos domingos.',
     newWords: [
       { word: 'Sundays', pt: 'domingos', kind: 'subst' },
     ],
@@ -171,10 +171,10 @@ export const SENTENCES_VERBS_3: Record<number, TopicSentence> = {
     ],
   },
   74: {
-    en: 'Do you sing in the bathroom?',
-    pt: 'Você canta no banheiro?',
+    en: 'Do you sing in the shower?',
+    pt: 'Voce canta no banho?',
     newWords: [
-      { word: 'bathroom', pt: 'banheiro', kind: 'subst' },
+      { word: 'shower', pt: 'banho, chuveiro', kind: 'subst' },
     ],
   },
   75: {

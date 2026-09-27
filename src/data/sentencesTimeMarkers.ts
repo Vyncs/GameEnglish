@@ -12,7 +12,7 @@ export const SENTENCES_TIME_MARKERS: Record<number, TopicSentence> = {
     en: 'What did you do yesterday?',
     pt: 'O que você fez ontem?',
     newWords: [
-      { word: 'did', pt: 'fez (auxiliar de passado)', kind: 'verbo' },
+      { word: 'did', pt: 'marca o passado — quem diz "fazer" é o do', kind: 'verbo' },
     ],
   },
   2: {
@@ -33,7 +33,7 @@ export const SENTENCES_TIME_MARKERS: Record<number, TopicSentence> = {
   },
   4: {
     en: 'I saw her last week.',
-    pt: 'Eu a vi semana passada.',
+    pt: 'Eu vi ela semana passada.',
     newWords: [
       { word: 'saw', pt: 'vi', kind: 'verbo' },
     ],
@@ -140,7 +140,7 @@ export const SENTENCES_TIME_MARKERS: Record<number, TopicSentence> = {
   },
   19: {
     en: 'Have you seen her recently?',
-    pt: 'Você a viu recentemente?',
+    pt: 'Você viu ela recentemente?',
     newWords: [
       { word: 'seen', pt: 'visto (particípio)', kind: 'verbo' },
     ],
@@ -183,7 +183,7 @@ export const SENTENCES_TIME_MARKERS: Record<number, TopicSentence> = {
   },
   25: {
     en: 'I have known him for 10 years.',
-    pt: 'Eu o conheço há 10 anos.',
+    pt: 'Eu conheço ele há 10 anos.',
     newWords: [
       { word: 'known', pt: 'conhecido (particípio)', kind: 'verbo' },
       { word: 'years', pt: 'anos', kind: 'subst' },

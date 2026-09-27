@@ -62,7 +62,7 @@ export const SENTENCES_WORK: Record<number, TopicSentence> = {
   },
   12: {
     en: 'She quit her job.',
-    pt: 'Ela pediu demissão.',
+    pt: 'Ela pediu demissão do emprego dela.',
     newWords: [{ word: 'her', pt: 'dela', kind: 'pron' }],
   },
   13: {

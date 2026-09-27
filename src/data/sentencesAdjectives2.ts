@@ -75,7 +75,7 @@ export const SENTENCES_ADJECTIVES_2: Record<number, TopicSentence> = {
   },
   10: {
     en: 'The street is quiet at night.',
-    pt: 'A rua é silenciosa à noite.',
+    pt: 'A rua fica silenciosa a noite.',
     newWords: [
       { word: 'street', pt: 'rua', kind: 'subst' },
       { word: 'night', pt: 'noite', kind: 'subst' },

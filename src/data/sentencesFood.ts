@@ -63,13 +63,13 @@ export const SENTENCES_FOOD: Record<number, TopicSentence> = {
     newWords: [{ word: 'on', pt: 'em cima de', kind: 'prep' }],
   },
   12: {
-    en: 'I want two eggs, please.',
-    pt: 'Eu quero dois ovos, por favor.',
+    en: "I'd like two eggs, please.",
+    pt: 'Eu queria dois ovos, por favor.',
     newWords: [{ word: 'please', pt: 'por favor', kind: 'expr' }],
   },
   13: {
     en: 'You should eat more fruit.',
-    pt: 'Você deveria comer mais fruta.',
+    pt: 'Voce deveria comer mais frutas.',
     newWords: [{ word: 'should', pt: 'deveria', kind: 'verbo' }],
   },
   14: {
@@ -79,7 +79,7 @@ export const SENTENCES_FOOD: Record<number, TopicSentence> = {
   },
   15: {
     en: 'This needs more salt.',
-    pt: 'Isto precisa de mais sal.',
+    pt: 'Isso precisa de mais sal.',
     newWords: [{ word: 'needs', pt: 'precisa', kind: 'verbo' }],
   },
   16: {
@@ -104,7 +104,7 @@ export const SENTENCES_FOOD: Record<number, TopicSentence> = {
   },
   20: {
     en: 'This tastes really good.',
-    pt: 'Isto está muito gostoso.',
+    pt: 'Isso esta muito gostoso.',
     newWords: [{ word: 'really', pt: 'muito, realmente', kind: 'adv' }],
   },
   21: {

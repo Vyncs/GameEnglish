@@ -84,16 +84,16 @@ export const SENTENCES_HEALTH: Record<number, TopicSentence> = {
     ],
   },
   11: {
-    en: 'These new shoes hurt my foot.',
-    pt: 'Esses sapatos novos machucam meu pé.',
+    en: 'My foot hurts in these new shoes.',
+    pt: 'Meu pe doi com esses sapatos novos.',
     newWords: [
       { word: 'shoes', pt: 'sapatos', kind: 'subst' },
       { word: 'new', pt: 'novo', kind: 'adj' },
     ],
   },
   12: {
-    en: 'My back hurts at the office.',
-    pt: 'Minhas costas doem no escritório.',
+    en: 'My back hurts after a day at the office.',
+    pt: 'Minhas costas doem depois de um dia no escritorio.',
     newWords: [
       { word: 'office', pt: 'escritório', kind: 'subst' },
     ],
@@ -123,8 +123,8 @@ export const SENTENCES_HEALTH: Record<number, TopicSentence> = {
     ],
   },
   16: {
-    en: 'I feel pain in my knee.',
-    pt: 'Sinto dor no meu joelho.',
+    en: 'I feel a pain in my knee when I walk.',
+    pt: 'Sinto uma dor no joelho quando eu ando.',
     newWords: [
       { word: 'feel', pt: 'sentir', kind: 'verbo' },
       { word: 'knee', pt: 'joelho', kind: 'subst' },
@@ -193,8 +193,8 @@ export const SENTENCES_HEALTH: Record<number, TopicSentence> = {
     ],
   },
   25: {
-    en: 'I have an appointment tomorrow.',
-    pt: 'Tenho uma consulta amanhã.',
+    en: "I have a doctor's appointment tomorrow.",
+    pt: 'Tenho consulta medica amanha.',
     newWords: [
       { word: 'tomorrow', pt: 'amanhã', kind: 'adv' },
     ],
