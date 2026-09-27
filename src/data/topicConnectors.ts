@@ -1,4 +1,5 @@
-import type { Topic } from './topic';
+import { withSentences, type Topic } from './topic';
+import { SENTENCES_CONNECTORS } from './sentencesConnectors';
 
 // Tópico: 25 conectivos e marcadores de conversa — as palavras que ligam uma
 // ideia na outra e fazem a fala soar natural em vez de traduzida.
@@ -11,8 +12,9 @@ export const TOPIC_CONNECTORS: Topic = {
   emoji: '🔗',
   category: 'conversacao',
   level: 2,
-  stages: ['study', 'meaning'],
-  items: [
+  // Memória para fixar, frases para falar, e o quiz fecha conferindo.
+  stages: ['memory', 'sentences', 'meaning'],
+  items: withSentences([
     { id: 1, base: 'however', pt: 'porém, no entanto', example: 'I wanted to go. However, I was sick.', tip: 'Mais formal que "but", e começa frase nova, com vírgula depois.' },
     { id: 2, base: 'actually', pt: 'na verdade', example: 'Actually, I disagree.', tip: 'Falso amigo clássico: NÃO é "atualmente". Atualmente = "currently".' },
     { id: 3, base: 'by the way', pt: 'a propósito, aliás', example: 'By the way, did you call her?', tip: 'Serve para mudar de assunto. Abreviado por escrito: BTW.' },
@@ -38,5 +40,5 @@ export const TOPIC_CONNECTORS: Topic = {
     { id: 23, base: 'that is why', pt: 'é por isso que', example: 'That is why I called you.', tip: 'Na fala vira "that\'s why".' },
     { id: 24, base: 'even though', pt: 'mesmo que, ainda que', example: 'Even though it was expensive, I bought it.', tip: 'Mais enfático que "although".' },
     { id: 25, base: 'by the end of', pt: 'até o fim de', example: 'I will finish by the end of the week.', tip: '"By" é o prazo limite; "until" é a continuidade até lá.' },
-  ],
+  ], SENTENCES_CONNECTORS),
 };

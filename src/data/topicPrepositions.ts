@@ -1,4 +1,5 @@
-import type { Topic } from './topic';
+import { withSentences, type Topic } from './topic';
+import { SENTENCES_PREPOSITIONS } from './sentencesPrepositions';
 
 // Tópico: 25 preposições — as que mais mudam de sentido entre português e
 // inglês, e as que vêm grudadas em verbo ("depend ON", "listen TO").
@@ -11,8 +12,9 @@ export const TOPIC_PREPOSITIONS: Topic = {
   emoji: '🧭',
   category: 'gramatica',
   level: 2,
-  stages: ['study', 'meaning'],
-  items: [
+  // Memória para fixar, frases para falar, e o quiz fecha conferindo.
+  stages: ['memory', 'sentences', 'meaning'],
+  items: withSentences([
     { id: 1, base: 'in', pt: 'em (dentro de)', example: 'The keys are in the drawer.', tip: 'Espaço fechado, cidade, país, mês e ano: in Brazil, in May, in 2026.' },
     { id: 2, base: 'on', pt: 'em (sobre), em (dias)', example: 'The book is on the table.', tip: 'Superfície e dias: on Monday, on the wall. Também "ligado": the TV is on.' },
     { id: 3, base: 'at', pt: 'em (ponto exato), às', example: 'I am at home.', tip: 'Ponto exato e horário: at home, at work, at 8 o\'clock.' },
@@ -38,5 +40,5 @@ export const TOPIC_PREPOSITIONS: Topic = {
     { id: 23, base: 'during', pt: 'durante', example: 'I slept during the movie.', tip: 'Vem antes de substantivo, não de frase: during the trip, não "during I traveled".' },
     { id: 24, base: 'before', pt: 'antes de', example: 'Call me before lunch.', tip: 'Oposto de after. Serve para tempo e ordem.' },
     { id: 25, base: 'after', pt: 'depois de', example: 'We can talk after the meeting.', tip: 'Cuidado: "after" e "later" não são iguais — later é advérbio, sozinho.' },
-  ],
+  ], SENTENCES_PREPOSITIONS),
 };

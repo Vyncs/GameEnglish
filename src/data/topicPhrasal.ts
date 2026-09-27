@@ -1,4 +1,5 @@
-import type { Topic } from './topic';
+import { withSentences, type Topic } from './topic';
+import { SENTENCES_PHRASAL } from './sentencesPhrasal';
 
 // Tópico: 25 phrasal verbs essenciais — a faixa preta do mapa em ação:
 // verbos de base (get, take, look, go, come, turn, put…) × partículas
@@ -12,8 +13,9 @@ export const TOPIC_PHRASAL: Topic = {
   emoji: '🧩',
   category: 'verbos',
   level: 2,
-  stages: ['study', 'meaning'],
-  items: [
+  // Memória para fixar, frases para falar, e o quiz fecha conferindo.
+  stages: ['memory', 'sentences', 'meaning'],
+  items: withSentences([
     { id: 1, base: 'look for', pt: 'procurar', example: 'I am looking for my keys.', tip: 'look muda com a partícula: for = procurar, at = olhar para, after = cuidar.' },
     { id: 2, base: 'look at', pt: 'olhar para', example: 'Look at me now.', tip: 'Sempre com at antes do alvo: look AT the sky.' },
     { id: 3, base: 'look after', pt: 'cuidar de', example: 'She looks after her little brother.', tip: 'Sinônimo de take care of.' },
@@ -39,5 +41,5 @@ export const TOPIC_PHRASAL: Topic = {
     { id: 23, base: 'hang out', pt: 'sair, passar tempo juntos', example: 'Let\'s hang out this weekend.', tip: 'Informal: passar um tempo com amigos.' },
     { id: 24, base: 'work out', pt: 'malhar; dar certo', example: 'I work out three times a week.', tip: 'Dois sentidos: malhar na academia e dar certo (It worked out!).' },
     { id: 25, base: 'run away', pt: 'fugir', example: 'Let\'s run away together!', tip: 'away = para longe: run away, go away (vá embora).' },
-  ],
+  ], SENTENCES_PHRASAL),
 };

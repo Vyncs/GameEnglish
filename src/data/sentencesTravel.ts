@@ -119,9 +119,9 @@ export const SENTENCES_TRAVEL: Record<number, TopicSentence> = {
     newWords: [{ word: 'from', pt: 'de (origem)', kind: 'prep' }],
   },
   23: {
-    en: 'The hotel is near the beach.',
-    pt: 'O hotel fica perto da praia.',
-    newWords: [{ word: 'near', pt: 'perto de', kind: 'prep' }],
+    en: 'The bank is near my house.',
+    pt: 'O banco fica perto da minha casa.',
+    newWords: [{ word: 'bank', pt: 'banco', kind: 'subst' }],
   },
   24: {
     en: 'I think we are lost.',

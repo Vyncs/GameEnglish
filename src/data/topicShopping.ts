@@ -1,4 +1,5 @@
-import type { Topic } from './topic';
+import { withSentences, type Topic } from './topic';
+import { SENTENCES_SHOPPING } from './sentencesShopping';
 
 // Tópico: 25 palavras de compras e dinheiro — loja, preço e pagamento.
 // Sem passado/particípio → não usa a etapa "Formas".
@@ -10,8 +11,9 @@ export const TOPIC_SHOPPING: Topic = {
   emoji: '🛒',
   category: 'cotidiano',
   level: 2,
-  stages: ['study', 'meaning'],
-  items: [
+  // Memória para fixar, frases para falar, e o quiz fecha conferindo.
+  stages: ['memory', 'sentences', 'meaning'],
+  items: withSentences([
     { id: 1, base: 'shop', pt: 'loja; fazer compras', example: 'I shop online.', tip: 'Substantivo e verbo. No americano a loja costuma ser "store".' },
     { id: 2, base: 'store', pt: 'loja', example: 'The store opens at nine.', tip: 'Como verbo significa armazenar.' },
     { id: 3, base: 'buy', pt: 'comprar', example: 'I bought a new phone.', tip: 'Passado e particípio: bought. Soa igual a "by".' },
@@ -37,5 +39,5 @@ export const TOPIC_SHOPPING: Topic = {
     { id: 23, base: 'spend', pt: 'gastar', example: 'I spent too much money.', tip: 'Passado: spent. Serve para dinheiro e tempo: "spend time".' },
     { id: 24, base: 'save', pt: 'economizar; salvar', example: 'I am saving money for a trip.', tip: 'Economizar, guardar arquivo e salvar alguém — a mesma palavra.' },
     { id: 25, base: 'afford', pt: 'ter condições de pagar', example: "I can't afford it.", tip: 'Quase sempre com can/could: "I can\'t afford it" — não tenho como pagar.' },
-  ],
+  ], SENTENCES_SHOPPING),
 };
