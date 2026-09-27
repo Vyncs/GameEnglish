@@ -10,7 +10,7 @@
 //
 // A ordem daqui é a ordem da trilha na tela.
 
-export type PathKind = 'today' | 'topics' | 'cell' | 'grid';
+export type PathKind = 'today' | 'topics' | 'cell' | 'grid' | 'lesson' | 'trainer';
 
 export interface PathUnit {
   id: string;
@@ -23,6 +23,14 @@ export interface PathUnit {
   topicIds?: string[];
   /** kind 'cell': a célula da Grade que o círculo abre. */
   cellId?: string;
+  /** kind 'lesson': a aula, e quantas perguntas ela tem ao todo. */
+  lessonId?: string;
+  totalQuestions?: number;
+  /** kind 'trainer': a tela e quantas etapas ela tem. */
+  trainerId?: string;
+  totalStages?: number;
+  /** kind 'lesson' | 'trainer': a view que o círculo abre. */
+  viewMode?: string;
 }
 
 export const HOME_PATH: PathUnit[] = [
@@ -34,12 +42,42 @@ export const HOME_PATH: PathUnit[] = [
     kind: 'today',
   },
   {
+    id: 'aula-classificar',
+    label: 'Aula 01 · Classificar',
+    hint: 'A · B · B2 · C — de que tipo é cada frase',
+    emoji: '🧩',
+    kind: 'lesson',
+    lessonId: 'classify-01',
+    totalQuestions: 50,
+    viewMode: 'lesson-classify',
+  },
+  {
+    id: 'aula-did-have',
+    label: 'Aula 02 · did × have',
+    hint: 'Quando é passado seco e quando é perfect',
+    emoji: '🧭',
+    kind: 'lesson',
+    lessonId: 'did-have-01',
+    totalQuestions: 24,
+    viewMode: 'lesson-did-have',
+  },
+  {
     id: 'verbos',
     label: 'Verbos',
     hint: 'Os 100 mais usados, em blocos de 25',
     emoji: '🏃',
     kind: 'topics',
     topicIds: ['verbs-01-25', 'verbs-26-50', 'verbs-51-75', 'verbs-76-100'],
+  },
+  {
+    id: 'passado-irregulares',
+    label: 'Verbos no passado',
+    hint: 'Os irregulares agrupados por família de som',
+    emoji: '🔁',
+    kind: 'trainer',
+    trainerId: 'past-trainer',
+    totalStages: 9,
+    viewMode: 'past-trainer',
   },
   {
     id: 'substantivos',

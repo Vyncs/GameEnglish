@@ -1,4 +1,5 @@
-import type { Topic } from './topic';
+import { withSentences, type Topic } from './topic';
+import { SENTENCES_TRAVEL } from './sentencesTravel';
 
 // Tópico: 25 palavras de viagem — aeroporto, hotel e deslocamento.
 // Sem passado/particípio → não usa a etapa "Formas".
@@ -10,8 +11,9 @@ export const TOPIC_TRAVEL: Topic = {
   emoji: '✈️',
   category: 'cotidiano',
   level: 2,
-  stages: ['study', 'meaning'],
-  items: [
+  // Memória para fixar, frases para falar, e o quiz fecha conferindo.
+  stages: ['memory', 'sentences', 'meaning'],
+  items: withSentences([
     { id: 1, base: 'trip', pt: 'viagem (a ida e volta)', example: 'We took a trip to Chile.', tip: 'Trip é a viagem concreta; travel é o ato de viajar em geral.' },
     { id: 2, base: 'travel', pt: 'viajar', example: 'I travel for work.', tip: 'Como substantivo é incontável: nunca "a travel". Use "a trip".' },
     { id: 3, base: 'flight', pt: 'voo', example: 'My flight is at six.', tip: 'O "gh" é mudo: "flait".' },
@@ -37,5 +39,5 @@ export const TOPIC_TRAVEL: Topic = {
     { id: 23, base: 'near', pt: 'perto', example: 'The hotel is near the beach.', tip: 'Não precisa de "to": "near the beach", não "near to the beach".' },
     { id: 24, base: 'lost', pt: 'perdido', example: 'I think we are lost.', tip: 'Usa BE: "I am lost", não "I have lost" (que pediria um objeto).' },
     { id: 25, base: 'beach', pt: 'praia', example: 'We went to the beach.', tip: 'Cuidado com a pronúncia: o "ea" é longo, "biitch" curto soa como xingamento.' },
-  ],
+  ], SENTENCES_TRAVEL),
 };

@@ -13,6 +13,7 @@ import { Check, Star } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useThemeStore } from '../store/useThemeStore';
 import { useVerbLessonStore } from '../store/useVerbLessonStore';
+import { useLessonStore } from '../store/useLessonStore';
 import { THEMES } from '../data/themes';
 import { HOME_PATH, type PathUnit } from '../data/homePath';
 import { findTopic } from '../data/topics';
@@ -34,7 +35,16 @@ const SPARKS = [
 function unitProgress(
   unit: PathUnit,
   progress: Record<string, { stagesDone: string[] } | undefined>,
+  lessonProgress: Record<string, { answers: Record<number, string> } | undefined>,
 ): { done: number; total: number; nextTopicId?: string } {
+  if (unit.kind === 'lesson') {
+    const answered = Object.keys(lessonProgress[unit.lessonId!]?.answers ?? {}).length;
+    return { done: answered, total: unit.totalQuestions ?? 1 };
+  }
+  if (unit.kind === 'trainer') {
+    const done = (progress[unit.trainerId!]?.stagesDone ?? []).length;
+    return { done, total: unit.totalStages ?? 1 };
+  }
   if (unit.kind === 'cell') {
     const done = progress['grid-4v5t2s']?.stagesDone.includes(unit.cellId!) ? 1 : 0;
     return { done, total: 1 };
@@ -61,6 +71,7 @@ export function HomePath() {
   const setViewMode = useStore((s) => s.setViewMode);
   const themeId = useThemeStore((s) => s.themeId);
   const progress = useVerbLessonStore((s) => s.progress);
+  const lessonProgress = useLessonStore((s) => s.progress);
   const setSelectedTopic = useVerbLessonStore((s) => s.setSelectedTopic);
   const setSelectedGridCell = useVerbLessonStore((s) => s.setSelectedGridCell);
   const setSelectedUnit = useVerbLessonStore((s) => s.setSelectedUnit);
@@ -68,7 +79,7 @@ export function HomePath() {
   const theme = THEMES.find((t) => t.id === themeId) ?? THEMES[0];
   const spark = theme.scene.particle;
 
-  const units = HOME_PATH.map((u) => ({ unit: u, ...unitProgress(u, progress) }));
+  const units = HOME_PATH.map((u) => ({ unit: u, ...unitProgress(u, progress, lessonProgress) }));
   // O círculo ativo é o primeiro que ainda não fechou (o "Hoje" nunca fecha).
   const activeIndex = units.findIndex((u, i) => i > 0 && u.done < u.total);
 
@@ -86,6 +97,10 @@ export function HomePath() {
       // Sem célula pedida: abre o mapa inteiro.
       setSelectedGridCell(null);
       setViewMode('grid-4v5t2s');
+      return;
+    }
+    if (unit.kind === 'lesson' || unit.kind === 'trainer') {
+      setViewMode(unit.viewMode as Parameters<typeof setViewMode>[0]);
       return;
     }
     // Com vários blocos, mostra a fileira da unidade; com um só, entra nele.
@@ -113,9 +128,13 @@ export function HomePath() {
             ? findCell(unit.cellId!)?.opener ?? unit.hint
             : unit.kind === 'grid'
               ? `${done}/${total} células dominadas`
-              : total > 1
-                ? `${done}/${total} blocos`
-                : unit.hint;
+              : unit.kind === 'lesson'
+                ? `${done}/${total} respondidas`
+                : unit.kind === 'trainer'
+                  ? `${done}/${total} famílias`
+                  : total > 1
+                    ? `${done}/${total} blocos`
+                    : unit.hint;
 
         return (
           <div
